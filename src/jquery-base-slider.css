@@ -1,0 +1,273 @@
+/***********************************************
+jquery-time-slider.scss, Description from README.md
+
+	(c) 2015, Niels Holt
+
+	https://github.com/NielsHolt/jquery-time-slider
+	https://github.com/NielsHolt
+
+
+************************************************/
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\0000352}}
+.irs {
+  position: relative;
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\0000358}}
+.irs .irs-line {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  outline: none !important;
+  box-sizing: border-box;
+  height: 0.375rem;
+  border-bottom-right-radius: 0.125rem;
+  border-top-right-radius: 0.125rem;
+  border-bottom-left-radius: 0.125rem;
+  border-top-left-radius: 0.125rem;
+  top: 1.64563rem;
+  border: solid 0.0625rem #afb3bb;
+  background-color: #d1d6e0;
+  cursor: pointer;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\0000373}}
+.irs .irs-line .irs-line-left {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 11%;
+  height: 100%;
+  background-color: green;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\0000385}}
+.irs .irs-bar {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  left: 0;
+  width: 0;
+  height: 0.375rem;
+  top: 1.64563rem;
+  border: solid 0.0625rem #afb3bb;
+  border-bottom-left-radius: 0.125rem;
+  border-top-left-radius: 0.125rem;
+  border-right: none;
+  background-color: yellow;
+  cursor: pointer;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003101}}
+.irs .irs-slider {
+  position: absolute;
+  display: block;
+  cursor: pointer;
+  z-index: 10;
+  width: 0.6875rem;
+  height: 1.125rem;
+  top: 1.27062rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAELSURBVDhPpZJdS0JBEIbHrYN75xeEpCmCIoJ0EYGBvz/wQpECC7JS8+PCi8KLYG2NzXdwTmc1A/G5GfadZ2YPy4m5NYPRlEbjCe2jeJGnUjFHsdfhxL1/LKiQOyOt45v2L8Ys6W06p3QqQQobISaTiU3bBzn68BQCbDTGcFNr7VUgN7IcRYa2Kwhl2dS5e+DvRAXRG3Y2/8fx8l9PCA7fHH2uZuPKq5IDlvE8QRBwsA1yeT6VzmTp6WVM1tqdAZyRow9P1Sp5btz3+t6AiMgBPBWcntBlvcrB4/OMqwzIGX14/IsisKtvum21+bpa+ZxFu/wMRRDKQAaE5s11KDKQo3zZlWt3e1x9nPsBUKqb1FCNlIQAAAAASUVORK5CYII=);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003117}}
+.irs .irs-slider.state_hover, .irs .irs-slider:hover {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAFASURBVDhPdZI7SwNBFIXvri4OChq0DPjqLEQLC1EsYiXaCP4J9T9pCgtBEUVREMEgQTGNRFLY+QAttRDUZCcyzrm7N+4MydfM3nvOufNgA2N5enmjUvmGOlFYmKOxkTwFj8+v5r72QNOTE9TX25PK/3x9N6hq9SmrB1s7e2bRJocG+1M5oV5vkFJJ+P3jky7tziGK7ESYgBhRi87mdvgh4Jhh2NxY522xSkBomZVS6ZdLtt/xGO1gc/ZcwH9C0Z3JfsivPbOi7WKRcrkBXv17sBm3jqKIG2KQFX15lXB8dJiuK1XSWrcCAmr0ocMXzs/OsHB6fuUExIg+gC+MurtoZalgt/qxE+5YkIDU0OEj/KIg1k2zu39sSuVbE8cxr6jRF/h/5rhFN3/p4OgsrYjWVpeTiQJHMmDS4cmFMzHBmD8Dxr97yYesYgAAAABJRU5ErkJggg==);
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003121}}
+.irs .irs-slider.type_last {
+  z-index: 12;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003127}}
+.irs.no-marker .irs-line {
+  top: 0.375rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003128}}
+.irs.no-marker .irs-bar {
+  top: 0.375rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003129}}
+.irs.no-marker .irs-slider {
+  top: 0rem;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003135}}
+.irs-min, .irs-max {
+  position: absolute;
+  display: block;
+  cursor: default;
+  color: #555;
+  font-family: Arial, sans-serif;
+  font-size: 0.625rem;
+  line-height: 1.333;
+  text-shadow: none;
+  top: 0rem;
+  padding: 0.0625rem 0.1875rem;
+  border: solid 0.0625rem #afb3bb;
+  background-color: #d1d6e0;
+  border-radius: 0.125rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003150}}
+.irs-min.irs-min, .irs-max.irs-min {
+  left: 0;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003151}}
+.irs-min.irs-max, .irs-max.irs-max {
+  right: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003154}}
+.irs-from, .irs-to, .irs-single {
+  position: absolute;
+  display: block;
+  top: 0.0625rem;
+  left: 0;
+  cursor: default;
+  white-space: nowrap;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 0.625rem;
+  line-height: 1.333;
+  text-shadow: none;
+  padding: 0.0625rem 0.3125rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003169}}
+.marker-frame .irs-from, .marker-frame .irs-to, .marker-frame .irs-single {
+  top: 0rem;
+  background: white;
+  border: 0.0625rem solid black;
+  border-radius: 0.25rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003174}}
+.marker-frame .irs-from:after, .marker-frame .irs-to:after, .marker-frame .irs-single:after {
+  position: absolute;
+  display: block;
+  content: "";
+  bottom: -0.43125rem;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -0.1875rem;
+  overflow: hidden;
+  border: 0.1875rem solid transparent;
+  border-top-color: black;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003191}}
+.irs-grid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 1.25rem;
+  top: 2.39563rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003200}}
+.no-marker .irs-grid {
+  top: 1.125rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003203}}
+.ticks-on-line .irs-grid {
+  top: 1.64563rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003204}}
+.ticks-on-line.no-marker .irs-grid {
+  top: 0.375rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003206}}
+.irs-grid .irs-grid-pol {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 0.5625rem;
+  background: black;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003213}}
+.irs-grid .irs-grid-pol.small {
+  height: 0.375rem;
+  background: #555555;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003214}}
+.irs-grid .irs-grid-pol.red {
+  background: red;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003218}}
+.irs-grid .irs-grid-text {
+  position: absolute;
+  top: 0.6875rem;
+  left: 0;
+  white-space: nowrap;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 0.5625rem;
+  line-height: 0.5625rem;
+  font-weight: bold;
+  padding: 0;
+  color: #000;
+  cursor: default;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003221}}
+.irs-grid .irs-grid-text.low {
+  top: 1.375rem;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003231}}
+.irs-grid .irs-grid-text.small {
+  font-weight: normal;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003232}}
+.irs-grid .irs-grid-text.italic {
+  font-style: italic;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003237}}
+.irs-grid .irs-grid-text.clickable {
+  cursor: pointer;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003241}}
+.irs-grid.small .irs-grid-text {
+  font-weight: normal;
+  font-style: italic;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003247}}
+.irs-disable-mask {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: -1%;
+  width: 102%;
+  height: 100%;
+  cursor: default;
+  background: transparent;
+  z-index: 2;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003258}}
+.irs-disabled {
+  opacity: 0.4;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003263}}
+.irs-hidden-input {
+  position: absolute !important;
+  display: block !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  z-index: -9999 !important;
+  background: none !important;
+  border-style: solid !important;
+  border-color: transparent !important;
+}
+
+/*# sourceMappingURL=jquery-base-slider.css.map */

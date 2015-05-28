@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="cl" style="font-size: 16px">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>jquery-slider - Example</title>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+
+	<script type="text/javascript" src="autoclick-while-pressed.min.js"></script>
+	<script type="text/javascript" src="jquery.actual.min.js"></script>
+
+	<script type="text/javascript" src="../src/jquery-base-slider.js"></script>
+
+	
+	<link  href="../src/jquery-base-slider.css" rel="stylesheet">	
+
+		
+	</head>
+	<body style="margin:0;padding:0;">
+		<div style="position: relative; width:50%;">
+			<div style="border:1px solid red; margin:20px; padding:0px; height:200px">
+				<input type="text" id="example_01" value="" name="range" />
+			</div>
+			<div style="border:1px solid red; padding:0px; height:200px">
+				<input type="text" id="example_02" value="4" name="range" />
+			</div>
+			<div style="border:1px solid red; padding:0px; height:200px">
+				<input type="text" id="example_03" value="4" name="range" />
+			</div>
+		</div>
+<button id="btnPrevFrom">btnPrevFrom</button>	
+<button id="btnNextFrom">btnNextFrom</button>	
+<button id="btnPrevTo">btnPrevTo</button>	
+<button id="btnNextTo">btnNextTo</button>	
+<br>
+	<div id="callback" style="border:1px solid black; height:60px; width:300px"></div>
+<br>
+
+	
+	
+	
+	
+	
+	<script type="text/javascript">
+		$("#example_01").baseSlider({
+	    type: "double",
+			buttons: {
+				from: {
+					previousBtn: 'btnPrevFrom',
+					nextBtn: 'btnNextFrom'
+				},
+				to:{
+					previousBtn: 'btnPrevTo',
+					nextBtn: 'btnNextTo'
+				}
+
+			},
+			min: -4800,
+			max: -4730,
+			from: 0, 
+			to:24,
+			grid: true,
+			step: 6,
+
+postfix: ' &deg;C',
+show_impact_line: true,
+			hide_min_max: false,
+			hide_from_to: false,
+			ticks_on_line: false,
+			callback_on_dragging: false,
+			callback : function(obj){
+				$('#callback').html(Math.random()+'<br>'+obj.from+'->'+obj.to); 
+			}
+
+		});		
+
+	$("#example_02").baseSlider({
+	    type: "double",
+			min: -48,
+			max: +48,
+			from: 0, 
+			to:24,
+			grid: false,
+//			from_shadow: true,
+//drag_interval: true,
+			force_edges: true,
+			hide_min_max: true,
+			hide_from_to: false,
+			callback_on_dragging: false,
+	});
+
+/*
+	$("#example_03").timeSlider({
+	    type: "double",
+			format: { date:'YMD', time:'24', timezone:'local', showUTC: true, showRelative:true },
+			min: -24,
+			max: +48,
+			from: 0, 
+			to:24,
+	});
+*/
+	</script>
+	
+	
+	</body>
+</html>

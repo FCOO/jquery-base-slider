@@ -1,0 +1,279 @@
+/***********************************************
+jquery-time-slider.scss, Description from README.md
+
+	(c) 2015, Niels Holt
+
+	https://github.com/NielsHolt/jquery-time-slider
+	https://github.com/NielsHolt
+
+
+************************************************/
+//BOURBON - http://bourbon.io/
+@import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
+
+//MODERNIZR-MIXIN - https://github.com/danielguillan/modernizr-mixin
+@import "../bower_components/modernizr-mixin/stylesheets/modernizr";
+
+//MATHSASS - https://github.com/terkel/mathsass
+@import "../bower_components/mathsass/dist/math";
+
+$border-color			: rgb(175,179,187);
+$background-color	: rgb(209,214,224);
+
+//marker = small boxes over min- and max and from- anf to-slider
+$markerTop							: rem(0px);
+$markerFontSize					: rem(10px);
+$markerLineHeight				: 1.333;
+$markerTopBottomPadding : rem(1px);
+$markerBorderSize				: rem(1px);
+$markerStickHeight			: rem(3px);
+
+//slider
+$sliderTop					: $markerTop + $markerBorderSize + $markerTopBottomPadding + $markerFontSize*$markerLineHeight + $markerTopBottomPadding + $markerBorderSize + $markerStickHeight;
+$sliderTopNoMarker	: $markerTop;
+$sliderWidth				: rem(11px); 
+$sliderHeight				: rem(18px);
+
+//The line
+$lineHeight				: rem(6px);
+$lineBorderSize		: rem(1px);
+
+$lineBorderRadius	: rem(2px);
+$lineTop					: $sliderTop + $sliderHeight/2 - $lineHeight/2;
+$lineTopNoMarker	: $sliderTopNoMarker + $sliderHeight/2 - $lineHeight/2;
+
+
+//Ticks on grids
+$tickHeightSmall  : $lineHeight;
+$tickHeight       : 1.5*$tickHeightSmall;
+$labelHeight			: rem(9px);
+$margin						: rem(2px);
+
+.irs {
+	position: relative; 
+	display: block;
+	@include user-select(none);
+	//TODO: remoe or recalc : min-height: 35px;
+
+	.irs-line {
+		position: relative; 
+		display: block;
+		overflow: hidden;
+		outline: none !important;
+		box-sizing: border-box;
+		height: $lineHeight; 
+		@include border-right-radius($lineBorderRadius);
+		@include border-left-radius($lineBorderRadius);
+		top: $lineTop;
+
+		border: solid $lineBorderSize $border-color;
+		background-color: $background-color;
+		cursor: pointer;
+
+		.irs-line-left {
+			position: absolute; 
+			display: block;
+      top: 0;
+			left: 0; 
+			width: 11%;
+			height: 100%;
+			background-color: green;
+		} 
+	} //end of .irs-line
+
+
+	.irs-bar {
+		position: absolute; 
+		display: block;
+		box-sizing: border-box;
+		left: 0; 
+		width: 0;
+		height: $lineHeight; 
+		top: $lineTop;
+		border: solid $lineBorderSize $border-color;
+		@include border-left-radius($lineBorderRadius);
+		border-right: none;
+		background-color: yellow;
+		cursor: pointer;
+	}
+
+	//The slider
+	.irs-slider {
+		position	: absolute; 
+		display		: block;
+		cursor		: pointer;
+		z-index		: 10;
+
+		width	: $sliderWidth; 
+		height: $sliderHeight;
+		top		: $sliderTop;
+
+		background-size: 100% 100%;
+		
+		background-repeat: no-repeat;
+		//background-image replaced with Encoded Image of url(img/slider.png);
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAELSURBVDhPpZJdS0JBEIbHrYN75xeEpCmCIoJ0EYGBvz/wQpECC7JS8+PCi8KLYG2NzXdwTmc1A/G5GfadZ2YPy4m5NYPRlEbjCe2jeJGnUjFHsdfhxL1/LKiQOyOt45v2L8Ys6W06p3QqQQobISaTiU3bBzn68BQCbDTGcFNr7VUgN7IcRYa2Kwhl2dS5e+DvRAXRG3Y2/8fx8l9PCA7fHH2uZuPKq5IDlvE8QRBwsA1yeT6VzmTp6WVM1tqdAZyRow9P1Sp5btz3+t6AiMgBPBWcntBlvcrB4/OMqwzIGX14/IsisKtvum21+bpa+ZxFu/wMRRDKQAaE5s11KDKQo3zZlWt3e1x9nPsBUKqb1FCNlIQAAAAASUVORK5CYII=);
+
+		&.state_hover, &:hover { 
+			//background-image replaced with Encoded Image of url(img/slider.hover.png);
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAFASURBVDhPdZI7SwNBFIXvri4OChq0DPjqLEQLC1EsYiXaCP4J9T9pCgtBEUVREMEgQTGNRFLY+QAttRDUZCcyzrm7N+4MydfM3nvOufNgA2N5enmjUvmGOlFYmKOxkTwFj8+v5r72QNOTE9TX25PK/3x9N6hq9SmrB1s7e2bRJocG+1M5oV5vkFJJ+P3jky7tziGK7ESYgBhRi87mdvgh4Jhh2NxY522xSkBomZVS6ZdLtt/xGO1gc/ZcwH9C0Z3JfsivPbOi7WKRcrkBXv17sBm3jqKIG2KQFX15lXB8dJiuK1XSWrcCAmr0ocMXzs/OsHB6fuUExIg+gC+MurtoZalgt/qxE+5YkIDU0OEj/KIg1k2zu39sSuVbE8cxr6jRF/h/5rhFN3/p4OgsrYjWVpeTiQJHMmDS4cmFMzHBmD8Dxr97yYesYgAAAABJRU5ErkJggg==);
+		}
+		&.type_last { z-index: 12; }
+	} //end of .irs-slider
+
+
+	//Adjust all top-position if there are no marker
+	&.no-marker {
+		.irs-line		{ top: $lineTopNoMarker;		}
+		.irs-bar		{ top: $lineTopNoMarker;		}
+		.irs-slider { top: $sliderTopNoMarker;	}
+	}
+} //end of .irs
+
+
+//Marker: Current, min and max-marker/labels
+.irs-min, .irs-max {
+	position: absolute; 
+	display: block;
+	cursor: default;
+	color: #555;
+	font-family	: Arial, sans-serif; 
+	font-size: $markerFontSize; 
+	line-height: $markerLineHeight;
+	text-shadow: none;
+	top: $markerTop; 
+	padding: $markerTopBottomPadding rem(3px);
+	border: solid $markerBorderSize $border-color;
+	background-color: $background-color;
+	border-radius: rem(2px);
+
+	&.irs-min { left: 0;	}
+	&.irs-max { right: 0;	}
+}
+
+.irs-from, .irs-to, .irs-single {
+	position: absolute; 
+	display: block;
+	top: $markerTop + $markerBorderSize; 
+	left: 0;
+	cursor: default;
+	white-space: nowrap;
+	color: #111;
+	font-family	: Arial, sans-serif; 
+	font-size	: $markerFontSize; 
+	line-height: $markerLineHeight;
+	text-shadow: none;
+	padding: $markerTopBottomPadding rem(5px);
+
+	//If not force edge => add border and stick
+	.marker-frame & {
+		top						: $markerTop; 
+		background		: white;
+		border				: $markerBorderSize solid black;
+		border-radius	: rem(4px);
+		&:after {
+		  position: absolute; 
+			display: block; 
+			content: "";
+		  bottom: -2.3*$markerStickHeight; 
+			left: 50%;
+			width: 0; 
+			height: 0;
+			margin-left: -1*$markerStickHeight;
+	    overflow: hidden;
+		  border: $markerStickHeight solid transparent;
+			border-top-color: black;
+		}
+	}
+}
+
+
+.irs-grid {
+	position: absolute; 
+	bottom: 0; 
+	left: 0;
+	z-index: 2;
+	width: 100%; 
+	height: $tickHeight + $margin + $labelHeight; 
+
+	top: $sliderTop + $sliderHeight;
+	.no-marker & { top: $sliderTopNoMarker  + $sliderHeight;		}
+
+	//Top if ticks_on_line = true
+	.ticks-on-line &						{ top: $lineTop;					}
+	.ticks-on-line.no-marker &	{ top: $lineTopNoMarker;	}
+
+	.irs-grid-pol {
+		position: absolute;
+		top: 0; left: 0;
+		width: 1px; 
+		height: $tickHeight;
+		background: black; 
+
+		&.small { height: $tickHeightSmall; background: #555555; 	}
+		&.red		{ background: red; 	}
+//		&.low		{ top: $tickHeight + $margin + $labelHeight + $margin; }
+	}
+
+	.irs-grid-text {
+		position: absolute;
+		top: $tickHeight + $margin;
+		&.low		{ top: $tickHeight + $margin + $labelHeight + $margin; }
+
+		left: 0;
+		white-space: nowrap;
+		text-align: center;
+		font-family	: Arial, sans-serif; 
+
+		font-size: $labelHeight; 
+		line-height: $labelHeight;
+		font-weight: bold;
+		&.small { font-weight: normal; }
+		&.italic { font-style: italic; }
+
+		padding: 0;
+		color: #000;
+		cursor: default; 
+		&.clickable { cursor: pointer; }
+	}
+
+	//Special style for text in a grid with class=small
+	&.small .irs-grid-text {
+		font-weight	: normal;
+		font-style	: italic;
+	}
+}
+
+.irs-disable-mask {
+	position: absolute; 
+	display: block;
+	top: 0; 
+	left: -1%;
+	width: 102%; height: 100%;
+	cursor: default;
+	background: rgba(0,0,0,0.0);
+	z-index: 2;
+}
+
+.irs-disabled {
+	opacity: 0.4;
+}
+
+
+.irs-hidden-input {
+	position: absolute !important;
+	display: block !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	font-size: 0 !important;
+	line-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	outline: none !important;
+	z-index: -9999 !important;
+	background: none !important;
+	border-style: solid !important;
+	border-color: transparent !important;
+}
