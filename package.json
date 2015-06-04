@@ -1,7 +1,7 @@
 {
   "name": "jquery-slider",
   "version": "0.0.0",
-  "description": "package.json is only use for building the package. see bower.jsdon for more info",
+  "description": "package.json is only use for building the package. see bower.json for more info",
   "devDependencies": {
     "jshint": "latest",
     "uglifyjs": "latest",

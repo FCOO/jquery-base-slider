@@ -22,31 +22,37 @@ USING
   // Template
 	var base_html =
 		'<span class="irs">' +
-			'<span class="irs-line" tabindex="-1">'+
-				'<span class="irs-line-left"></span>'+
+			'<span class="line" tabindex="-1">'+
+				'<span class="line-left"></span>'+
 			'</span>' +
-			'<span class="irs-min">0</span>'+
-			'<span class="irs-max">1</span>' +
-			'<span class="irs-from">0</span>'+
-			'<span class="irs-to">0</span>'+
-			'<span class="irs-single">0</span>' +
+			'<span class="marker-min">0</span>'+
+			'<span class="marker-max">1</span>' +
+			'<span class="marker-from">0</span>'+
+			'<span class="marker-to">0</span>'+
+			'<span class="marker-single">0</span>' +
 		'</span>' +
-		'<span class="irs-grid"></span>' + 
-		'<span class="irs-bar"></span>';
+		'<span class="grid"></span>' + 
+		'<span class="bar"></span>';
 
 	var single_html =
-		'<span class="irs-slider single"></span>';
+		'<span class="slider single"></span>';
 
 	var double_html =
-		'<span class="irs-slider from"></span>' +
-		'<span class="irs-slider to"></span>';
+		'<span class="slider from"></span>' +
+		'<span class="slider to"></span>';
 
-	var disable_html =
-		'<span class="irs-disable-mask"></span>';
+	var range_html =
+		'<span class="range-slider from"></span>' +
+		'<span class="range-slider to"></span>';
 
-  // Core
+	var range_value_html =
+		'<span class="range-slider range-value from"></span>' +
+		'<span class="range-slider range-value to"></span>' +
+		'<span class="range-slider range-value"></span>';
+
+	// Core
 	var BaseSlider = function (input, options, plugin_count) {
-		this.VERSION = "2.0.6";
+		this.VERSION = "1.0.0";
 		this.input = input;
 		this.plugin_count = plugin_count;
 		this.current_plugin = 0;
@@ -77,6 +83,7 @@ USING
 			bar: null,
 			line: null,
 			s_single: null,
+			s_range: null,
 			s_from: null,
 			s_to: null,
 			grid: null,
@@ -86,69 +93,13 @@ USING
 				to	: {} 
 			}
 		};
-	
-		// get config data attributes
-		var $inp = this.$cache.input;
-		var data = {
-			type: $inp.data("type"),
-	
-			min: $inp.data("min"),
-			max: $inp.data("max"),
-			from: $inp.data("from"),
-			to: $inp.data("to"),
-			step: $inp.data("step"),
-	
-			min_interval: $inp.data("minInterval"),
-			max_interval: $inp.data("maxInterval"),
-	
-			from_fixed: $inp.data("fromFixed"),
-			from_min: $inp.data("fromMin"),
-			from_max: $inp.data("fromMax"),
-	
-			to_fixed: $inp.data("toFixed"),
-			to_min: $inp.data("toMin"),
-			to_max: $inp.data("toMax"),
-	
-			marker_frame: $inp.data("markerFrame"),
-	
-			keyboard_step: $inp.data("keyboardStep"),
-	
-			grid: $inp.data("grid"),
-			grid_num: $inp.data("gridNum"),
-	
-			hide_min_max: $inp.data("hideMinMax"),
-			hide_from_to: $inp.data("hideFromTo"),
-	
-			prefix: $inp.data("prefix"),
-			postfix: $inp.data("postfix"),
-			max_postfix: $inp.data("maxPostfix"),
-			decorate_both: $inp.data("decorateBoth"),
-			values_separator: $inp.data("valuesSeparator"),
-	
-			disable: $inp.data("disable")
-		};
-		options = $.extend(data, options);
-	
-		// get from and to out of input
-		var val = $inp.prop("value");
-		if (val) {
-			val = val.split(";");
-			if (val[0] && val[0] == +val[0]) {
-				val[0] = +val[0];
-			}
-			if (val[1] && val[1] == +val[1]) {
-				val[1] = +val[1];
-			}
-	
-			data.from = val[0] && +val[0];
-			data.to = val[1] && +val[1];
-		}
-	
+
 		// get config from options
 		this.options = $.extend({
 			type: "single",
 			isInterval: (options.type == 'double'),
-
+			is_range: false,
+			range_value: null, 
 			min: 10,
 			max: 100,
 			from: null,
@@ -169,17 +120,21 @@ USING
 			to_max: null,
 	
 			prettify: null,
-	
+			prettify_text: null,
+			
+
 			marker_frame: false,
 	
-			show_impact_line: false,
+			impact_line: false,
+			impact_line_reverse: false,
 			callback_on_dragging: true,
 
 			keyboard_step: 5,
 	
 			grid: false,
-			grid_num: 4,
-	
+			hide_minor_ticks: false,
+
+			ticks_on_line: false,
 			hide_min_max: true,
 			hide_from_to: false,
 	
@@ -195,6 +150,8 @@ USING
 			buttons_delta	: [-99, -1, 0, +1, +99],
 			buttons				: {from: {}, to: {} },
 
+			gridDistances : [1, 2, 5, 10, 20, 50, 100],
+			
 			onStart: null,
 			onChange: null,
 			onFinish: null,
@@ -203,6 +160,8 @@ USING
 	
 		this.validate();
 	
+		this.options.has_range_value = (this.options.range_value !== null);
+		
 		this.result = {
 			input: this.$cache.input,
 			slider: null,
@@ -305,37 +264,57 @@ USING
 
 			this.$cache.cont.html(base_html);
 			this.$cache.rs = this.$cache.cont.find(".irs");
-			this.$cache.min = this.$cache.cont.find(".irs-min");
-			this.$cache.max = this.$cache.cont.find(".irs-max");
-			this.$cache.from = this.$cache.cont.find(".irs-from");
-			this.$cache.to = this.$cache.cont.find(".irs-to");
-			this.$cache.single = this.$cache.cont.find(".irs-single");
-			this.$cache.bar = this.$cache.cont.find(".irs-bar");
-			this.$cache.line = this.$cache.cont.find(".irs-line");
-			this.$cache.lineLeft = this.$cache.cont.find(".irs-line-left");
-			this.$cache.grid = this.$cache.cont.find(".irs-grid");
+			this.$cache.min = this.$cache.cont.find(".marker-min");
+			this.$cache.max = this.$cache.cont.find(".marker-max");
+			this.$cache.from = this.$cache.cont.find(".marker-from");
+			this.$cache.to = this.$cache.cont.find(".marker-to");
+			this.$cache.single = this.$cache.cont.find(".marker-single");
+			this.$cache.bar = this.$cache.cont.find(".bar");
+			this.$cache.line = this.$cache.cont.find(".line");
+			this.$cache.lineLeft = this.$cache.cont.find(".line-left");
+			this.$cache.grid = this.$cache.cont.find(".grid");
 
 			if (this.options.type === "single") {
 				this.$cache.cont.append(single_html);
 				this.$cache.s_single = this.$cache.cont.find(".single");
-				this.$cache.from[0].style.visibility = "hidden";
-				this.$cache.to[0].style.visibility = "hidden";
+				this.$cache.from.css('visibility', 'hidden');
+				this.$cache.to.css('visibility', 'hidden');
 				this.$cache.lineLeft.remove();
 			} else {
-				this.$cache.cont.append(double_html);
+				//Add from and to slider
+				if (this.options.is_range){
+					if (this.options.has_range_value){
+						this.$cache.cont.append(range_value_html);
+						this.$cache.s_range = this.$cache.cont.find(".range-value");
+					}
+					else {
+						this.$cache.cont.append(range_html);
+					}
+				}
+				else 
+					this.$cache.cont.append(double_html);
 				this.$cache.s_from = this.$cache.cont.find(".from");
 				this.$cache.s_to = this.$cache.cont.find(".to");
 	
-				if (this.options.show_impact_line)
-					this.$cache.line.css('background-color', 'red');						
-				else
-					this.$cache.lineLeft.remove();
+				//Change class-name for the line, bar, and (first) grid if it is a range-slider
+				if (this.options.is_range){
+					var className = 'range' + (this.options.has_range_value ? ' range-value' : '');
+					this.$cache.line.addClass(className); 
+					this.$cache.bar.addClass(className); 
+					this.$cache.grid.addClass(className); 
+				}
+				
+				//Add classs if it is a (reverse) impact-line
+				if (this.options.impact_line)
+					this.$cache.cont.addClass("impact-line");
 
+				if (this.options.impact_line_reverse)
+					this.$cache.cont.addClass("impact-line-reverse");
 			}
 			if (this.options.hide_from_to) {
-				this.$cache.from[0].style.display = "none";
-				this.$cache.to[0].style.display = "none";
-				this.$cache.single[0].style.display = "none";
+				this.$cache.from.hide(); 
+				this.$cache.to.hide(); 
+				this.$cache.single.hide(); 
 			}
 
 			//Add class to set border and stick on to- from and current-label
@@ -365,27 +344,24 @@ USING
 			this.currentGridContainer = null;
 			if (this.options.grid){
 				this.appendGrid();
-				this.appendGrid();
-				this.appendGrid();
 			} else {
 				this.$cache.grid.remove();
 			}
 
 			if (this.options.disable) {
-				this.appendDisableMask();
-				this.$cache.input[0].disabled = true;
-			} else {
-				this.$cache.cont.removeClass("irs-disabled");
-				this.$cache.input[0].disabled = false;
-				this.bindEvents();
-			}
+				this.$cache.cont.addClass("disabled");
+				this.$cache.input.prop('disabled', true); 
+			} else 
+				if (this.options.read_only){
+					this.$cache.cont.addClass("read-only");
+					this.$cache.input.prop('disabled', true); 
+				} else {
+					this.$cache.cont.addClass("active");
+					this.$cache.input.prop('disabled', false);
+					this.bindEvents();
+				}
 		},
 
-		//appendDisableMask
-		appendDisableMask: function () {
-			this.$cache.cont.append(disable_html);
-			this.$cache.cont.addClass("irs-disabled");
-		},
 
 		//remove
 		remove: function () {
@@ -705,8 +681,8 @@ USING
 				return;
 			}
 			if (this.options.hide_min_max) {
-				this.$cache.min[0].style.display = "none";
-				this.$cache.max[0].style.display = "none";
+				this.$cache.min.hide(); 
+				this.$cache.max.hide(); 
 				return;
 			}
 			this.$cache.min.html(this.decorate(this._prettify(this.options.min), this.options.min));
@@ -754,6 +730,20 @@ USING
 			this.drawHandles(); 
 		},
 
+		setRangeValue: function( value, color ) {
+			value = Math.min( this.options.max, value );
+			value = Math.max( this.options.min, value );
+
+			this.options.range_value = value;
+
+			this.target = "base";
+			this.is_key = true;
+			this.calc();
+			this.force_redraw = true;
+			this.drawHandles(); 
+
+			this.$cache.s_range.css('color', color || 'black');				
+		},
 
 		//calc
 		calc: function (update) { 
@@ -804,6 +794,12 @@ USING
 					this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f));
 					this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
 					this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
+
+					if (this.options.has_range_value){ //HER
+						var r = (this.options.range_value - this.options.min) / w,
+								p_range_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
+						this.coords.p_range_value = this.toFixed(p_range_value_real / 100 * real_width);
+					}
 
 					this.target = null;
 					break;
@@ -1001,33 +997,36 @@ USING
 
 				this.drawLabels();
 
-				this.$cache.bar[0].style.left = this.coords.p_bar_x + "%";
-				this.$cache.bar[0].style.width = this.coords.p_bar_w + "%";
+				this.$cache.bar.css('left', this.coords.p_bar_x + "%"); 
+				this.$cache.bar.css('width', this.coords.p_bar_w + "%"); 
 
 				if (this.options.type === "single") {
-					this.$cache.s_single[0].style.left = this.coords.p_single + "%";
-					this.$cache.single[0].style.left = this.labels.p_single_left + "%";
+					this.$cache.s_single.css('left', this.coords.p_single + "%");		
+					this.$cache.single.css('left', this.labels.p_single_left + "%"); 
 
 					this.$cache.input.prop("value", this.result.from);
 					this.$cache.input.data("from", this.result.from);
 
 				} else {
-					this.$cache.s_from[0].style.left = this.coords.p_from + "%";
-					this.$cache.s_to[0].style.left = this.coords.p_to + "%";
+					this.$cache.s_from.css('left', this.coords.p_from + "%"); 
+					this.$cache.s_to.css('left', this.coords.p_to + "%"); 
+
+					if (this.options.has_range_value){
+						this.$cache.s_range.css('left', this.coords.p_range_value + "%");		
+					}
 
 					if (this.$cache.lineLeft){
-						this.$cache.lineLeft[0].style.left = 0;
-						this.$cache.lineLeft[0].style.width = this.coords.p_bar_x + "%";
+						this.$cache.lineLeft.css({left: 0, width: this.coords.p_bar_x + "%"});
 					}
 	 
 					if (this.old_from !== this.result.from || this.force_redraw) {
-						this.$cache.from[0].style.left = this.labels.p_from_left + "%";
+						this.$cache.from.css('left', this.labels.p_from_left + "%"); 
 					}
 					if (this.old_to !== this.result.to || this.force_redraw) {
-						this.$cache.to[0].style.left = this.labels.p_to_left + "%";
+						this.$cache.to.css('left', this.labels.p_to_left + "%"); 
 					}
 
-					this.$cache.single[0].style.left = this.labels.p_single_left + "%";
+					this.$cache.single.css('left', this.labels.p_single_left + "%"); 
 					this.$cache.input.prop("value", this.result.from + ";" + this.result.to);
 					this.$cache.input.data("from", this.result.from);
 					this.$cache.input.data("to", this.result.to);
@@ -1080,15 +1079,15 @@ USING
 				this.calcLabels();
 
 				if (this.labels.p_single_left < this.labels.p_min + 1) {
-					this.$cache.min[0].style.visibility = "hidden";
+					this.$cache.min.css('visibility', 'hidden'); 
 				} else {
-					this.$cache.min[0].style.visibility = "visible";
+					this.$cache.min.css('visibility', 'visible'); //[0].style.visibility = "visible";
 				}
 
 				if (this.labels.p_single_left + this.labels.p_single > 100 - this.labels.p_max - 1) {
-					this.$cache.max[0].style.visibility = "hidden";
+					this.$cache.max.css('visibility', 'hidden'); 
 				} else {
-					this.$cache.max[0].style.visibility = "visible";
+					this.$cache.max.css('visibility', 'visible'); 
 				}
 
 		 } else {
@@ -1115,35 +1114,35 @@ USING
 				max = Math.max(single_left, to_left);
 
 				if (this.labels.p_from_left + this.labels.p_from >= this.labels.p_to_left) {
-					this.$cache.from[0].style.visibility = "hidden";
-					this.$cache.to[0].style.visibility = "hidden";
-					this.$cache.single[0].style.visibility = "visible";
+					this.$cache.from.css('visibility', 'hidden'); 
+					this.$cache.to.css('visibility', 'hidden'); 
+					this.$cache.single.css('visibility', 'visible'); 
 
 					if (this.result.from === this.result.to) {
-						this.$cache.from[0].style.visibility = "visible";
-						this.$cache.single[0].style.visibility = "hidden";
+						this.$cache.from.css('visibility', 'visible'); 
+						this.$cache.single.css('visibility', 'hidden'); 
 						max = to_left;
 					} else {
-						this.$cache.from[0].style.visibility = "hidden";
-						this.$cache.single[0].style.visibility = "visible";
+						this.$cache.from.css('visibility', 'hidden'); 
+						this.$cache.single.css('visibility', 'visible'); 
 						max = Math.max(single_left, to_left);
 					}
 				} else {
-					this.$cache.from[0].style.visibility = "visible";
-					this.$cache.to[0].style.visibility = "visible";
-					this.$cache.single[0].style.visibility = "hidden";
+					this.$cache.from.css('visibility', 'visible'); 
+					this.$cache.to.css('visibility', 'visible'); 
+					this.$cache.single.css('visibility', 'hidden'); 
 				}
 
 				if (min < this.labels.p_min + 1) {
-					this.$cache.min[0].style.visibility = "hidden";
+					this.$cache.min.css('visibility', 'hidden'); 
 				} else {
-					this.$cache.min[0].style.visibility = "visible";
+					this.$cache.min.css('visibility', 'visible'); 
 				}
 
 				if (max > 100 - this.labels.p_max - 1) {
-					this.$cache.max[0].style.visibility = "hidden";
+					this.$cache.max.css('visibility', 'hidden'); 
 				} else {
-					this.$cache.max[0].style.visibility = "visible";
+					this.$cache.max.css('visibility', 'visible'); 
 				}
 
 			}
@@ -1155,7 +1154,7 @@ USING
 
 		//toggleInput
 		toggleInput: function () {
-			this.$cache.input.toggleClass("irs-hidden-input");
+			this.$cache.input.toggleClass("hidden-input");
 		},
 
 		//calcPercent
@@ -1289,6 +1288,11 @@ USING
 			return (this.options.prettify && typeof this.options.prettify === "function") ? this.options.prettify(num) : num; 
 		},
 
+		//_prettify_text
+		_prettify_text: function (num) {
+			return (this.options.prettify_text && typeof this.options.prettify_text === "function") ? this.options.prettify_text(num) : num; 
+		},
+
 		//checkEdges
 		checkEdges: function (left, width) {
 			if (left < 0) {
@@ -1317,7 +1321,6 @@ USING
 			if (typeof o.to_max === "string") o.to_max = +o.to_max;
 
 			if (typeof o.keyboard_step === "string") o.keyboard_step = +o.keyboard_step;
-			if (typeof o.grid_num === "string") o.grid_num = +o.grid_num;
 
 			if (o.max <= o.min) {
 				if (o.min) {
@@ -1430,14 +1433,14 @@ USING
 			if (this.currentGridContainer){
 				this.totalGridContainerTop += this.currentGridContainer.height();  
 				this.currentGridContainer = 
-					$('<span class="irs-grid"></span>').insertAfter( this.currentGridContainer );
+					$('<span class="grid"></span>').insertAfter( this.currentGridContainer );
 				this.currentGridContainer.css('top', this.totalGridContainerTop+'px');
 			}
 			else {
 				this.currentGridContainer = this.$cache.grid;
 				this.totalGridContainerTop = this.currentGridContainer.position().top; 
 			}
-			this.$cache.grid = this.$cache.cont.find(".irs-grid"); 
+			this.$cache.grid = this.$cache.cont.find(".grid"); 
 
 
 			return this.currentGridContainer;
@@ -1450,7 +1453,7 @@ USING
 				return;
 			}
 			options = $.extend( {small: false, color: ''}, options );
-			var result = $('<span class="irs-grid-pol" style="left:' + left + '%"></span>');
+			var result = $('<span class="grid-pol" style="left:' + left + '%"></span>');
 			
 			if (options.small)
 				result.addClass('small');  
@@ -1464,12 +1467,18 @@ USING
 		},
 
 		//appendText
-		appendText: function( left, text, options ){
+		appendText: function( left, value, options ){
 			if (!this.currentGridContainer){
 				return;
 			}
 			options = $.extend( {color: ''}, options );
-			var result = $('<span class="irs-grid-text" style="background-color:none; left: ' + left + '%">' + text + '</span>');
+			var text = this._prettify_text( value );
+			if (this.options.decorate_text)
+			  text =	(this.options.prefix ? this.options.prefix : '') +
+								text +
+								(this.options.postfix ? this.options.postfix : '');
+
+			var result = $('<span class="grid-text" style="background-color:none; left: ' + left + '%">' + text + '</span>');
 			result.appendTo( this.currentGridContainer );
 
 			//Center the label
@@ -1477,8 +1486,8 @@ USING
 
 			result.css( 'margin-left', -textWidthPercent/2 + '%' );
 
-			if (options.clickable){
-				var value = options.click_value !== undefined ? options.click_value : parseFloat( text );
+			if (options.clickable && !this.options.disable && !this.options.read_only){
+				value = options.click_value !== undefined ? options.click_value : parseFloat( text );
 				result
 					.data('irs-slider-value', value)
 					.on("click.irs_" + this.plugin_count, this.textClick.bind(this) )
@@ -1496,59 +1505,92 @@ USING
 		
 		},
 
-		
-		//appendGrid
+		//getTextWidth
+		getTextWidth: function( value, options ){
+			var 
+				elem = this.appendText( 0, value, options ),
+				result = elem.outerWidth(false);
+			elem.remove();
+			return result;
+		},
+
+		//appendGrid - simple call appendStandardGrid. Can be overwriten in decending classes
 		appendGrid: function () { 
 			if (!this.options.grid) {	return;	}
+			this.appendStandardGrid();
+		},
 
-			var o = this.options,	i, z,
-			total = o.max - o.min,
-			big_num = o.grid_num,
-			big_p = 0,
-			big_w = 0,
-			small_max = 4,
-			local_small_max,
-			small_p,
-			small_w = 0,
-			result;
+		//appendStandardGrid
+		appendStandardGrid: function () { 
+
+			var o = this.options,					
+					total = o.max - o.min,
+					gridContainerWidth = this.$cache.grid.outerWidth(false),
+					gridDistanceIndex = 0,
+					gridDistanceStep = o.gridDistances[gridDistanceIndex], // = number of steps between each tick
+					stepPx = o.step*gridContainerWidth/total, 
+					stepP = this.toFixed(o.step / (total / 100)),
+					value = o.min,
+					maxTextWidth = 0,
+					valueP = 0;
 		
 			this.appendGridContainer();
 			this.calcGridMargin();
 
-			big_num = total / o.step;
-			big_p = this.toFixed(o.step / (total / 100));
 
-			if (big_num > 4) { small_max = 3; }
-			if (big_num > 7) { small_max = 2; }
-			if (big_num > 14) { small_max = 1; }
-			if (big_num > 28) { small_max = 0; }
+			//Increse grid-distance until the space between two ticks are more than 4px 
+			while ( (stepPx*gridDistanceStep) <= 4){
+				gridDistanceIndex++;
+				if (gridDistanceIndex < o.gridDistances.length)
+				  gridDistanceStep = o.gridDistances[gridDistanceIndex];
+				else
+					gridDistanceStep = gridDistanceStep*2;
+			}
+			var tickDistanceNum = gridDistanceStep*o.step;	//The numerical distance between each ticks
+			var tickDistancePx = gridDistanceStep*stepPx;		//The pixel distance between each ticks
 
-			for (i = 0; i < big_num + 1; i++) {
-				local_small_max = small_max;
 
-				big_w = this.toFixed(big_p * i);
-				if (big_w > 100) {
-					big_w = 100;
-					local_small_max -= 2;
-					if (local_small_max < 0) {
-						local_small_max = 0;
+			if (!o.major_ticks){
+			  //Calculate automatic distances between major ticks - TODO
+
+				//Find widest text/label
+				value = o.min;
+				while (value <= o.max){				
+					if (value % tickDistanceNum === 0){
+						maxTextWidth = Math.max( maxTextWidth, this.getTextWidth( value ) );
 					}
+					value += o.step;
 				}
+				maxTextWidth += 6; //Adding min space between text/labels
 
-				small_p = (big_w - (big_p * (i - 1))) / (local_small_max + 1);
-
-				for (z = 1; z <= local_small_max; z++) { 
-					if (big_w === 0) { break; }
-					small_w = this.toFixed(big_w - (small_p * z));
-					this.appendTick( small_w, { small:true } );
+				//Find ticks between each major tick
+				gridDistanceIndex = 0;
+				o.major_ticks = o.gridDistances[gridDistanceIndex];
+				while (o.major_ticks*tickDistancePx < maxTextWidth){
+					gridDistanceIndex++;
+					if (gridDistanceIndex < o.gridDistances.length)
+					  o.major_ticks = o.gridDistances[gridDistanceIndex];
+					else
+						o.major_ticks = o.major_ticks*2;
 				}
-
-				this.appendTick( big_w, { small:false } );
-
-				result = this.calcReal(big_w);
-				result = this._prettify(result);
-
-				this.appendText( big_w, result, {clickable:true} );
+			}
+			
+			var majorTickDistanceNum = tickDistanceNum*o.major_ticks;
+			value = o.min;			
+			while (value <= o.max){
+				if (value % tickDistanceNum === 0){
+				  if (value % majorTickDistanceNum === 0){
+				    //add major tick and text/label
+						this.appendTick( valueP );
+						this.appendText( valueP, value, {clickable:true} );
+				  }
+					else
+						if (!this.options.hide_minor_ticks)
+							//Add minor tick
+							this.appendTick( valueP, { small:true } );
+				}				
+				value += o.step;
+				valueP += stepP;
 			}
 		},
 
