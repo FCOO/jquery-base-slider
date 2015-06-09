@@ -169,6 +169,12 @@ Compared with the original slider there are the following new features
             <td>If false the callback-function is only called when dragging the sliding is finish.</td>
         </tr>
         <tr>
+            <td>callback_delay</td>
+            <td>500</td>
+            <td>number</td>
+            <td>If <code>callback_on_dragging</code> is false the <code>callback</code> is called when the slider has been on the same tick for <code>callback_delay</code> milliseconds. Set to zero to avoid any callback before mouseup-event</td>
+        </tr>
+        <tr>
             <td>grid</td>
             <td>false</td>
             <td>boolean</td>
@@ -180,17 +186,23 @@ Compared with the original slider there are the following new features
             <td>number</td>
             <td>Number of grid units.</td>
         </tr>
-	 			<tr>
-            <td>impact_line</td>
+		<tr>
+	         <td>impact_line</td>
             <td>false</td>
             <td>boolean</td>
-            <td>The line on a double slider is colored as<br>green-[slider]-yellow-[slider]-red</td>
+            <td>The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red</td>
         </tr>
-	 			<tr>
+	 	<tr>
             <td>impact_line_reverse</td>
             <td>false</td>
             <td>boolean</td>
             <td>The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green</td>
+        </tr>
+	 	<tr>
+            <td>hide_bar_color</td>
+            <td>false</td>
+            <td>boolean</td>
+            <td>The bar gets same color as the line</td>
         </tr>
         
 		<tr>
@@ -261,6 +273,12 @@ Compared with the original slider there are the following new features
             <td>Locks slider and makes it inactive.</td>
         </tr>
 
+        <tr>
+            <td>callback</td>
+            <td>null</td>
+            <td>function</td>
+            <td>Is called when the <code>from</code> or <code>to</code> value are changed.</td>
+        </tr>
         <tr>
             <td>onStart</td>
             <td>null</td>

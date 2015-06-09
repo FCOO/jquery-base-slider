@@ -21,7 +21,7 @@ USING
 
   // Template
 	var base_html =
-		'<span class="irs">' +
+		'<span class="base-slider">' +
 			'<span class="line" tabindex="-1">'+
 				'<span class="line-left"></span>'+
 			'</span>' +
@@ -48,7 +48,7 @@ USING
 	var range_value_html =
 		'<span class="range-slider range-value from"></span>' +
 		'<span class="range-slider range-value to"></span>' +
-		'<span class="range-slider range-value"></span>';
+		'<span class="range-slider range-value value"></span>';
 
 	// Core
 	var BaseSlider = function (input, options, plugin_count) {
@@ -127,10 +127,11 @@ USING
 	
 			impact_line: false,
 			impact_line_reverse: false,
-			callback_on_dragging: true,
+			hide_bar_color: false,
 
-			keyboard_step: 5,
-	
+			callback_on_dragging: true,
+			callback_delay: 500,
+
 			grid: false,
 			hide_minor_ticks: false,
 
@@ -161,7 +162,9 @@ USING
 		this.validate();
 	
 		this.options.has_range_value = (this.options.range_value !== null);
-		
+
+		this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
+
 		this.result = {
 			input: this.$cache.input,
 			slider: null,
@@ -256,14 +259,14 @@ USING
 
 		//append
 		append: function () {
-			var container_html = '<span class="irs js-irs-' + this.plugin_count + '"></span>';
+			var container_html = '<span class="base-slider js-base-slider-' + this.plugin_count + '"></span>';
 			this.$cache.input.before(container_html);
 			this.$cache.input.prop("readonly", true);
 			this.$cache.cont = this.$cache.input.prev();
 			this.result.slider = this.$cache.cont;
 
 			this.$cache.cont.html(base_html);
-			this.$cache.rs = this.$cache.cont.find(".irs");
+			this.$cache.rs = this.$cache.cont.find(".base-slider");
 			this.$cache.min = this.$cache.cont.find(".marker-min");
 			this.$cache.max = this.$cache.cont.find(".marker-max");
 			this.$cache.from = this.$cache.cont.find(".marker-from");
@@ -285,7 +288,7 @@ USING
 				if (this.options.is_range){
 					if (this.options.has_range_value){
 						this.$cache.cont.append(range_value_html);
-						this.$cache.s_range = this.$cache.cont.find(".range-value");
+						this.$cache.s_range = this.$cache.cont.find(".range-value.value"); 
 					}
 					else {
 						this.$cache.cont.append(range_html);
@@ -311,11 +314,18 @@ USING
 				if (this.options.impact_line_reverse)
 					this.$cache.cont.addClass("impact-line-reverse");
 			}
+
 			if (this.options.hide_from_to) {
 				this.$cache.from.hide(); 
 				this.$cache.to.hide(); 
 				this.$cache.single.hide(); 
 			}
+
+
+			//Add class to set bar color same as line
+			if (this.options.hide_bar_color)
+				this.$cache.bar.addClass('hide-bar-color');
+			
 
 			//Add class to set border and stick on to- from and current-label
 			if (this.options.marker_frame)
@@ -451,7 +461,7 @@ USING
 		onFunc: function(func){	if (func && typeof func === "function") func(this.result); },
 
 		//onCallback
-		onCallback: function(){
+		onCallback: function(){ 
 			this.lastResult = this.lastResult  || {};
 			if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {			  
 				if (this.options.context)
@@ -463,27 +473,41 @@ USING
 		},			
 			
 		//onStart
-		onStart: function(){
+		onStart: function(){ 
 			this.onCallback();
 			this.onFunc(this.options.onStart);
 		},						
 
 		//onChange
-		onChange: function(){
+		onChange: function(){ 
+			//If it is dragging and no callback_on_dragging => set timeout to call callback after XX ms if the slider hasn't moved
+			if (this.dragging && !this.options.callback_on_dragging && this.options.callback_delay){
+				if (this.delayTimeout)
+					window.clearTimeout(this.delayTimeout);
+				var _this = this;
+				this.delayTimeout = window.setTimeout( function () {
+															_this.onCallback();
+														}, this.options.callback_delay);
+			}
+
+
 			if ( this.options.callback_on_dragging || (!this.is_repeating_click && !this.dragging) )
 				this.onCallback();
 			this.onFunc(this.options.onChange);
 		},		 
 
 		//onFinish
-		onFinish: function(){
+		onFinish: function(){ 
+			if (this.delayTimeout)
+				window.clearTimeout(this.delayTimeout);
+
 			if (!this.is_repeating_click)
 				this.onCallback();
 			this.onFunc(this.options.onFinish);
 		},		 
 
 		//onUpdate
-		onUpdate: function(){
+		onUpdate: function(){ 
 			this.onFunc(this.options.onUpdate);
 		},		 
 
@@ -517,7 +541,7 @@ USING
 
 		//textClick - click on label 
 		textClick: function( e ){ 
-			var value = $(e.target).data('irs-slider-value');
+			var value = $(e.target).data('base-slider-value');
 			if (!this.options.isInterval){
 				this.setValue( value );
 				return;
@@ -662,17 +686,20 @@ USING
 
 		// Move by key beta
 		// TODO: refactor than have plenty of time
-		moveByKey: function (right) {
+		moveByKey: function (right) { 
 			var p = this.coords.p_pointer;
 			if (right) {
-				p += this.options.keyboard_step;
+				p += this.options.p_keyboard_step;
 			} else {
-				p -= this.options.keyboard_step;
+				p -= this.options.p_keyboard_step;
 			}
 			this.coords.x_pointer = this.toFixed(this.coords.w_rs / 100 * p);
 			this.is_key = true;
 			this.calc();
-			
+
+			this.force_redraw = true;
+			this.drawHandles(); 
+	
 		},
 
 		//setMinMax
@@ -795,7 +822,7 @@ USING
 					this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
 					this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
-					if (this.options.has_range_value){ //HER
+					if (this.options.has_range_value){ 
 						var r = (this.options.range_value - this.options.min) / w,
 								p_range_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
 						this.coords.p_range_value = this.toFixed(p_range_value_real / 100 * real_width);
@@ -1320,8 +1347,6 @@ USING
 			if (typeof o.to_min === "string") o.to_min = +o.to_min;
 			if (typeof o.to_max === "string") o.to_max = +o.to_max;
 
-			if (typeof o.keyboard_step === "string") o.keyboard_step = +o.keyboard_step;
-
 			if (o.max <= o.min) {
 				if (o.min) {
 					o.max = o.min * 2;
@@ -1342,8 +1367,6 @@ USING
 			if (o.type === "double" && o.from > o.to) { o.from = o.to; }
 
 			if (typeof o.step !== "number" || isNaN(o.step) || !o.step || o.step < 0) { o.step = 1; }
-
-			if (typeof o.keyboard_step !== "number" || isNaN(o.keyboard_step) || !o.keyboard_step || o.keyboard_step < 0) { o.keyboard_step = 5; }
 
 			if (o.from_min && o.from < o.from_min) { o.from = o.from_min; }
 
@@ -1489,7 +1512,7 @@ USING
 			if (options.clickable && !this.options.disable && !this.options.read_only){
 				value = options.click_value !== undefined ? options.click_value : parseFloat( text );
 				result
-					.data('irs-slider-value', value)
+					.data('base-slider-value', value)
 					.on("click.irs_" + this.plugin_count, this.textClick.bind(this) )
 					.addClass('clickable');
 			}

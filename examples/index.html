@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="cl" style="font-size: 16px">
+<html lang="cl" style="font-size: 32px">
  <head>
   <meta charset="UTF-8">
   <meta name="Generator" content="EditPlus®">
@@ -21,11 +21,11 @@
 		
 	</head>
 	<body style="margin:0;padding:0;">
-		<div style="position: relative; width:400px;">
-			<div style="border:1px solid red; padding:6px; height:60px">
+		<div style="position: relative; width:25rem;">
+			<div style="border:1px solid red; padding:0.5rem; height:4rem">
 				<input type="text" id="example_01" />
 			</div>
-			<div style="border:1px solid red; padding:6px; height:60px">
+			<div style="border:1px solid red; padding:0rem; height:4rem">
 				<input type="text" id="example_02" />
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 <button id="btnPrevTo">btnPrevTo</button>	
 <button id="btnNextTo">btnNextTo</button>	
 <br>
-	<div id="callback" style="border:1px solid black; height:60px; width:300px"></div>
+	<div id="callback" style="border:1px solid black; height:4rem; width:19rem"></div>
 <br>
 
 	
@@ -61,26 +61,29 @@
 			from: 0, 
 			to:24,
 			grid: true,
-//hide_minor_ticks: true,
+			//hide_minor_ticks: true,
 			step: 1,
 
-read_only: false,
-postfix: ' &deg;C',
-decorate_both: false,
-decorate_text: true,
-impact_line: false,
-impact_line_reverse: true,
+			read_only: false,
+			postfix: ' &deg;C',
+			decorate_both: false,
+			decorate_text: true,
+			impact_line: false,
+			impact_line_reverse: false,
+			//hide_bar_color: true,
+			marker_frame: true,
 			hide_min_max: true,
 			hide_from_to: false,
 			ticks_on_line: false,
 			callback_on_dragging: false,
+			//callback_delay: 0,
 			callback : function(obj){
 				$('#callback').html(Math.random()+'<br>'+obj.from+'->'+obj.to); 
 			}
 
 		});		
 
-var test =	$("#example_02").baseSlider({
+var slider2 =	$("#example_02").baseSlider({
 	    type: "double",
 			min: -48,
 			max: +48,
@@ -89,15 +92,13 @@ var test =	$("#example_02").baseSlider({
 			grid: true,
 			step: 1,
 			is_range:true, 
-			range_value: 24,
+			range_value: 20,
 			ticks_on_line: true,
 			read_only: true, 
-			//force_edges: true,
 			hide_min_max: true,
 			hide_from_to: true,
-			//callback_on_dragging: false,
 	});
-	test.data('baseSlider').setRangeValue(24, 'green');
+	slider2.data('baseSlider').setRangeValue(21, 'green');
 
 /*
 	$("#example_03").timeSlider({
