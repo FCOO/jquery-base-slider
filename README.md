@@ -14,14 +14,15 @@ In jquery-base-slider some of the original options have been removed and some ne
 ## New features
 Compared with the original slider there are the following new features
 1. The css is created using SASS
+2. Four types of sliders (`default`, `small`, `round` and `range`)
 2. The slider is resizeable using only `rem` as size unit
-3. Automatic placment of minor ticks, major ticks and text/label
+3. Automatic placement of minor ticks, major ticks and text/label
 3. The slider will *not* recalculate grid when the container changes size
 3. Possible to add more than one grid
 4. Adding buttons to move from- and/or to-slider to previous, next, first or last value 
 5. Click on text will move the slider
 6. All settings is set using `options` No settings using `data-..` attribute on the `input`-element
-7. New options: `is_range`, where the slider displays a fixed range. 
+7. New options: `pin_value`, = a value where a small pin is placed. NB: Only when `options.slider == 'range'`. 
 
 
 
@@ -46,15 +47,16 @@ Compared with the original slider there are the following new features
             <td>type</td>
             <td>"single"</td>
             <td>string</td>
-            <td>Choose slider type, could be <code>single</code> - for one handle, or <code>double</code> for two handles</td>
+            <td>Choose single or double, could be <code>single</code> - for one handle, or <code>double</code> for two handles</td>
         </tr>
         <tr>
-            <td>is_range</td>
-            <td>false</td>
-            <td>boolean</td>
-            <td>Display the sliders as range instead of a draggable slider. Only for <code>type="double"</code></td>
+            <td>slider</td>
+            <td>"default"</td>
+            <td>string</td>
+            <td>Choose slider type, could be <code>default</code>, <code>small</code>, <code>round</code>, or <code>range</code>					
+		</td>
         </tr>
-
+   
         <tr>
             <td>min</td>
             <td>10</td>
@@ -80,10 +82,10 @@ Compared with the original slider there are the following new features
             <td>Set start position for right handle</td>
         </tr>
         <tr>
-            <td>range_value</td>
+            <td>pin_value</td>
             <td>null</td>
             <td>number</td>
-            <td>The value for the range-slider. Only when <code>is_range = true </code><br>Use <code>setRangeValue( value )</code> to change the value dynamical</td>
+            <td>The value for the pin. Only when <code>options.slider = 'range'</code><br>Use <code>setPin( value [, color] )</code> to change the value dynamical</td>
         </tr>
 
         <tr>

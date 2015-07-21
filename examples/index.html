@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="cl" style="font-size: 16px">
+<html lang="cl" style="font-size: 100%">
  <head>
   <meta charset="UTF-8">
   <meta name="Generator" content="EditPlus®">
@@ -22,13 +22,32 @@
 	</head>
 	<body style="margin:0;padding:0;">
 		<div style="position: relative; width:25rem;">
+			<!-- 
 			<div style="border:1px solid red; padding:0.5rem; height:4rem">
 				<input type="text" id="example_01" />
 			</div>
 			<div style="border:1px solid red; padding:0rem; height:4rem">
 				<input type="text" id="example_02" />
 			</div>
+ -->
+			<div style="border:1px solid red; padding:0rem; height:4rem">
+				<input type="text" id="slider_default" />
+			</div>
+			<div style="border:1px solid red; padding:0rem; height:4rem">
+				<input type="text" id="slider_small" />
+			</div>
+			<div style="border:1px solid red; padding:0rem; height:4rem">
+				<input type="text" id="slider_round" />
+			</div>
+			<div style="border:1px solid red; padding:0rem; height:4rem">
+				<input type="text" id="slider_range" />
+			</div>
+		
+		
 		</div>
+
+
+
 <button id="btnPrevFrom">btnPrevFrom</button>	
 <button id="btnNextFrom">btnNextFrom</button>	
 <button id="btnPrevTo">btnPrevTo</button>	
@@ -43,6 +62,7 @@
 	
 	
 	<script type="text/javascript">
+/*
 		$("#example_01").baseSlider({
 	    type: "double",
 			buttons: {
@@ -73,8 +93,10 @@
 			//hide_bar_color: true,
 			marker_frame: true,
 			hide_min_max: true,
-			hide_from_to: false,
+			hide_from_to: true,
 			ticks_on_line: false,
+
+			
 			callback_on_dragging: false,
 			//callback_delay: 0,
 			callback : function(obj){
@@ -85,6 +107,7 @@
 
 var slider2 =	$("#example_02").baseSlider({
 	    type: "double",
+			slider: 'range',
 			min: -48,
 			max: +48,
 			from: -10, 
@@ -94,22 +117,45 @@ var slider2 =	$("#example_02").baseSlider({
 			is_range:true, 
 			range_value: 20,
 			ticks_on_line: true,
-			read_only: true, 
+			//read_only: true, 
 			hide_min_max: true,
-			hide_from_to: true,
+			hide_from_to: false,
 	});
-	slider2.data('baseSlider').setRangeValue(21, 'green');
-
-/*
-	$("#example_03").timeSlider({
-	    type: "double",
-			format: { date:'YMD', time:'24', timezone:'local', showUTC: true, showRelative:true },
-			min: -24,
-			max: +48,
-			from: 0, 
-			to:24,
-	});
+	slider2.data('baseSlider').setPin(21, 'green');
 */
+	var sliderList = ['default','small','round','range'];
+	for (var i=0; i<sliderList.length; i++ ){
+		var nextSlider = sliderList[i];
+		var theSlider = $("#slider_"+nextSlider).baseSlider({
+	    type: "double",
+			slider: nextSlider,
+			min: -48,
+			max: +48,
+			from: -10, 
+			to:24,
+			grid: true,
+			step: 1,
+			//is_range:true, 
+			//range_value: 20,
+			ticks_on_line: true,
+			//read_only: true, 
+			impact_line: false,
+			impact_line_reverse: false,
+			//hide_bar_color: true,
+			marker_frame: true,
+
+			hide_min_max: true,
+			hide_from_to: false,
+
+			pin_value: 20
+	});
+
+		theSlider.data('baseSlider').setPin(21, 'green');
+
+	}
+	
+
+
 	</script>
 	
 	

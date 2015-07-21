@@ -21,7 +21,7 @@ USING
 
   // Template
 	var base_html =
-		'<span class="base-slider">' +
+		'<span class="bs">' + 
 			'<span class="line" tabindex="-1">'+
 				'<span class="line-left"></span>'+
 			'</span>' +
@@ -41,14 +41,8 @@ USING
 		'<span class="slider from"></span>' +
 		'<span class="slider to"></span>';
 
-	var range_html =
-		'<span class="range-slider from"></span>' +
-		'<span class="range-slider to"></span>';
-
-	var range_value_html =
-		'<span class="range-slider range-value from"></span>' +
-		'<span class="range-slider range-value to"></span>' +
-		'<span class="range-slider range-value value"></span>';
+	var pin_html =
+		'<span class="slider pin"></span>';
 
 	// Core
 	var BaseSlider = function (input, options, plugin_count) {
@@ -83,7 +77,7 @@ USING
 			bar: null,
 			line: null,
 			s_single: null,
-			s_range: null,
+			s_pin: null,
 			s_from: null,
 			s_to: null,
 			grid: null,
@@ -97,9 +91,11 @@ USING
 		// get config from options
 		this.options = $.extend({
 			type: "single",
+			slider: "default",
 			isInterval: (options.type == 'double'),
-			is_range: false,
-			range_value: null, 
+
+			pin_value: null, 
+
 			min: 10,
 			max: 100,
 			from: null,
@@ -161,7 +157,7 @@ USING
 	
 		this.validate();
 	
-		this.options.has_range_value = (this.options.range_value !== null);
+		this.options.has_pin = (this.options.slider == 'range') && (this.options.pin_value !== null);
 
 		this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
 
@@ -259,14 +255,15 @@ USING
 
 		//append
 		append: function () {
-			var container_html = '<span class="base-slider js-base-slider-' + this.plugin_count + '"></span>';
-			this.$cache.input.before(container_html);
+			this.$cache.container = $('<span class="base-slider ' + this.options.slider + ' js-base-slider-' + this.plugin_count + '"></span>'); 
+			this.$cache.input.before(this.$cache.container);
+			
 			this.$cache.input.prop("readonly", true);
 			this.$cache.cont = this.$cache.input.prev();
 			this.result.slider = this.$cache.cont;
 
 			this.$cache.cont.html(base_html);
-			this.$cache.rs = this.$cache.cont.find(".base-slider");
+			this.$cache.bs = this.$cache.cont.find(".bs");
 			this.$cache.min = this.$cache.cont.find(".marker-min");
 			this.$cache.max = this.$cache.cont.find(".marker-max");
 			this.$cache.from = this.$cache.cont.find(".marker-from");
@@ -285,28 +282,15 @@ USING
 				this.$cache.lineLeft.remove();
 			} else {
 				//Add from and to slider
-				if (this.options.is_range){
-					if (this.options.has_range_value){
-						this.$cache.cont.append(range_value_html);
-						this.$cache.s_range = this.$cache.cont.find(".range-value.value"); 
-					}
-					else {
-						this.$cache.cont.append(range_html);
-					}
-				}
-				else 
-					this.$cache.cont.append(double_html);
+				this.$cache.cont.append(double_html);
 				this.$cache.s_from = this.$cache.cont.find(".from");
 				this.$cache.s_to = this.$cache.cont.find(".to");
 	
-				//Change class-name for the line, bar, and (first) grid if it is a range-slider
-				if (this.options.is_range){
-					var className = 'range' + (this.options.has_range_value ? ' range-value' : '');
-					this.$cache.line.addClass(className); 
-					this.$cache.bar.addClass(className); 
-					this.$cache.grid.addClass(className); 
+				if (this.options.has_pin){
+					this.$cache.cont.append(pin_html);
+					this.$cache.s_pin = this.$cache.cont.find(".slider.pin"); 
 				}
-				
+
 				//Add classs if it is a (reverse) impact-line
 				if (this.options.impact_line)
 					this.$cache.cont.addClass("impact-line");
@@ -329,16 +313,20 @@ USING
 
 			//Add class to set border and stick on to- from and current-label
 			if (this.options.marker_frame)
-				this.$cache.rs.addClass('marker-frame');
+				this.$cache.container.addClass('marker-frame');
 
 			//Adjust top-position if no marker is displayed
 			if (this.options.hide_min_max && this.options.hide_from_to)
-				this.$cache.cont.addClass("no-marker");
+				this.$cache.container.addClass("no-marker");
 
 			//Adjust top-position of first grid if tick must be on the slider
 			if (this.options.ticks_on_line)
-				this.$cache.cont.addClass("ticks-on-line");
+				this.$cache.container.addClass("ticks-on-line");
 
+
+			//Speciel case: Adjust top-position of line etc. if it is a range-slider with no marker and with a pin!
+			if (this.options.has_pin)
+				this.$cache.container.addClass("has-pin");
 
 			//Append buttons
 			function getButton( id ){ return $.type( id ) === 'string' ? $('#' +  id ) : id; }
@@ -608,7 +596,7 @@ USING
 			this.is_active = true;
 			this.dragging = true;
 
-			this.coords.x_gap = this.$cache.rs.offset().left;
+			this.coords.x_gap = this.$cache.bs.offset().left;
 			this.coords.x_pointer = x - this.coords.x_gap;
 
 			this.calcPointer();
@@ -650,7 +638,7 @@ USING
 			this.current_plugin = this.plugin_count;
 			this.target = target;
 			this.is_click = true;
-			this.coords.x_gap = this.$cache.rs.offset().left;
+			this.coords.x_gap = this.$cache.bs.offset().left;
 			this.coords.x_pointer = +(x - this.coords.x_gap).toFixed();
 
 			this.force_redraw = true;
@@ -757,11 +745,14 @@ USING
 			this.drawHandles(); 
 		},
 
-		setRangeValue: function( value, color ) {
+		setPin: function( value, color ) {
+			if (this.options.slider != 'range'){
+			  return;	
+			}
 			value = Math.min( this.options.max, value );
 			value = Math.max( this.options.min, value );
 
-			this.options.range_value = value;
+			this.options.pin_value = value;
 
 			this.target = "base";
 			this.is_key = true;
@@ -769,7 +760,7 @@ USING
 			this.force_redraw = true;
 			this.drawHandles(); 
 
-			this.$cache.s_range.css('color', color || 'black');				
+			this.$cache.s_pin.css('color', color || 'black');				
 		},
 
 		//calc
@@ -778,7 +769,7 @@ USING
 				return;
 			}
 			if (update) { 
-				this.coords.w_rs = this.$cache.rs.outerWidth(false);
+				this.coords.w_rs = this.$cache.bs.outerWidth(false);
 				if (this.options.type === "single") {
 					this.coords.w_handle = this.$cache.s_single.outerWidth(false);
 				} else {
@@ -822,10 +813,10 @@ USING
 					this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
 					this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
-					if (this.options.has_range_value){ 
-						var r = (this.options.range_value - this.options.min) / w,
-								p_range_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
-						this.coords.p_range_value = this.toFixed(p_range_value_real / 100 * real_width);
+					if (this.options.has_pin){ 
+						var r = (this.options.pin_value - this.options.min) / w,
+								p_pin_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
+						this.coords.p_pin_value = this.toFixed(p_pin_value_real / 100 * real_width);
 					}
 
 					this.target = null;
@@ -991,7 +982,7 @@ USING
 
 		//drawHandles
 		drawHandles: function () { 
-			this.coords.w_rs = this.$cache.rs.outerWidth(false);
+			this.coords.w_rs = this.$cache.bs.outerWidth(false);
 
 			if (!this.coords.w_rs) {
 				return;
@@ -1038,8 +1029,8 @@ USING
 					this.$cache.s_from.css('left', this.coords.p_from + "%"); 
 					this.$cache.s_to.css('left', this.coords.p_to + "%"); 
 
-					if (this.options.has_range_value){
-						this.$cache.s_range.css('left', this.coords.p_range_value + "%");		
+					if (this.options.has_pin){
+						this.$cache.s_pin.css('left', this.coords.p_pin_value + "%");		
 					}
 
 					if (this.$cache.lineLeft){
@@ -1451,7 +1442,7 @@ USING
 		// Grid - use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
 
 		appendGridContainer: function(){ 
-			this.coords.w_rs = this.$cache.rs.outerWidth(false);
+			this.coords.w_rs = this.$cache.bs.outerWidth(false);
 			
 			if (this.currentGridContainer){
 				this.totalGridContainerTop += this.currentGridContainer.height();  
@@ -1475,11 +1466,11 @@ USING
 			if (!this.currentGridContainer){
 				return;
 			}
-			options = $.extend( {small: false, color: ''}, options );
+			options = $.extend( {minor: false, color: ''}, options );
 			var result = $('<span class="grid-pol" style="left:' + left + '%"></span>');
 			
-			if (options.small)
-				result.addClass('small');  
+			if (options.minor)
+				result.addClass('minor');  
 			if (options.color)
 				result.css('background-color', options.color);  
 			
@@ -1516,8 +1507,8 @@ USING
 					.on("click.irs_" + this.plugin_count, this.textClick.bind(this) )
 					.addClass('clickable');
 			}
-			if (options.small)
-				result.addClass('small');
+			if (options.minor)
+				result.addClass('minor');
 			if (options.italic)
 				result.addClass('italic');
 			if (options.color)
@@ -1610,7 +1601,7 @@ USING
 					else
 						if (!this.options.hide_minor_ticks)
 							//Add minor tick
-							this.appendTick( valueP, { small:true } );
+							this.appendTick( valueP, { minor:true } );
 				}				
 				value += o.step;
 				valueP += stepP;
@@ -1621,7 +1612,7 @@ USING
 		//calcGridMargin
 		calcGridMargin: function () { 
 
-			this.coords.w_rs = this.$cache.rs.outerWidth(false);
+			this.coords.w_rs = this.$cache.bs.outerWidth(false);
 			if (!this.coords.w_rs) {
 				return;
 			}
