@@ -45,7 +45,8 @@ USING
 		'<span class="slider pin"></span>';
 
 	// Core
-	var BaseSlider = function (input, options, plugin_count) {
+	//var BaseSlider = function (input, options, plugin_count) {
+	window.BaseSlider = function (input, options, plugin_count) {
 		this.VERSION = "1.0.0";
 		this.input = input;
 		this.plugin_count = plugin_count;
@@ -130,6 +131,8 @@ USING
 
 			grid: false,
 			hide_minor_ticks: false,
+			major_ticks: null, // => calculated automatic
+			major_ticks_offset: 0, 
 
 			ticks_on_line: false,
 			hide_min_max: true,
@@ -230,7 +233,7 @@ USING
 
 	};
 
-	BaseSlider.prototype = {
+	window.BaseSlider.prototype = {
 		init: function (is_update) {
 			this.coords.p_step = this.options.step / ((this.options.max - this.options.min) / 100);
 			this.target = "base";
@@ -342,7 +345,7 @@ USING
 			this.currentGridContainer = null;
 			if (this.options.grid){
 				this.appendGrid();
-			} else {
+			} else { 
 				this.$cache.grid.remove();
 			}
 
@@ -445,13 +448,24 @@ USING
 		},
 
 
+		//adjustResult - adjust this.resut before onStart,..,callback is called
+		adjustResult: function(){
+			//Nothing here but desencing class can overwrite it
+		}, 
+
 		//onFunc
-		onFunc: function(func){	if (func && typeof func === "function") func(this.result); },
+		onFunc: function(func){	
+			this.adjustResult();
+			if (func && typeof func === "function") 
+				func.call(this, this.result); 
+
+		},
 
 		//onCallback
 		onCallback: function(){ 
 			this.lastResult = this.lastResult  || {};
-			if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {			  
+			if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {
+				this.adjustResult();
 				if (this.options.context)
 					this.options.callback.call( this.options.context, this.result );
 				else
@@ -728,6 +742,7 @@ USING
 			this.calc();
 			this.force_redraw = true;
 			this.drawHandles(); 
+			this.onCallback();
 		},
 
 		//setToValue
@@ -743,6 +758,7 @@ USING
 			this.calc();
 			this.force_redraw = true;
 			this.drawHandles(); 
+			this.onCallback();
 		},
 
 		setPin: function( value, color ) {
@@ -1456,7 +1472,6 @@ USING
 			}
 			this.$cache.grid = this.$cache.cont.find(".grid"); 
 
-
 			return this.currentGridContainer;
 		},
 		
@@ -1481,27 +1496,26 @@ USING
 		},
 
 		//appendText
-		appendText: function( left, value, options ){
+		appendText: function( left, value, options ){ 
 			if (!this.currentGridContainer){
 				return;
 			}
 			options = $.extend( {color: ''}, options );
 			var text = this._prettify_text( value );
+
 			if (this.options.decorate_text)
 			  text =	(this.options.prefix ? this.options.prefix : '') +
 								text +
 								(this.options.postfix ? this.options.postfix : '');
-
 			var result = $('<span class="grid-text" style="background-color:none; left: ' + left + '%">' + text + '</span>');
 			result.appendTo( this.currentGridContainer );
 
 			//Center the label
-			var textWidthPercent = result.outerWidth(false) / this.coords.w_rs * 100;
-
-			result.css( 'margin-left', -textWidthPercent/2 + '%' );
+			result.css( 'margin-left', -result.outerWidth(false)/2 + 'px' );
 
 			if (options.clickable && !this.options.disable && !this.options.read_only){
-				value = options.click_value !== undefined ? options.click_value : parseFloat( text );
+				//value = options.click_value !== undefined ? options.click_value : parseFloat( text );
+				value = options.click_value !== undefined ? options.click_value : value;
 				result
 					.data('base-slider-value', value)
 					.on("click.irs_" + this.plugin_count, this.textClick.bind(this) )
@@ -1523,54 +1537,64 @@ USING
 		getTextWidth: function( value, options ){
 			var 
 				elem = this.appendText( 0, value, options ),
-				result = elem.outerWidth(false);
+				result = parseFloat( elem.outerWidth(false) );
 			elem.remove();
 			return result;
 		},
 
-		//appendGrid - simple call appendStandardGrid. Can be overwriten in decending classes
+		//appendGrid 
 		appendGrid: function () { 
 			if (!this.options.grid) {	return;	}
 			this.appendStandardGrid();
 		},
 
-		//appendStandardGrid
-		appendStandardGrid: function () { 
+		//appendStandardGrid - simple call _appendStandardGrid. Can be overwriten in decending classes
+		appendStandardGrid: function ( textOptions ) { 
+			this._appendStandardGrid( textOptions );
+		},
 
+		//_appendStandardGrid
+		_appendStandardGrid: function ( textOptions, tickOptions ) { 
+			this.appendGridContainer();
+			this.calcGridMargin();
+
+			
 			var o = this.options,					
 					total = o.max - o.min,
 					gridContainerWidth = this.$cache.grid.outerWidth(false),
 					gridDistanceIndex = 0,
-					gridDistanceStep = o.gridDistances[gridDistanceIndex], // = number of steps between each tick
-					stepPx = o.step*gridContainerWidth/total, 
-					stepP = this.toFixed(o.step / (total / 100)),
 					value = o.min,
 					maxTextWidth = 0,
-					valueP = 0;
-		
-			this.appendGridContainer();
-			this.calcGridMargin();
+					valueP = 0,
+					valueOffset;
+			o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
+			o.stepPx = o.step*gridContainerWidth/total; 
+			o.stepP = this.toFixed(o.step / (total / 100));
+
+			textOptions = $.extend( textOptions || {}, {clickable:true} );
+			tickOptions = tickOptions || {};
 
 
 			//Increse grid-distance until the space between two ticks are more than 4px 
-			while ( (stepPx*gridDistanceStep) <= 4){
+			while ( (o.stepPx*o.gridDistanceStep) <= 4){
 				gridDistanceIndex++;
 				if (gridDistanceIndex < o.gridDistances.length)
-				  gridDistanceStep = o.gridDistances[gridDistanceIndex];
+				  o.gridDistanceStep = o.gridDistances[gridDistanceIndex];
 				else
-					gridDistanceStep = gridDistanceStep*2;
+					o.gridDistanceStep = o.gridDistanceStep*2;
 			}
-			var tickDistanceNum = gridDistanceStep*o.step;	//The numerical distance between each ticks
-			var tickDistancePx = gridDistanceStep*stepPx;		//The pixel distance between each ticks
+			o.tickDistanceNum = o.gridDistanceStep*o.step;	//The numerical distance between each ticks
+			o.tickDistancePx = o.gridDistanceStep*o.stepPx;		//The pixel distance between each ticks
 
 
-			if (!o.major_ticks){
-			  //Calculate automatic distances between major ticks - TODO
+			var _major_ticks = o.major_ticks;
+			if (!_major_ticks){
+			  //Calculate automatic distances between major ticks
 
 				//Find widest text/label
 				value = o.min;
 				while (value <= o.max){				
-					if (value % tickDistanceNum === 0){
+					if (value % o.tickDistanceNum === 0){
 						maxTextWidth = Math.max( maxTextWidth, this.getTextWidth( value ) );
 					}
 					value += o.step;
@@ -1579,24 +1603,26 @@ USING
 
 				//Find ticks between each major tick
 				gridDistanceIndex = 0;
-				o.major_ticks = o.gridDistances[gridDistanceIndex];
-				while (o.major_ticks*tickDistancePx < maxTextWidth){
+				_major_ticks = o.gridDistances[gridDistanceIndex];
+				while (_major_ticks*o.tickDistancePx < maxTextWidth){
 					gridDistanceIndex++;
 					if (gridDistanceIndex < o.gridDistances.length)
-					  o.major_ticks = o.gridDistances[gridDistanceIndex];
+					  _major_ticks = o.gridDistances[gridDistanceIndex];
 					else
-						o.major_ticks = o.major_ticks*2;
+						_major_ticks = _major_ticks*2;
 				}
 			}
 			
-			var majorTickDistanceNum = tickDistanceNum*o.major_ticks;
+			o.majorTickDistanceNum = o.tickDistanceNum*_major_ticks;
+
 			value = o.min;			
 			while (value <= o.max){
-				if (value % tickDistanceNum === 0){
-				  if (value % majorTickDistanceNum === 0){
+				valueOffset = value - this.options.major_ticks_offset;
+				if (valueOffset % o.tickDistanceNum === 0){
+				  if (valueOffset % o.majorTickDistanceNum === 0){
 				    //add major tick and text/label
-						this.appendTick( valueP );
-						this.appendText( valueP, value, {clickable:true} );
+						this.appendTick( valueP, tickOptions );
+						this.appendText( valueP, value, textOptions );
 				  }
 					else
 						if (!this.options.hide_minor_ticks)
@@ -1604,7 +1630,7 @@ USING
 							this.appendTick( valueP, { minor:true } );
 				}				
 				value += o.step;
-				valueP += stepP;
+				valueP += o.stepP;
 			}
 		},
 
@@ -1649,7 +1675,7 @@ USING
 
 			this.options = $.extend(this.options, options);
 			this.validate();
-			this.updateResult(options);
+			this.updateResult();
 
 			this.toggleInput();
 			this.remove();
@@ -1686,9 +1712,10 @@ USING
 	$.fn.baseSlider = function (options) {
 		return this.each(function() {
 			if (!$.data(this, "baseSlider")) {
-				$.data(this, "baseSlider", new BaseSlider(this, options, plugin_count++));
+				$.data(this, "baseSlider", new window.BaseSlider(this, options, plugin_count++));
 			}
 		});
 	};
+
 
 }(jQuery, this, document));

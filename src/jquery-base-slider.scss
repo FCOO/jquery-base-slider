@@ -63,7 +63,8 @@ $rangeValueLineTopNoMarker: $rangeLineTopNoMarker - $pinMarginTop;
 //Ticks on grids
 $tickHeightMinor  : $lineHeight;
 $tickHeight       : 1.5*$tickHeightMinor;
-$labelHeight			: rem(9px);
+$labelFontSize  	: rem(9px);
+$labelHeight			: 1.2*$labelFontSize;
 $margin						: rem(2px);
 
 //Font-icons from http://fontello.com/
@@ -285,6 +286,10 @@ COMMON STYLE
 	z-index: 2;
 	width: 100%; 
 	height: $tickHeight + $margin + $labelHeight; 
+	&.text-between-ticks { 
+		height: $margin + max($tickHeight, $labelHeight); 
+		.grid-text { top: $margin; }; 
+	}
 	
 	.grid-pol {
 		position: absolute;
@@ -307,22 +312,17 @@ COMMON STYLE
 		text-align: center;
 		font-family	: Arial, sans-serif; 
 
-		font-size: $labelHeight; 
-		line-height: $labelHeight;
+		font-size: $labelFontSize; 
+		line-height: 1; 
 		font-weight: bold;
-		&.minor { font-weight: normal; }
+		&.minor { font-weight: normal; color: #555555;}
 		&.italic { font-style: italic; }
 
 		padding: 0;
+		
 		color: #000;
 		cursor: default; 
 		&.clickable { cursor: pointer; }
-	}
-
-	//Special style for text in a grid with class=minor
-	&.minor .grid-text {
-		font-weight	: normal;
-		font-style	: italic;
 	}
 } //end of .grid
 
