@@ -160,7 +160,7 @@ USING
 	
 		this.validate();
 	
-		this.options.has_pin = /*(this.options.slider == 'range') && */(this.options.pin_value !== null);
+		this.options.has_pin = (this.options.pin_value !== null);
 
 		this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
 
@@ -466,6 +466,8 @@ USING
 			this.lastResult = this.lastResult  || {};
 			if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {
 				this.adjustResult();
+				if (this.preCallback)
+					this.preCallback( this.result );
 				if (this.options.context)
 					this.options.callback.call( this.options.context, this.result );
 				else
@@ -762,9 +764,6 @@ USING
 		},
 
 		setPin: function( value, color ) {
-			if (this.options.slider != 'range'){
-			  return;	
-			}
 			value = Math.min( this.options.max, value );
 			value = Math.max( this.options.min, value );
 

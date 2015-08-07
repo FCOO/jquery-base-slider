@@ -56,8 +56,7 @@ $rangeLineTopNoMarker	: rem(0px);
 $pinHeight		: 48/28*$lineHeight;  //The height of the pin used to mark the range-value. Calculated to fit with width=$lineHeight
 $pinMarginTop	: -0.8*$pinHeight; 
 
-$rangeValueLineTop				: $markerHeight;
-//$rangeValueLineTopNoMarker: $rangeLineTopNoMarker - $pinMarginTop;
+$rangeValueLineTop: $markerHeight;
 
 
 //Ticks on grids
@@ -176,7 +175,7 @@ COMMON STYLE
 	&.range .slider,
 	& .pin {
 		position	: absolute; 
-		cursor		: default;
+		cursor		: default !important;
 		z-index		: 100;
 
 		//Slider with font-icon
@@ -455,35 +454,7 @@ $sliderTypeList: default, small, round, range;
 		Adjust all top-position by adding top-margin if the pin is heigher than the slider
 		****************************************************/
 		&.no-marker.has-pin {
-			
 			margin-top: max(0, - $pinMarginTop - $lineTopNoMarker);
-
-/*
-			$extraTop : rem(20px);
-			.line, 
-			.bar		{ top: $lineTopNoMarker										+ $extraTop !important; }
-			.pin		{ top: $lineTopNoMarker										+ $extraTop !important; }
-			.slider	{ top: $sliderTopNoMarker									+ $extraTop !important; }
-			.grid		{ top: $sliderTopNoMarker	+ $sliderHeight + $extraTop !important; }
-*/
 		}
 	} //end of .base-slider.#{$sliderType}
 } //end of @each $sliderType in $sliderTypeList 
-
-
-/****************************************************
-Special case for no marker and pin: pin is heig
-****************************************************/
-/*
-.base-slider.range.no-marker.has-pin  {
-	$newTop: -$pinMarginTop;
-
-	.line, 
-	.bar		{ top: $newTop !important;  }
-	
-	.slider	{ top: $newTop !important;	}
-	.grid		{ top: $newTop + $lineHeight !important;	}
-
-	&.ticks-on-line .grid	{ top: $newTop !important;					}
-}
-*/
