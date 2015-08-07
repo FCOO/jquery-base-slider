@@ -160,7 +160,7 @@ USING
 	
 		this.validate();
 	
-		this.options.has_pin = (this.options.slider == 'range') && (this.options.pin_value !== null);
+		this.options.has_pin = /*(this.options.slider == 'range') && */(this.options.pin_value !== null);
 
 		this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
 

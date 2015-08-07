@@ -22,7 +22,7 @@ Compared with the original slider there are the following new features
 4. Adding buttons to move from- and/or to-slider to previous, next, first or last value 
 5. Click on text will move the slider
 6. All settings is set using `options` No settings using `data-..` attribute on the `input`-element
-7. New options: `pin_value`, = a value where a small pin is placed. NB: Only when `options.slider == 'range'`. 
+7. New options: `pin_value`, = a value where a small pin is placed.
 
 
 
@@ -85,7 +85,7 @@ Compared with the original slider there are the following new features
             <td>pin_value</td>
             <td>null</td>
             <td>number</td>
-            <td>The value for the pin. Only when <code>options.slider = 'range'</code><br>Use <code>setPin( value [, color] )</code> to change the value dynamical</td>
+            <td>The value for the pin.<br>Use <code>setPin( value [, color] )</code> to change the value dynamical</td>
         </tr>
 
         <tr>

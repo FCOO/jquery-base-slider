@@ -52,12 +52,12 @@ $lineBorderRadius	: rem(2px);
 $rangeLineTop					: $markerHeight;
 $rangeLineTopNoMarker	: rem(0px);
 
-//Special: Pin marking a value in slider type == range
+//Special: Pin marking a value
 $pinHeight		: 48/28*$lineHeight;  //The height of the pin used to mark the range-value. Calculated to fit with width=$lineHeight
 $pinMarginTop	: -0.8*$pinHeight; 
 
 $rangeValueLineTop				: $markerHeight;
-$rangeValueLineTopNoMarker: $rangeLineTopNoMarker - $pinMarginTop;
+//$rangeValueLineTopNoMarker: $rangeLineTopNoMarker - $pinMarginTop;
 
 
 //Ticks on grids
@@ -172,7 +172,7 @@ COMMON STYLE
 
 	&.active .slider { cursor: pointer; 	}
 
-	//Special version when slider == 'range' and7or when a pin is added: using font-icons instead of background-image
+	//Special version when slider == 'range' and/or when a pin is added: using font-icons instead of background-image
 	&.range .slider,
 	& .pin {
 		position	: absolute; 
@@ -219,37 +219,37 @@ COMMON STYLE
 
 	//Marker: Current, min and max-marker/labels
 	.marker-min, .marker-max {
-		position: absolute; 
-		display: block;
-		cursor: default;
-		color: #555;
-		font-family	: Arial, sans-serif; 
-		font-size: $markerFontSize; 
-		line-height: $markerLineHeight;
-		text-shadow: none;
-		top: $markerTop; 
-		padding: $markerTopBottomPadding rem(3px);
-		border: solid $markerBorderSize $border-color;
+		position				: absolute; 
+		display					: block;
+		cursor					: default;
+		color						: #555;
+		font-family			: Arial, sans-serif; 
+		font-size				: $markerFontSize; 
+		line-height			: $markerLineHeight;
+		text-shadow			: none;
+		top							: $markerTop; 
+		padding					: $markerTopBottomPadding rem(3px);
+		border					: solid $markerBorderSize $border-color;
 		background-color: $background-color;
-		border-radius: rem(2px);
+		border-radius		: rem(2px);
 
 		&.marker-min { left: 0;	}
 		&.marker-max { right: 0;	}
 	}
 
 	.marker-from, .marker-to, .marker-single {
-		position: absolute; 
-		display: block;
-		top: $markerTop + $markerBorderSize; 
-		left: 0;
-		cursor: default;
-		white-space: nowrap;
-		color: #111;
+		position		: absolute; 
+		display			: block;
+		top					: $markerTop + $markerBorderSize; 
+		left				: 0;
+		cursor			: default;
+		white-space	: nowrap;
+		color				: #111;
 		font-family	: Arial, sans-serif; 
-		font-size	: $markerFontSize; 
-		line-height: $markerLineHeight;
-		text-shadow: none;
-		padding: $markerTopBottomPadding rem(5px);
+		font-size		: $markerFontSize; 
+		line-height	: $markerLineHeight;
+		text-shadow	: none;
+		padding			: $markerTopBottomPadding rem(5px);
 	}
 	
 	//If not force edge => add border and stick
@@ -262,16 +262,16 @@ COMMON STYLE
 		border				: $markerBorderSize solid black;
 		border-radius	: rem(4px);
 		&:after {
-		  position: absolute; 
-			display: block; 
-			content: "";
-		  bottom: -2.3*$markerStickHeight; 
-			left: 50%;
-			width: 0; 
-			height: 0;
-			margin-left: -1*$markerStickHeight;
-	    overflow: hidden;
-		  border: $markerStickHeight solid transparent;
+		  position				: absolute; 
+			display					: block; 
+			content					: "";
+		  bottom					: -2.3*$markerStickHeight; 
+			left						: 50%;
+			width						: 0; 
+			height					: 0;
+			margin-left			: -1*$markerStickHeight;
+	    overflow				: hidden;
+		  border					: $markerStickHeight solid transparent;
 			border-top-color: black;
 		}
 	}
@@ -419,6 +419,10 @@ $sliderTypeList: default, small, round, range;
 			background-image: $sliderBackgroundImage;
 		}
 
+		.pin { 
+			top: $lineTop;					
+		}
+
 		//hover on slider but only if it is active (not read-only)
 		&.active .slider {
 			&.state_hover, &:hover { 
@@ -430,6 +434,7 @@ $sliderTypeList: default, small, round, range;
 			top: $sliderTop + $sliderHeight;
 		}
 
+
 		//Adjust grid position if ticks are on the line (ticks_on_line = true)
 		&.ticks-on-line {
 			.grid							{ top: $lineTop;					}
@@ -439,24 +444,46 @@ $sliderTypeList: default, small, round, range;
 		//Adjust all top-position if there are no marker
 		&.no-marker {
 			.line, 
-			.bar		{ top: $lineTopNoMarker;										}
+			.bar,
+			.pin		{ top: $lineTopNoMarker !important;					}
 			.slider	{ top: $sliderTopNoMarker;									}
 			.grid		{ top: $sliderTopNoMarker	+ $sliderHeight;	}
+		}
+
+		/****************************************************
+		Special case for no marker and pin: 
+		Adjust all top-position by adding top-margin if the pin is heigher than the slider
+		****************************************************/
+		&.no-marker.has-pin {
+			
+			margin-top: max(0, - $pinMarginTop - $lineTopNoMarker);
+
+/*
+			$extraTop : rem(20px);
+			.line, 
+			.bar		{ top: $lineTopNoMarker										+ $extraTop !important; }
+			.pin		{ top: $lineTopNoMarker										+ $extraTop !important; }
+			.slider	{ top: $sliderTopNoMarker									+ $extraTop !important; }
+			.grid		{ top: $sliderTopNoMarker	+ $sliderHeight + $extraTop !important; }
+*/
 		}
 	} //end of .base-slider.#{$sliderType}
 } //end of @each $sliderType in $sliderTypeList 
 
 
 /****************************************************
-Special case for slider==range, no marker and pin
+Special case for no marker and pin: pin is heig
 ****************************************************/
+/*
 .base-slider.range.no-marker.has-pin  {
 	$newTop: -$pinMarginTop;
+
 	.line, 
 	.bar		{ top: $newTop !important;  }
+	
 	.slider	{ top: $newTop !important;	}
 	.grid		{ top: $newTop + $lineHeight !important;	}
 
 	&.ticks-on-line .grid	{ top: $newTop !important;					}
 }
-
+*/
