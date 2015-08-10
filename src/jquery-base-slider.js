@@ -764,18 +764,19 @@ USING
 		},
 
 		setPin: function( value, color ) {
+			if (!this.options.has_pin)
+				return;
+
 			value = Math.min( this.options.max, value );
 			value = Math.max( this.options.min, value );
-
 			this.options.pin_value = value;
 
 			this.target = "base";
-			this.is_key = true;
-			this.calc();
-			this.force_redraw = true;
-			this.drawHandles(); 
-
-			this.$cache.s_pin.css('color', color || 'black');				
+			this.calc(true);
+			this.$cache.s_pin.css({
+				left	: this.coords.p_pin_value + "%",
+				color	: color || 'black'
+			});				
 		},
 
 		//calc
@@ -1114,7 +1115,7 @@ USING
 				if (this.labels.p_single_left < this.labels.p_min + 1) {
 					this.$cache.min.css('visibility', 'hidden'); 
 				} else {
-					this.$cache.min.css('visibility', 'visible'); //[0].style.visibility = "visible";
+					this.$cache.min.css('visibility', 'visible'); 
 				}
 
 				if (this.labels.p_single_left + this.labels.p_single > 100 - this.labels.p_max - 1) {

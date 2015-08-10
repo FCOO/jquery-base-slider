@@ -123,7 +123,7 @@ var slider2 =	$("#example_02").baseSlider({
 	});
 	slider2.data('baseSlider').setPin(21, 'green');
 */
-	var sliderList = ['default','small','round','range'];
+	var sliderList = ['default','small','round'];//,'range'];
 	for (var i=0; i<sliderList.length; i++ ){
 		var nextSlider = sliderList[i];
 		var theSlider = $("#slider_"+nextSlider).baseSlider({
@@ -147,12 +147,14 @@ var slider2 =	$("#example_02").baseSlider({
 			hide_min_max: true,
 			hide_from_to: false,
 
-			pin_value: 20
+			callback_on_dragging: false,
+			pin_value: 20,
+
 	});
 
-		theSlider.data('baseSlider').setPin(21, 'green');
-
 	}
+		theSlider.data('baseSlider').setPin(21, 'green');
+		theSlider.data('baseSlider').options.callback = function( result ){ theSlider.data('baseSlider').setPin( result.from+2 ); };
 	
 
 
