@@ -18,7 +18,6 @@
   "devDependencies": {
     "jquery": "latest",
     "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed",
-    "jquery.actual": "dreamerslab/jquery.actual#~1.0.16",
     "bourbon": "latest",
     "modernizr-mixin": "latest",
     "mathsass": "latest"

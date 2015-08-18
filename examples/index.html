@@ -11,7 +11,6 @@
 	<script type="text/javascript" src="jquery.min.js"></script>
 
 	<script type="text/javascript" src="autoclick-while-pressed.min.js"></script>
-	<script type="text/javascript" src="jquery.actual.min.js"></script>
 
 	<script type="text/javascript" src="../src/jquery-base-slider.js"></script>
 
@@ -39,7 +38,7 @@
 			<div style="border:1px solid red; padding:0rem; height:4rem">
 				<input type="text" id="slider_round" />
 			</div>
-			<div style="border:1px solid red; padding:0rem; height:4rem">
+			<div id="container_ranger" style="border:1px solid red; padding:0rem; height:4rem">
 				<input type="text" id="slider_range" />
 			</div>
 		
@@ -123,7 +122,8 @@ var slider2 =	$("#example_02").baseSlider({
 	});
 	slider2.data('baseSlider').setPin(21, 'green');
 */
-	var sliderList = ['default','small','round'];//,'range'];
+	var firstSlider = null;
+	var sliderList = ['default','small','round','range'];
 	for (var i=0; i<sliderList.length; i++ ){
 		var nextSlider = sliderList[i];
 		var theSlider = $("#slider_"+nextSlider).baseSlider({
@@ -152,9 +152,14 @@ var slider2 =	$("#example_02").baseSlider({
 
 	});
 
+		firstSlider = firstSlider || theSlider.data('baseSlider');
 	}
 		theSlider.data('baseSlider').setPin(21, 'green');
-		theSlider.data('baseSlider').options.callback = function( result ){ theSlider.data('baseSlider').setPin( result.from+2 ); };
+		//theSlider.data('baseSlider').options.callback = function( result ){ theSlider.data('baseSlider').setPin( result.from+2 ); };
+		firstSlider.options.callback = function( result ){ 
+			theSlider.data('baseSlider').setPin( result.from ); 
+
+		};
 	
 
 

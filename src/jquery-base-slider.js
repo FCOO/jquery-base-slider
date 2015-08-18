@@ -7,7 +7,6 @@
 	https://github.com/NielsHolt
 
 USING
-	dreamerslab/jquery.actual - https://github.com/dreamerslab/jquery.actual
 	autoclickWhilePressed from https://github.com/silviubogan/jquery-autoclick-while-pressed - Auto-repeat the buttons on-click-function
 
 
@@ -47,7 +46,7 @@ USING
 	// Core
 	//var BaseSlider = function (input, options, plugin_count) {
 	window.BaseSlider = function (input, options, plugin_count) {
-		this.VERSION = "1.0.0";
+		this.VERSION = "2.4.0";
 		this.input = input;
 		this.plugin_count = plugin_count;
 		this.current_plugin = 0;
@@ -125,6 +124,7 @@ USING
 			impact_line: false,
 			impact_line_reverse: false,
 			hide_bar_color: false,
+			bar_color: null,
 
 			callback_on_dragging: true,
 			callback_delay: 500,
@@ -133,6 +133,7 @@ USING
 			hide_minor_ticks: false,
 			major_ticks: null, // => calculated automatic
 			major_ticks_offset: 0, 
+			major_ticks_factor: 1, 
 
 			ticks_on_line: false,
 			hide_min_max: true,
@@ -313,6 +314,9 @@ USING
 			if (this.options.hide_bar_color)
 				this.$cache.bar.addClass('hide-bar-color');
 			
+			//Set alternative bar color
+			if (this.options.bar_color)
+				this.$cache.bar.css('background-color', this.options.bar_color);
 
 			//Add class to set border and stick on to- from and current-label
 			if (this.options.marker_frame)
@@ -738,12 +742,13 @@ USING
 
 			this.old_from = this.result.from;
 			this.result.from = value;
-
-			this.target = "base";
-			this.is_key = true;
-			this.calc();
-			this.force_redraw = true;
-			this.drawHandles(); 
+			if (this.old_from != value){
+				this.target = "base";
+				this.is_key = true;
+				this.calc();
+				this.force_redraw = true;
+				this.drawHandles(); 
+			}
 			this.onCallback();
 		},
 
@@ -754,12 +759,13 @@ USING
 
 			this.old_to = this.result.to;
 			this.result.to = value;
-
-			this.target = "base";
-			this.is_key = true;
-			this.calc();
-			this.force_redraw = true;
-			this.drawHandles(); 
+			if (this.old_to != value){
+				this.target = "base";
+				this.is_key = true;
+				this.calc();
+				this.force_redraw = true;
+				this.drawHandles(); 
+			}
 			this.onCallback();
 		},
 
@@ -773,10 +779,11 @@ USING
 
 			this.target = "base";
 			this.calc(true);
+
 			this.$cache.s_pin.css({
 				left	: this.coords.p_pin_value + "%",
 				color	: color || 'black'
-			});				
+			});			
 		},
 
 		//calc
@@ -916,7 +923,8 @@ USING
 
 			this.calcMinMax();
 			this.calcLabels();
-		},
+		
+		}, //end of calc()
 
 		//calcPointer
 		calcPointer: function () {
@@ -1568,7 +1576,7 @@ USING
 					valueP = 0,
 					valueOffset;
 			o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-			o.stepPx = o.step*gridContainerWidth/total; 
+			o.stepPx = o.step*gridContainerWidth/total  / o.major_ticks_factor; 
 			o.stepP = this.toFixed(o.step / (total / 100));
 
 			textOptions = $.extend( textOptions || {}, {clickable:true} );
@@ -1594,7 +1602,7 @@ USING
 				//Find widest text/label
 				value = o.min;
 				while (value <= o.max){				
-					if (value % o.tickDistanceNum === 0){
+					if (value*o.major_ticks_factor % o.tickDistanceNum === 0){
 						maxTextWidth = Math.max( maxTextWidth, this.getTextWidth( value ) );
 					}
 					value += o.step;
@@ -1617,7 +1625,7 @@ USING
 
 			value = o.min;			
 			while (value <= o.max){
-				valueOffset = value - this.options.major_ticks_offset;
+				valueOffset = (value - o.major_ticks_offset)*o.major_ticks_factor;
 				if (valueOffset % o.tickDistanceNum === 0){
 				  if (valueOffset % o.majorTickDistanceNum === 0){
 				    //add major tick and text/label
@@ -1625,7 +1633,7 @@ USING
 						this.appendText( valueP, value, textOptions );
 				  }
 					else
-						if (!this.options.hide_minor_ticks)
+						if (!o.hide_minor_ticks)
 							//Add minor tick
 							this.appendTick( valueP, { minor:true } );
 				}				
@@ -1637,7 +1645,6 @@ USING
 
 		//calcGridMargin
 		calcGridMargin: function () { 
-
 			this.coords.w_rs = this.$cache.bs.outerWidth(false);
 			if (!this.coords.w_rs) {
 				return;
