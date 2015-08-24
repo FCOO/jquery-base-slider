@@ -17,11 +17,6 @@ The scss is divided in two parts: First the common part equal for all types and 
 //BOURBON - http://bourbon.io/
 @import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
 
-//MODERNIZR-MIXIN - https://github.com/danielguillan/modernizr-mixin
-@import "../bower_components/modernizr-mixin/stylesheets/modernizr";
-
-//MATHSASS - https://github.com/terkel/mathsass
-@import "../bower_components/mathsass/dist/math";
 
 //'Global' variables
 $border-color			: rgb(175,179,187);

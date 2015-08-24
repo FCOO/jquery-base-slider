@@ -15,7 +15,6 @@ USING
 	"use strict";
 
 	//Original irs.slider - with modifications
-	
 	var plugin_count = 0;
 
   // Template
@@ -46,7 +45,7 @@ USING
 	// Core
 	//var BaseSlider = function (input, options, plugin_count) {
 	window.BaseSlider = function (input, options, plugin_count) {
-		this.VERSION = "2.4.0";
+		this.VERSION = "2.3.4";
 		this.input = input;
 		this.plugin_count = plugin_count;
 		this.current_plugin = 0;
@@ -605,7 +604,7 @@ USING
 		},
 
 		//pointerDown
-		pointerDown: function (target, e) {
+		pointerDown: function (target, e) { 
 			e.preventDefault();
 			var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
 			if (e.button === 2) {
@@ -786,13 +785,20 @@ USING
 			});			
 		},
 
+
+		//getCoords_w_rs
+		getCoords_w_rs: function(){
+			var result = this.$cache.bs.outerWidth(false);
+			this.coords.w_rs = result ? result : this.coords.w_rs;
+		},
+
 		//calc
 		calc: function (update) { 
 			if (!this.options) {
 				return;
 			}
 			if (update) { 
-				this.coords.w_rs = this.$cache.bs.outerWidth(false);
+				this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
 				if (this.options.type === "single") {
 					this.coords.w_handle = this.$cache.s_single.outerWidth(false);
 				} else {
@@ -1006,7 +1012,7 @@ USING
 
 		//drawHandles
 		drawHandles: function () { 
-			this.coords.w_rs = this.$cache.bs.outerWidth(false);
+			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
 
 			if (!this.coords.w_rs) {
 				return;
@@ -1466,7 +1472,7 @@ USING
 		// Grid - use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
 
 		appendGridContainer: function(){ 
-			this.coords.w_rs = this.$cache.bs.outerWidth(false);
+			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
 			
 			if (this.currentGridContainer){
 				this.totalGridContainerTop += this.currentGridContainer.height();  
@@ -1515,7 +1521,7 @@ USING
 			  text =	(this.options.prefix ? this.options.prefix : '') +
 								text +
 								(this.options.postfix ? this.options.postfix : '');
-			var result = $('<span class="grid-text" style="background-color:none; left: ' + left + '%">' + text + '</span>');
+			var result = $('<span class="grid-text" style="background-color:transparent; left: ' + left + '%">' + text + '</span>');
 			result.appendTo( this.currentGridContainer );
 
 			//Center the label
@@ -1645,7 +1651,7 @@ USING
 
 		//calcGridMargin
 		calcGridMargin: function () { 
-			this.coords.w_rs = this.$cache.bs.outerWidth(false);
+			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
 			if (!this.coords.w_rs) {
 				return;
 			}

@@ -16,11 +16,9 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "bourbon": "*",
     "jquery": "latest",
-    "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed",
-    "bourbon": "latest",
-    "modernizr-mixin": "latest",
-    "mathsass": "latest"
+    "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed"
   },
   "license": "MIT",
   "ignore": [
