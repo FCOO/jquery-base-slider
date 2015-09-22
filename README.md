@@ -31,7 +31,7 @@ Compared with the original slider there are the following new features
 `bower install https://github.com/NielsHolt/jquery-base-slider.git --save`
 
 
-## Settings
+## Options
 
 <table>
     <thead>

@@ -7,8 +7,8 @@
   ],
   "description": "A plugin to create a slider",
   "main": [
-    "dist/jquery-slider.min.js",
-    "dist/jquery-slider.min.css"
+    "dist/jquery-base-slider.min.js",
+    "dist/jquery-base-slider.min.css"
   ],
   "repository": {
     "type": "git",
