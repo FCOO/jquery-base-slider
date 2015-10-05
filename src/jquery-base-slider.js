@@ -568,12 +568,13 @@ USING
 
 		
 		//pointerMove
-		pointerMove: function (e) {
+		pointerMove: function (e) { 
 			if (!this.dragging) {
 				return;
 			}
 
 			var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
+			
 			this.coords.x_pointer = x - this.coords.x_gap;
 
 			this.calc();
@@ -788,8 +789,9 @@ USING
 
 		//getCoords_w_rs
 		getCoords_w_rs: function(){
-			var result = this.$cache.bs.outerWidth(false);
+			var result = this.$cache.container.innerWidth(); //Bug fixed - didn't work in Chrome: this.$cache.bs.outerWidth(false);
 			this.coords.w_rs = result ? result : this.coords.w_rs;
+
 		},
 
 		//calc
@@ -1044,7 +1046,6 @@ USING
 			if (this.old_from !== this.result.from || this.old_to !== this.result.to || this.force_redraw || this.is_key) {
 
 				this.drawLabels();
-
 				this.$cache.bar.css('left', this.coords.p_bar_x + "%"); 
 				this.$cache.bar.css('width', this.coords.p_bar_w + "%"); 
 
