@@ -55,26 +55,28 @@ COMMON STYLE
   left: 0;
   width: 11%;
   height: 100%;
-  background-color: green;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003108}}
-.impact-line .base-slider .line {
-  background-color: red;
-}
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003109}}
-.impact-line .base-slider .line .line-left {
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003107}}
+.base-slider.impact-line .line .line-left, .base-slider.impact-line-reverse .line .line-left {
   display: block;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003113}}
-.impact-line-reverse .base-slider .line {
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003110}}
+.base-slider.impact-line .line {
+  background-color: red;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003111}}
+.base-slider.impact-line .line .line-left {
   background-color: green;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003115}}
-.impact-line-reverse .base-slider .line .line-left {
-  display: block;
+.base-slider.impact-line-reverse .line {
+  background-color: green;
+}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003116}}
+.base-slider.impact-line-reverse .line .line-left {
   background-color: red;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003121}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003120}}
 .base-slider .bar {
   position: absolute;
   display: block;
@@ -89,19 +91,19 @@ COMMON STYLE
   cursor: pointer;
   background-color: #428BCA;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003135}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003134}}
 .base-slider .bar.hide-bar-color {
   background-color: inherit;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003138}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003137}}
 .base-slider.impact-line .bar, .base-slider.impact-line-reverse .bar {
   background-color: yellow;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003144}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003143}}
 .base-slider.disabled .line, .base-slider.disabled .bar, .base-slider.read-only .line, .base-slider.read-only .bar {
   cursor: default;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003153}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003152}}
 .base-slider .slider {
   position: absolute;
   display: block;
@@ -111,15 +113,15 @@ COMMON STYLE
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003163}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003162}}
 .base-slider .slider.type_last {
   z-index: 12;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003167}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003166}}
 .base-slider.active .slider {
   cursor: pointer;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003170}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003169}}
 .base-slider.range .slider, .base-slider .pin {
   position: absolute;
   cursor: default !important;
@@ -136,23 +138,23 @@ COMMON STYLE
   text-align: center;
   line-height: 1em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003191}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003190}}
 .base-slider.range .slider.from, .base-slider .pin.from {
   text-align: right;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003193}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003192}}
 .base-slider.range .slider.from:before, .base-slider .pin.from:before {
   content: '\e801';
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003195}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003194}}
 .base-slider.range .slider.to, .base-slider .pin.to {
   text-align: left;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003197}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003196}}
 .base-slider.range .slider.to:before, .base-slider .pin.to:before {
   content: '\e800';
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003200}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003199}}
 .base-slider.range .slider.pin, .base-slider .pin.pin {
   height: 0.64286rem !important;
   margin-top: -0.51429rem;
@@ -160,11 +162,11 @@ COMMON STYLE
   text-align: center;
   background-image: none !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003209}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003208}}
 .base-slider.range .slider.pin:before, .base-slider .pin.pin:before {
   content: '\e802';
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003215}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003214}}
 .base-slider .marker-min, .base-slider .marker-max {
   position: absolute;
   display: block;
@@ -180,15 +182,15 @@ COMMON STYLE
   background-color: #d1d6e0;
   border-radius: 0.125rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003230}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003229}}
 .base-slider .marker-min.marker-min, .base-slider .marker-max.marker-min {
   left: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003231}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003230}}
 .base-slider .marker-min.marker-max, .base-slider .marker-max.marker-max {
   right: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003234}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003233}}
 .base-slider .marker-from, .base-slider .marker-to, .base-slider .marker-single {
   position: absolute;
   display: block;
@@ -203,14 +205,14 @@ COMMON STYLE
   text-shadow: none;
   padding: 0.0625rem 0.3125rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003251}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003250}}
 .base-slider.marker-frame .marker-from, .base-slider.marker-frame .marker-to, .base-slider.marker-frame .marker-single {
   top: 0rem;
   background: white;
   border: 0.0625rem solid black;
   border-radius: 0.25rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003258}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003257}}
 .base-slider.marker-frame .marker-from:after, .base-slider.marker-frame .marker-to:after, .base-slider.marker-frame .marker-single:after {
   position: absolute;
   display: block;
@@ -225,7 +227,7 @@ COMMON STYLE
   border-top-color: black;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003276}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003275}}
 .grid {
   position: absolute;
   bottom: 0;
@@ -234,15 +236,15 @@ COMMON STYLE
   width: 100%;
   height: 1.3625rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003283}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003282}}
 .grid.text-between-ticks {
   height: 0.8rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003285}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003284}}
 .grid.text-between-ticks .grid-text {
   top: 0.125rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003288}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003287}}
 .grid .grid-pol {
   position: absolute;
   top: 0;
@@ -251,16 +253,16 @@ COMMON STYLE
   height: 0.5625rem;
   background: black;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003295}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003294}}
 .grid .grid-pol.minor {
   height: 0.375rem;
   background: #555555;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003296}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003295}}
 .grid .grid-pol.red {
   background: red;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003299}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003298}}
 .grid .grid-text {
   position: absolute;
   top: 0.6875rem;
@@ -275,30 +277,30 @@ COMMON STYLE
   color: #000;
   cursor: default;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003302}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003301}}
 .grid .grid-text.low {
   top: 1.4875rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003312}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003311}}
 .grid .grid-text.minor {
   font-weight: normal;
   color: #555555;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003313}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003312}}
 .grid .grid-text.italic {
   font-style: italic;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003319}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003318}}
 .grid .grid-text.clickable {
   cursor: pointer;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003324}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003323}}
 .disabled {
   opacity: 0.4;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003329}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003328}}
 .hidden-input {
   position: absolute !important;
   display: block !important;
@@ -320,221 +322,221 @@ COMMON STYLE
 /***************************************************************
 STYLE FOR SPECIFIC TYPE
 ***************************************************************/
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003404}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003403}}
 .base-slider.default {
   /****************************************************
   Special case for no marker and pin: 
   Adjust all top-position by adding top-margin if the pin is heigher than the slider
   ****************************************************/
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003407}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003406}}
 .base-slider.default .line, .base-slider.default .bar {
   top: 1.64563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003410}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003409}}
 .base-slider.default .slider {
   width: 0.6875rem;
   height: 1.125rem;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAELSURBVDhPpZJdS0JBEIbHrYN75xeEpCmCIoJ0EYGBvz/wQpECC7JS8+PCi8KLYG2NzXdwTmc1A/G5GfadZ2YPy4m5NYPRlEbjCe2jeJGnUjFHsdfhxL1/LKiQOyOt45v2L8Ys6W06p3QqQQobISaTiU3bBzn68BQCbDTGcFNr7VUgN7IcRYa2Kwhl2dS5e+DvRAXRG3Y2/8fx8l9PCA7fHH2uZuPKq5IDlvE8QRBwsA1yeT6VzmTp6WVM1tqdAZyRow9P1Sp5btz3+t6AiMgBPBWcntBlvcrB4/OMqwzIGX14/IsisKtvum21+bpa+ZxFu/wMRRDKQAaE5s11KDKQo3zZlWt3e1x9nPsBUKqb1FCNlIQAAAAASUVORK5CYII=);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003416}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003415}}
 .base-slider.default .pin {
   top: 1.64563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003422}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003421}}
 .base-slider.default.active .slider.state_hover, .base-slider.default.active .slider:hover {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAASCAYAAACNdSR1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAFASURBVDhPdZI7SwNBFIXvri4OChq0DPjqLEQLC1EsYiXaCP4J9T9pCgtBEUVREMEgQTGNRFLY+QAttRDUZCcyzrm7N+4MydfM3nvOufNgA2N5enmjUvmGOlFYmKOxkTwFj8+v5r72QNOTE9TX25PK/3x9N6hq9SmrB1s7e2bRJocG+1M5oV5vkFJJ+P3jky7tziGK7ESYgBhRi87mdvgh4Jhh2NxY522xSkBomZVS6ZdLtt/xGO1gc/ZcwH9C0Z3JfsivPbOi7WKRcrkBXv17sBm3jqKIG2KQFX15lXB8dJiuK1XSWrcCAmr0ocMXzs/OsHB6fuUExIg+gC+MurtoZalgt/qxE+5YkIDU0OEj/KIg1k2zu39sSuVbE8cxr6jRF/h/5rhFN3/p4OgsrYjWVpeTiQJHMmDS4cmFMzHBmD8Dxr97yYesYgAAAABJRU5ErkJggg==);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003427}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003426}}
 .base-slider.default .grid {
   top: 2.39563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003433}}
 .base-slider.default.ticks-on-line .grid {
   top: 1.64563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003435}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
 .base-slider.default.ticks-on-line.no-marker .grid {
   top: 0.375rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003440}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003439}}
 .base-slider.default.no-marker .line,
 .base-slider.default.no-marker .bar,
 .base-slider.default.no-marker .pin {
   top: 0.375rem !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003442}}
 .base-slider.default.no-marker .slider {
   top: 0rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003444}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
 .base-slider.default.no-marker .grid {
   top: 1.125rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003451}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003450}}
 .base-slider.default.no-marker.has-pin {
   margin-top: 0.13929rem;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003404}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003403}}
 .base-slider.small {
   /****************************************************
   Special case for no marker and pin: 
   Adjust all top-position by adding top-margin if the pin is heigher than the slider
   ****************************************************/
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003407}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003406}}
 .base-slider.small .line, .base-slider.small .bar {
   top: 1.39563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003410}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003409}}
 .base-slider.small .slider {
   width: 0.8125rem;
   height: 0.9375rem;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAPCAYAAAA/I0V3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAHdElNRQfcCgoOIhFLucXpAAAA1klEQVQ4T2OAAg4glgBiBTwYJA9SBwYghoZ/VNF/QhikDqqeQQIkkFvd9//c9bs4MUgeqhFkI4MCiDNl+db/O46cw4lB8lBNIKdCNE1YvOn/qh1HcGKQPIamngXr/89ctQMnBsljaGqfs+Z/36INODFIHkPTok37CGJkTeDQa+qZ+//0lds4MUgeqgkcevB46p269P+zV+8wMEgcqgEeTyAA1zhtzur/v3//gWMQH5sGGIBrnD5vzX8QANH4NMAAikZiNMAAXCOIhvKJAiCFAlAaDTAwAAAamEJoXiBKbAAAAABJRU5ErkJggg==);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003416}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003415}}
 .base-slider.small .pin {
   top: 1.39563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003422}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003421}}
 .base-slider.small.active .slider.state_hover, .base-slider.small.active .slider:hover {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAPCAYAAAA/I0V3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAHdElNRQfcCgoOIhFLucXpAAAA1ElEQVQ4T2OAAg4glgBiBTwYJA9SBwYghoZ/VNF/QhikDqqeQQIkEJHX8X/biWs4MUgeqhFkI4MCiJPQtvT/1PWHcWKQPFQTyKkQTZGNC/83zN+OE4PkMTQF1877n9a9EicGyWNo8q2Y9T+8fgFODJLH0FQ6bSNBjKwJHHoVbbP+bzp6GScGyUM1gUMPHk8dkxb/v/X4FQYGiUM1wOMJBOAap85Z9f/nr99wDOJj0wADcI3T5635DwIgGp8GGEDRSIwGGIBrBNFQPlEApFAASqMBBgYAUX8u2cyxQJIAAAAASUVORK5CYII=);
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003427}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003426}}
 .base-slider.small .grid {
   top: 2.20813rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003433}}
 .base-slider.small.ticks-on-line .grid {
   top: 1.39563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003435}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
 .base-slider.small.ticks-on-line.no-marker .grid {
   top: 0.125rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003440}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003439}}
 .base-slider.small.no-marker .line,
 .base-slider.small.no-marker .bar,
 .base-slider.small.no-marker .pin {
   top: 0.125rem !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003442}}
 .base-slider.small.no-marker .slider {
   top: 0rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003444}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
 .base-slider.small.no-marker .grid {
   top: 0.9375rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003451}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003450}}
 .base-slider.small.no-marker.has-pin {
   margin-top: 0.38929rem;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003404}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003403}}
 .base-slider.round {
   /****************************************************
   Special case for no marker and pin: 
   Adjust all top-position by adding top-margin if the pin is heigher than the slider
   ****************************************************/
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003407}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003406}}
 .base-slider.round .line, .base-slider.round .bar {
   top: 1.45813rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003410}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003409}}
 .base-slider.round .slider {
   width: 0.75rem;
   height: 0.75rem;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH3wcTDyQFVe5yLwAAAXlJREFUKM99kr3qqgAAxX/2AQnhRUgINLiDQ4oQtfgCTb5AzT2WQ3O9grQ5RAS1hNXUxRCH+iOBkajhHS507/DnHjjLgTOcD+FL0wH48etU7fd7TqcTURQBoKoq/X6f4XDI42dfABC+NJ1msKuWyyW9Xg/DMFBVFYAoijgej1yvVyaTCYU5EijLsnJdt/J9v3q/39/S9/3Kdd2qLMtK2G631e12Yzwe8z+sVisURaEWBAG6rpPnOXme43kejuPgOA6e5310XdcJgoBGHMdIksTr9QJgvV4zGAwA2Gw22LYNgCRJxHFMA+D5fFKr1QCwLIssywAQRZE0TQEoioJ6vU6j2+0ShiGyLANg2zZJkgAgyzKPxwOAJElQFIWGaZocDodPuFarha7/2SaO44/5crlgWRZCWZbVfD4HoNPpfNvQ/X4HYDab/R1usViQpimiKNJsNgHI85wsy2i320ynUwpzJAj/XmO323E+nwnDEABN0zAMg9Fo9LnGbyGcyS33UrTwAAAAAElFTkSuQmCC");
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003416}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003415}}
 .base-slider.round .pin {
   top: 1.45813rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003422}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003421}}
 .base-slider.round.active .slider.state_hover, .base-slider.round.active .slider:hover {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH3wcTDygUk+sd0QAAAaJJREFUKM9tkk9r0wAAxX9pgs36z3XJdJnNdDPrRqp4sILMFooOetFP4ufxk7iDgojQelAHQ6WxqK2OuGZuTUtqbGpsrIfA6GHv/h7vn+AWDI5et2e9wRTL6tJ3fjD55QIgZxVUrYBpbrC6JHHl3rYgfDiczj7bv9lvNrlz8zK3TJ1rugrAd7vPe8vm3ceflCsVinoaqTeYst9scP/uVR5UTeaxvqayvqaSTVu8bDbI1HeRLKvLbXOZ2s4WURRxHmo7W3ijMZbVRer3bOqPtgnDEIBG64Qne18AePxwk2rpEgBmcYWDp22kiT9AWZQJggCAN5bDjcICAG8/OZQ3sgAoizITf4AE4Ps+opiIlVaTTMLY2sIFEd/3AQj/RghCAknO5Pl2eMKyEquWN5cYDocA5PN5PM8D4NQNSKYvIimaTrvzFSmRi7uXZQzDAMBxnDNyuzNC0QyEZweT2avnL9ByY/QV6dyW7OMpzihFrb7L3HANMqJLLhWRSv4DYPwnwWgs4kcK5UqVop5GmL9Gq9XBPT4i8E7j0DkVRStQKl0/u8Z/ZButschP/3wAAAAASUVORK5CYII=");
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003427}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003426}}
 .base-slider.round .grid {
   top: 2.02063rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003433}}
 .base-slider.round.ticks-on-line .grid {
   top: 1.45813rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003435}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
 .base-slider.round.ticks-on-line.no-marker .grid {
   top: 0.1875rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003440}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003439}}
 .base-slider.round.no-marker .line,
 .base-slider.round.no-marker .bar,
 .base-slider.round.no-marker .pin {
   top: 0.1875rem !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003442}}
 .base-slider.round.no-marker .slider {
   top: 0rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003444}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
 .base-slider.round.no-marker .grid {
   top: 0.75rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003451}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003450}}
 .base-slider.round.no-marker.has-pin {
   margin-top: 0.32679rem;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003404}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003403}}
 .base-slider.range {
   /****************************************************
   Special case for no marker and pin: 
   Adjust all top-position by adding top-margin if the pin is heigher than the slider
   ****************************************************/
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003407}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003406}}
 .base-slider.range .line, .base-slider.range .bar {
   top: 1.27062rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003410}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003409}}
 .base-slider.range .slider {
   width: 0.375rem;
   height: 0.375rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003416}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003415}}
 .base-slider.range .pin {
   top: 1.27062rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003427}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003426}}
 .base-slider.range .grid {
   top: 1.64563rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003433}}
 .base-slider.range.ticks-on-line .grid {
   top: 1.27062rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003435}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003434}}
 .base-slider.range.ticks-on-line.no-marker .grid {
   top: 0rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003440}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003439}}
 .base-slider.range.no-marker .line,
 .base-slider.range.no-marker .bar,
 .base-slider.range.no-marker .pin {
   top: 0rem !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003442}}
 .base-slider.range.no-marker .slider {
   top: 0rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003444}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003443}}
 .base-slider.range.no-marker .grid {
   top: 0.375rem;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003451}}
+@media -sass-debug-info{filename{font-family:file\:\/\/C\:\/web-dev\/jquery-base-slider\/src\/jquery-base-slider\.scss}line{font-family:\00003450}}
 .base-slider.range.no-marker.has-pin {
   margin-top: 0.51429rem;
 }

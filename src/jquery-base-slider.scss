@@ -99,23 +99,22 @@ COMMON STYLE
 			left: 0; 
 			width: 11%;
 			height: 100%;
-			background-color: green;
 		} 
 	} //end of .line
 
-	
 	//Adjust display and background-color when impact or impact-revers is set
-	.impact-line & .line {
+	&.impact-line .line, &.impact-line-reverse .line {
 		.line-left { display: block; }
+	}
+
+	&.impact-line .line {
+		.line-left { background-color: green; }
 		background-color: red;
 	}
 	
-	.impact-line-reverse & .line {
+	&.impact-line-reverse .line {
+		.line-left { background-color: red; }
 		background-color: green;
-		.line-left { 
-			display: block; 
-			background-color: red;
-		}
 	}
 
 	.bar {
