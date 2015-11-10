@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "2.3.8",
+  "version": "2.4.0",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
@@ -14,11 +14,12 @@
     "type": "git",
     "url": "git://github.com/NielsHolt/jquery-base-slider.git"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "bourbon": "*",
+  "dependencies": {
     "jquery": "latest",
     "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed"
+  },
+  "devDependencies": {
+    "bourbon": "*"
   },
   "license": "MIT",
   "ignore": [

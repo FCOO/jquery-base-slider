@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="da" style="font-size: 100%">
+<head>
+	<title>fcoo.dk - jquery-base-slider - Example</title>
+	<meta charset="iso-8859-1" />
+	<meta charset="iso-8859-1" /> <!-- OR "utf-8" -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv='x-dns-prefetch-control' content='on'>
+
+<!-- <meta http-equiv="refresh" content="30"> -->
+<!-- <meta name='description' content='150 words'> -->
+<!-- <meta name='subject' content='your website's subject'> -->
+<!-- <meta http-equiv='Expires' content='0'> -->
+	<meta name='copyright' content='FCOO'>
+	<meta name='owner' content='FCOO'>
+
+  <link  href="bower_components.css" rel="stylesheet">	
+  <link  href="../src/jquery-base-slider.css" rel="stylesheet">	
+	<style>
+		.slider-container {
+			width: 400px;
+			height: 8rem;
+			border:1px solid red; 
+			padding:4px;
+		}
+		.date-box {
+			display: inline-block;
+			border:1px solid green; 
+			padding: 4px;
+			width: 7.5rem;
+		}
+		.slider-container .code-container { 
+			width				: 100%;
+			padding			: 2px;
+			font-size		: 8pt;
+			background-color: #DDDDDD;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="position: relative; width:50%;">
+		<div class="slider-container">
+			<div class="code-container"><code id="options_01"></code></div><hr>
+			<input type="text" id="example_01"/>
+		</div>
+		<div class="slider-container">
+			<div class="code-container"><code id="options_02"></code></div><hr>
+			<input type="text" id="example_02"/>
+		</div>
+		<div class="slider-container">
+			<div class="code-container"><code id="options_03"></code></div><hr>
+			<input type="text" id="example_03"/>
+		</div>
+		<div class="slider-container">
+			<div class="code-container"><code id="options_04"></code></div><hr>
+			<input type="text" id="example_04"/>
+		</div>
+		<div class="slider-container">
+			<div class="code-container"><code id="options_05"></code></div><hr>
+			<input type="text" id="example_05"/>
+		</div>
+
+		<div class="slider-container"  style="height:10rem">
+			<div class="code-container"><code id="options_06"></code></div><hr>
+			<input type="text" id="example_06"/>
+			<br>	
+			<br>	
+			<br>	
+			<button id="btnPrevFrom">Previous</button>	
+			<button id="btnNowFrom">"Zero"</button>	
+			<button id="btnNextFrom">Next</button>	
+		</div>
+	
+	</div>
+
+	
+	
+	<script src="bower_components.js"></script>
+	<script src="../src/jquery-base-slider.js"></script>
+	<script>
+		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true});
+		$("#options_01").html('<strong>#1: Normal</strong><br>'+
+		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
+
+		$("#example_02").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true});
+		$("#options_02").html('<strong>#2: Step=5</strong><br>'+
+		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true}');
+
+		$("#example_03").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:2, step:1, step_offset:0, grid:true});
+		$("#options_03").html('<strong>#3: Major ticks offset=2</strong><br>'+
+		                      'options={min:0, max:100, from:20, major_ticks_offset:2, step:1, step_offset:0, grid:true}');
+
+		$("#example_04").baseSlider(   {min:0, max:100, from:23, major_ticks_offset:0, step:5, step_offset:3, grid:true});
+		$("#options_04").html('<strong>#4: Step=5, Step offset=3</strong><br>'+
+		                      'options={min:0, max:100, from:23, major_ticks_offset:0, step:5, step_offset:3, grid:true}');
+
+		$("#example_05").baseSlider(   {min:0, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true});
+		$("#options_05").html('<strong>#5: Step=5, tick offset=2, step offset=3</strong><br>'+
+		                      'options={min:0, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
+
+		$("#example_06").baseSlider({		
+			min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true, 
+			buttons: {	from: {	previousBtn: 'btnPrevFrom',		nowBtn: 'btnNowFrom', nextBtn: 'btnNextFrom'}}
+		});
+		$("#options_06").html('<strong>#6: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
+		                      'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
+
+/*
+		$("#example_02").baseSlider({
+			type: 'double',
+			min	: -20,
+			max	: +40,
+			from: -10,
+			to	: +10,
+			grid: true,
+		});
+*/
+	</script>
+</body>
+</html>

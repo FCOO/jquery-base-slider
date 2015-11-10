@@ -23,13 +23,18 @@ Compared with the original slider there are the following new features
 5. Click on text will move the slider
 6. All settings is set using `options` No settings using `data-..` attribute on the `input`-element
 7. New options: `pin_value`, = a value where a small pin is placed.
-
+8. New options: `step_offset`, = the offset in selectable values when `step` > 1
+9. New options: `major_ticks_offset`, = the offset in the values for major ticks. With `{min:0, max:100, major_ticks_offset:0}` the major ticks may be placed at 0,20,40,..,100. With `{..major_ticks_offset:4}` the major ticks will be placed at 4,24,44,..,94.
 
 
 ## Installation
 ### bower
-`bower install https://github.com/NielsHolt/jquery-base-slider.git --save`
+`bower install https://github.com/fcoo/jquery-base-slider.git --save`
 
+## Demo
+http://fcoo.github.io/jquery-base-slider/demo/ 
+
+The demo shows the different effects of options `step`, `step_offset`, and `major_ticks_offset`
 
 ## Options
 
@@ -93,6 +98,13 @@ Compared with the original slider there are the following new features
             <td>1</td>
             <td>number</td>
             <td>Set sliders step. Always > 0. Could be fractional.</td>
+        </tr>
+
+        <tr>
+            <td>step_offset</td>
+            <td>0</td>
+            <td>number</td>
+            <td>When <code>step</code> > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for <code>type="single"</code></td>
         </tr>
 
         <tr>
@@ -162,8 +174,22 @@ Compared with the original slider there are the following new features
             <td>keyboard_step</td>
             <td>5</td>
             <td>number</td>
-            <td>Movement step, than controling from keyboard. In percents.</td>
+            <td>Movement step, than controlling from keyboard. In percent.</td>
         </tr>
+
+        <tr>
+            <td>major_ticks</td>
+            <td>null</td>
+            <td>number</td>
+            <td>Nummber of <code>step</code> between major ticks. Default=null=> Calculated automatic</td>
+        </tr>
+        <tr>
+            <td>major_ticks_offset</td>
+            <td>0</td>
+            <td>number</td>
+            <td>Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With <code>major_ticks_offset:4</code> the major ticks would be placed on values=4,14,24,...,84,94</td>
+        </tr>
+
         <tr>
             <td>callback_on_dragging</td>
             <td>true</td>
@@ -314,6 +340,14 @@ Compared with the original slider there are the following new features
         </tr>
     </tbody>
 </table>
+
+### Methods
+
+	.adjustValue( value )			: Return value adjusted to fit with min, max, step, and step_offset
+	.setValue( value )				 
+	.setFromValue: function( value )   
+	.setToValue: function( value )	
+	.setPin( value, color )
 
 
 
