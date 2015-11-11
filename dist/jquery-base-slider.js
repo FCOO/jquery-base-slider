@@ -45,7 +45,6 @@ USING
 	// Core
 	//var BaseSlider = function (input, options, plugin_count) {
 	window.BaseSlider = function (input, options, plugin_count) {
-		this.VERSION = "2.3.4";
 		this.input = input;
 		this.plugin_count = plugin_count;
 		this.current_plugin = 0;
@@ -253,19 +252,21 @@ USING
 
 	window.BaseSlider.prototype = {
 		init: function (is_update) {
+			this.options.total	= this.options.max - this.options.min;
+			this.options.oneP		= this.toFixed(100 / this.options.total);
+			this.options.stepP	= this.options.step*this.options.oneP; //this.toFixed(o.step / (total / 100));
 
-			var factor = 100/(this.options.max - this.options.min);
+			var factor = 100/this.options.total;
 			this.coords.p_step = this.options.step * factor; 
 			this.coords.p_step_offset = this.options.step == 1 ? 0 : this.options.step_offset * factor; 
 
-			this.coords.p_min = this.coords.p_step_offset; //Just for naming conversions
-			this.coords.p_max = this.coords.p_min; 
-			while (this.coords.p_max + this.coords.p_step <= 100)
-				this.coords.p_max += this.coords.p_step;
-			
 			this.coords.true_min = this.options.min + this.options.step_offset;
-			var full_offset = this.options.min + this.options.step_offset;
-			this.coords.true_max = full_offset + this.options.step*Math.floor((this.options.max - full_offset)/this.options.step);
+			this.coords.true_max = this.coords.true_min;
+			while (this.coords.true_max + this.options.step <= this.options.max)
+				this.coords.true_max += this.options.step;
+			this.coords.p_min = (this.coords.true_min - this.options.min) * this.options.oneP;
+			this.coords.p_max = (this.coords.true_max - this.options.min) * this.options.oneP;
+			
 
 			this.options.from = this.adjustValue( this.options.from );
 			this.options.to = this.adjustValue( this.options.to );
@@ -1638,7 +1639,6 @@ USING
 
 			
 			var o = this.options,					
-					total = o.max - o.min,
 					gridContainerWidth = this.$cache.grid.outerWidth(false),
 					gridDistanceIndex = 0,
 					value = o.min,
@@ -1646,9 +1646,9 @@ USING
 					valueP = 0,
 					valueOffset;
 			o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-			o.stepPx = o.step*gridContainerWidth/total  / o.major_ticks_factor; 
-			o.oneP = this.toFixed(100 / total);
-			o.stepP = this.toFixed(o.step / (total / 100));
+			o.stepPx = o.step*gridContainerWidth/o.total  / o.major_ticks_factor; 
+//			o.oneP = this.toFixed(100 / total);
+//			o.stepP = this.toFixed(o.step / (total / 100));
 
 			textOptions = $.extend( textOptions || {}, {clickable:true} );
 			tickOptions = tickOptions || {};
