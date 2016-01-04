@@ -14,6 +14,7 @@ USING
 ;(function ($, window, document, undefined) {
 	"use strict";
 
+console.log('skide godt do');
 	//Original irs.slider - with modifications
 	var plugin_count = 0;
 

@@ -1,8 +1,8 @@
 {
-  "name": "jquery-base-slider",
-  "version": "2.4.2",
+  "name"		: "jquery-base-slider",
+  "version"	: "0.0.0",
   "description": "package.json is only use for building the package. see bower.json for more info",
-  "author": "Niels Holt niels@steenbuchholt.dk",
+  "author": "Niels Holt nho@fcoo.dk",
   "license": "MIT",
   "devDependencies": {
     "grunt-bower-concat": "latest",
@@ -17,20 +17,21 @@
     "grunt-exec": "latest",
     "grunt-jsonmin": "latest",
     "grunt-prompt": "latest",
-    "grunt-release": "latest",
     "grunt-sass": "latest",
     "grunt-text-replace": "latest",
     "load-grunt-tasks": "latest",
     "main-bower-files": "latest",
     "semver": "latest",
-    "strip-json-comments": "latest"
+    "shelljs": "^0.5.3",
+    "strip-json-comments": "latest",
+    "wordwrap": "^1.0.0"
   },
   "jshintConfig": {
     "jshintrc": true
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/FCOO/jquery-base-slider.git"
+    "url": "https://github.com/FCOO/jquery-time-slider.git"
   },
-  "homepage": "https://github.com/FCOO/jquery-base-slider"
+  "homepage": "https://github.com/FCOO/jquery-time-slider"
 }
