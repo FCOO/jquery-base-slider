@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="da" style="font-size: 100%">
+<html lang="da" style="font-size: 16px">
 <head>
 	<title>fcoo.dk - jquery-base-slider - Example</title>
 	<meta charset="iso-8859-1" />
@@ -20,22 +20,27 @@
 		.slider-container {
 			width: 25rem;
 			height: 8rem;
-			border: 0.06rem solid red; 
+			border: 0.12rem solid red; 
 			padding:.25rem;
 		}
 		.date-box {
 			display: inline-block;
-			border:0.06rem solid green; 
+			border:0.12rem solid green; 
 			padding: .25rem;
 			width: 7.5rem;
 		}
 		.slider-container .code-container { 
 			width				: 100%;
 			padding			: 0.125rem;
+			font-family	: monospace;
 			font-size		: 0.667rem;
 			background-color: #DDDDDD;
 		}
 
+		code {
+			font-family: monospace;
+			font-size		: 0.8rem;
+		}
 		h4 { 
 			margin		: 0;
 			font-size	: 120%; 
@@ -56,28 +61,27 @@
 	<br><br>
 	<div style="position: relative; width:50%;">
 		<div class="slider-container">
-			<div class="code-container"><code id="options_01"></code></div><hr>
+			<div class="code-container" id="options_01"></div><hr>
 			<input type="text" id="example_01"/>
 		</div>
 		<div class="slider-container">
-			<div class="code-container"><code id="options_02"></code></div><hr>
+			<div class="code-container" id="options_02"></div><hr>
 			<input type="text" id="example_02"/>
 		</div>
 		<div class="slider-container">
-			<div class="code-container"><code id="options_03"></code></div><hr>
+			<div class="code-container" id="options_03"></div><hr>
 			<input type="text" id="example_03"/>
 		</div>
 		<div class="slider-container">
-			<div class="code-container"><code id="options_04"></code></div><hr>
+			<div class="code-container" id="options_04"></div><hr>
 			<input type="text" id="example_04"/>
 		</div>
 		<div class="slider-container">
-			<div class="code-container"><code id="options_05"></code></div><hr>
+			<div class="code-container" id="options_05"></div><hr>
 			<input type="text" id="example_05"/>
 		</div>
-
 		<div class="slider-container"  style="height:10rem">
-			<div class="code-container"><code id="options_06"></code></div><hr>
+			<div class="code-container" id="options_06"></div><hr>
 			<input type="text" id="example_06"/>
 			<br>	
 			<br>	
@@ -96,15 +100,16 @@
 
 	<script>
 		$('.scaleRadio').on( 'change', function(event) {
-			var percent = $(event.target).attr('value');
-			$('html').css('font-size', percent+'%');
+			var percent = 16*parseInt($(event.target).attr('value'))/100;
+//			$('html').css('font-size', percent+'%');
+			$('html').css('font-size', percent+'px');
 		});
 
 		
 		
-		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, use_px:true});
+		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true});
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
-		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, use_px:true}');
+		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
 
 		$("#example_02").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true});
 		$("#options_02").html('<strong>#2: Step=5</strong><br>'+
