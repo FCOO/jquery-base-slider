@@ -1660,7 +1660,7 @@ USING
 					valueP = 0,
 					valueOffset;
 			o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-			o.stepPx = o.step*gridContainerWidth/o.total  / o.major_ticks_factor; 
+			o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor; 
 //			o.oneP = this.toFixed(100 / total);
 //			o.stepP = this.toFixed(o.step / (total / 100));
 
@@ -1669,7 +1669,7 @@ USING
 
 
 			//Increse grid-distance until the space between two ticks are more than 4px 
-			while ( (o.stepPx*o.gridDistanceStep) <= this.pxToRem(4)){
+			while ( (o.stepRem*o.gridDistanceStep) <= this.pxToRem(4)){
 				gridDistanceIndex++;
 				if (gridDistanceIndex < o.gridDistances.length)
 				  o.gridDistanceStep = o.gridDistances[gridDistanceIndex];
@@ -1677,7 +1677,7 @@ USING
 					o.gridDistanceStep = o.gridDistanceStep*2;
 			}
 			o.tickDistanceNum = o.gridDistanceStep*o.step;	//The numerical distance between each ticks
-			o.tickDistancePx = o.gridDistanceStep*o.stepPx;		//The pixel distance between each ticks
+			o.tickDistanceRem = o.gridDistanceStep*o.stepRem;		//The rem distance between each ticks
 
 
 			var _major_ticks = o.major_ticks;
@@ -1698,7 +1698,7 @@ USING
 				//Find ticks between each major tick
 				gridDistanceIndex = 0;
 				_major_ticks = o.gridDistances[gridDistanceIndex];
-				while (_major_ticks*o.tickDistancePx < maxTextWidth){
+				while (_major_ticks*o.tickDistanceRem < maxTextWidth){
 					gridDistanceIndex++;
 					if (gridDistanceIndex < o.gridDistances.length)
 					  _major_ticks = o.gridDistances[gridDistanceIndex];
