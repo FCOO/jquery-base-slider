@@ -14,7 +14,6 @@ USING
 ;(function ($, window, document, undefined) {
 	"use strict";
 
-console.log('skide godt do');
 	//Original irs.slider - with modifications
 	var plugin_count = 0;
 
@@ -91,6 +90,7 @@ console.log('skide godt do');
 		this.options = $.extend({
 			type: "single",
 			slider: "default",
+
 			isInterval: (options.type == 'double'),
 
 			pin_value: null, 
@@ -161,7 +161,6 @@ console.log('skide godt do');
 	
 		this.validate();
 
-	
 		//Add options.step to gridDistances
 		if (this.options.gridDistances.indexOf(this.options.step) == -1)
 			for (var i=0; i<this.options.gridDistances.length; i++ )
@@ -613,7 +612,7 @@ console.log('skide godt do');
 
 			var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
 			
-			this.coords.x_pointer = x - this.coords.x_gap;
+			this.coords.x_pointer = this.pxToRem(x) - this.coords.x_gap;
 
 			this.calc();
 			this.drawHandles(); 
@@ -654,9 +653,8 @@ console.log('skide godt do');
 			this.is_active = true;
 			this.dragging = true;
 
-			this.coords.x_gap = this.$cache.bs.offset().left;
-			this.coords.x_pointer = x - this.coords.x_gap;
-
+			this.coords.x_gap = this.pxToRem(this.$cache.bs.offset().left);
+			this.coords.x_pointer = this.pxToRem(x) - this.coords.x_gap;
 			this.calcPointer();
 
 			switch (target) {
@@ -696,8 +694,8 @@ console.log('skide godt do');
 			this.current_plugin = this.plugin_count;
 			this.target = target;
 			this.is_click = true;
-			this.coords.x_gap = this.$cache.bs.offset().left;
-			this.coords.x_pointer = +(x - this.coords.x_gap).toFixed();
+			this.coords.x_gap = this.pxToRem(this.$cache.bs.offset().left);
+			this.coords.x_pointer = +(this.pxToRem(x) - this.coords.x_gap).toFixed();
 
 			this.force_redraw = true;
 			this.calc(true);
@@ -761,8 +759,8 @@ console.log('skide godt do');
 			this.$cache.min.html(this.decorate(this._prettify(this.options.min), this.options.min));
 			this.$cache.max.html(this.decorate(this._prettify(this.options.max), this.options.max));
 
-			this.labels.w_min = this.$cache.min.outerWidth(false);
-			this.labels.w_max = this.$cache.max.outerWidth(false);
+			this.labels.w_min = this.getOuterWidth(this.$cache.min);
+			this.labels.w_max = this.getOuterWidth(this.$cache.max);
 		},
 
 
@@ -841,9 +839,26 @@ console.log('skide godt do');
 		},
 
 
+		//pxToRem
+		pxToRem: function( valuePx, inclUnit ){ 
+			var fontSize = $('html').css('font-size') || $('body').css('font-size') || '16',
+					result = valuePx / parseFloat( fontSize );
+			return inclUnit ? result + 'rem' : result;
+		},
+
+		//getInnerWidth
+		getInnerWidth: function( $element, inclUnit, factor ){
+			return this.pxToRem( (factor ? factor : 1)*$element.innerWidth(), inclUnit );
+		},
+		
+		//getOuterWidth
+		getOuterWidth: function( $element, inclUnit, factor ){
+			return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
+		},
+		
 		//getCoords_w_rs
 		getCoords_w_rs: function(){
-			var result = this.$cache.container.innerWidth(); //Bug fixed - didn't work in Chrome: this.$cache.bs.outerWidth(false);
+			var result = this.getInnerWidth(this.$cache.container); //Bug fixed - didn't work in Chrome: this.$cache.bs.outerWidth(false);
 			this.coords.w_rs = result ? result : this.coords.w_rs;
 
 		},
@@ -854,11 +869,11 @@ console.log('skide godt do');
 				return;
 			}
 			if (update) { 
-				this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
+				this.getCoords_w_rs(); 
 				if (this.options.type === "single") {
-					this.coords.w_handle = this.$cache.s_single.outerWidth(false);
+					this.coords.w_handle = this.getOuterWidth(this.$cache.s_single);
 				} else {
-					this.coords.w_handle = this.$cache.s_from.outerWidth(false);
+					this.coords.w_handle = this.getOuterWidth(this.$cache.s_from);
 				}
 			}
 			if (!this.coords.w_rs) {
@@ -1035,26 +1050,26 @@ console.log('skide godt do');
 			}
 
 			if (this.options.type === "single") {
-				this.labels.w_single = this.$cache.single.outerWidth(false);
+				this.labels.w_single = this.getOuterWidth(this.$cache.single);
 				this.labels.p_single = this.labels.w_single / this.coords.w_rs * 100;
 				this.labels.p_single_left = this.coords.p_single + (this.coords.p_handle / 2) - (this.labels.p_single / 2);
 				this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
 
 			} else {
 
-				this.labels.w_from = this.$cache.from.outerWidth(false);
+				this.labels.w_from = this.getOuterWidth(this.$cache.from);
 				this.labels.p_from = this.labels.w_from / this.coords.w_rs * 100;
 				this.labels.p_from_left = this.coords.p_from + (this.coords.p_handle / 2) - (this.labels.p_from / 2);
 				this.labels.p_from_left = this.toFixed(this.labels.p_from_left);
 				this.labels.p_from_left = this.checkEdges(this.labels.p_from_left, this.labels.p_from);
 
-				this.labels.w_to = this.$cache.to.outerWidth(false);
+				this.labels.w_to = this.getOuterWidth(this.$cache.to);
 				this.labels.p_to = this.labels.w_to / this.coords.w_rs * 100;
 				this.labels.p_to_left = this.coords.p_to + (this.coords.p_handle / 2) - (this.labels.p_to / 2);
 				this.labels.p_to_left = this.toFixed(this.labels.p_to_left);
 				this.labels.p_to_left = this.checkEdges(this.labels.p_to_left, this.labels.p_to);
 
-				this.labels.w_single = this.$cache.single.outerWidth(false);
+				this.labels.w_single = this.getOuterWidth(this.$cache.single);
 				this.labels.p_single = this.labels.w_single / this.coords.w_rs * 100;
 				this.labels.p_single_left = ((this.labels.p_from_left + this.labels.p_to_left + this.labels.p_to) / 2) - (this.labels.p_single / 2);
 				this.labels.p_single_left = this.toFixed(this.labels.p_single_left);
@@ -1068,7 +1083,7 @@ console.log('skide godt do');
 
 		//drawHandles
 		drawHandles: function () { 
-			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
+			this.getCoords_w_rs(); 
 
 			if (!this.coords.w_rs) {
 				return;
@@ -1532,20 +1547,18 @@ console.log('skide godt do');
 		// Grid - use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
 
 		appendGridContainer: function(){ 
-			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
-			
+			this.getCoords_w_rs(); 
 			if (this.currentGridContainer){
 				this.totalGridContainerTop += this.currentGridContainer.height();  
 				this.currentGridContainer = 
 					$('<span class="grid"></span>').insertAfter( this.currentGridContainer );
-				this.currentGridContainer.css('top', this.totalGridContainerTop+'px');
+				this.currentGridContainer.css('top', this.pxToRem( this.totalGridContainerTop, true) );
 			}
 			else {
 				this.currentGridContainer = this.$cache.grid;
 				this.totalGridContainerTop = this.currentGridContainer.position().top; 
 			}
 			this.$cache.grid = this.$cache.cont.find(".grid"); 
-
 			return this.currentGridContainer;
 		},
 		
@@ -1585,7 +1598,7 @@ console.log('skide godt do');
 			result.appendTo( this.currentGridContainer );
 
 			//Center the label
-			result.css( 'margin-left', -result.outerWidth(false)/2 + 'px' );
+			result.css( 'margin-left', this.getOuterWidth(result, true, -0.5) );
 
 			if (options.clickable){
 				//Check if the value for the label is a selectable one
@@ -1619,7 +1632,7 @@ console.log('skide godt do');
 				elem = this.appendText( 0, value, options ),
 				result = parseFloat( elem.outerWidth(false) );
 			elem.remove();
-			return result;
+			return this.pxToRem(result);
 		},
 
 		//appendGrid 
@@ -1640,7 +1653,7 @@ console.log('skide godt do');
 
 			
 			var o = this.options,					
-					gridContainerWidth = this.$cache.grid.outerWidth(false),
+					gridContainerWidth = this.getOuterWidth(this.$cache.grid),
 					gridDistanceIndex = 0,
 					value = o.min,
 					maxTextWidth = 0,
@@ -1656,7 +1669,7 @@ console.log('skide godt do');
 
 
 			//Increse grid-distance until the space between two ticks are more than 4px 
-			while ( (o.stepPx*o.gridDistanceStep) <= 4){
+			while ( (o.stepPx*o.gridDistanceStep) <= this.pxToRem(4)){
 				gridDistanceIndex++;
 				if (gridDistanceIndex < o.gridDistances.length)
 				  o.gridDistanceStep = o.gridDistances[gridDistanceIndex];
@@ -1680,7 +1693,7 @@ console.log('skide godt do');
 					}
 					value += 1;
 				}
-				maxTextWidth += 6; //Adding min space between text/labels
+				maxTextWidth += this.pxToRem(6); //Adding min space between text/labels
 
 				//Find ticks between each major tick
 				gridDistanceIndex = 0;
@@ -1719,15 +1732,15 @@ console.log('skide godt do');
 
 		//calcGridMargin
 		calcGridMargin: function () { 
-			this.getCoords_w_rs(); //this.coords.w_rs = this.$cache.bs.outerWidth(false);
+			this.getCoords_w_rs(); 
 			if (!this.coords.w_rs) {
 				return;
 			}
 
 			if (this.options.type === "single") {
-				this.coords.w_handle = this.$cache.s_single.outerWidth(false);
+				this.coords.w_handle = this.getOuterWidth(this.$cache.s_single);
 			} else {
-				this.coords.w_handle = this.$cache.s_from.outerWidth(false);
+				this.coords.w_handle = this.getOuterWidth(this.$cache.s_from);
 			}
 			this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
 			this.coords.grid_gap = this.toFixed((this.coords.p_handle / 2) - 0.1);

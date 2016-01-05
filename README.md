@@ -15,7 +15,7 @@ In jquery-base-slider some of the original options have been removed and some ne
 Compared with the original slider there are the following new features
 1. The css is created using SASS
 2. Four types of sliders (`default`, `small`, `round` and `range`)
-2. The slider is resizeable using only `rem` as size unit
+2. The slider is resizeable using only `rem` as size unit.  
 3. Automatic placement of minor ticks, major ticks and text/label
 3. The slider will *not* recalculate grid when the container changes size
 3. Possible to add more than one grid
@@ -58,10 +58,8 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
             <td>slider</td>
             <td>"default"</td>
             <td>string</td>
-            <td>Choose slider type, could be <code>default</code>, <code>small</code>, <code>round</code>, or <code>range</code>					
-		</td>
+            <td>Choose slider type, could be <code>default</code>, <code>small</code>, <code>round</code>, or <code>range</code></td>
         </tr>
-   
         <tr>
             <td>min</td>
             <td>10</td>

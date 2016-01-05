@@ -18,27 +18,42 @@
   <link  href="../src/jquery-base-slider.css" rel="stylesheet">	
 	<style>
 		.slider-container {
-			width: 400px;
+			width: 25rem;
 			height: 8rem;
-			border:1px solid red; 
-			padding:4px;
+			border: 0.06rem solid red; 
+			padding:.25rem;
 		}
 		.date-box {
 			display: inline-block;
-			border:1px solid green; 
-			padding: 4px;
+			border:0.06rem solid green; 
+			padding: .25rem;
 			width: 7.5rem;
 		}
 		.slider-container .code-container { 
 			width				: 100%;
-			padding			: 2px;
-			font-size		: 8pt;
+			padding			: 0.125rem;
+			font-size		: 0.667rem;
 			background-color: #DDDDDD;
+		}
+
+		h4 { 
+			margin		: 0;
+			font-size	: 120%; 
 		}
 	</style>
 </head>
 
 <body>
+	<h4>Scale</h4>
+	<div>
+		<input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off">60%</label>
+    <input type="radio" class="scaleRadio" name="options" id="option2" value="80" autocomplete="off">80%</label>
+    <input type="radio" class="scaleRadio" name="options" id="option3" value="100" autocomplete="off" checked>100%</label>
+    <input type="radio" class="scaleRadio" name="options" id="option4" value="120" autocomplete="off">120%</label>
+    <input type="radio" class="scaleRadio" name="options" id="option5" value="150" autocomplete="off">150%</label>
+    <input type="radio" class="scaleRadio" name="options" id="option6" value="300" autocomplete="off">300%</label>
+	</div>
+	<br><br>
 	<div style="position: relative; width:50%;">
 		<div class="slider-container">
 			<div class="code-container"><code id="options_01"></code></div><hr>
@@ -78,10 +93,18 @@
 	
 	<script src="bower_components.js"></script>
 	<script src="../src/jquery-base-slider.js"></script>
+
 	<script>
-		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true});
+		$('.scaleRadio').on( 'change', function(event) {
+			var percent = $(event.target).attr('value');
+			$('html').css('font-size', percent+'%');
+		});
+
+		
+		
+		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, use_px:true});
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
-		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
+		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, use_px:true}');
 
 		$("#example_02").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true});
 		$("#options_02").html('<strong>#2: Step=5</strong><br>'+
@@ -116,6 +139,9 @@
 			grid: true,
 		});
 */
+
+
+	
 	</script>
 </body>
 </html>
