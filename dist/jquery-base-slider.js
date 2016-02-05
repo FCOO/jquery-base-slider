@@ -50,7 +50,6 @@ USING
 		this.current_plugin = 0;
 		this.old_from = 0;
 		this.old_to = 0;
-		this.raf_id = null;
 		this.dragging = false;
 		this.force_redraw = false;
 		this.is_key = false;
@@ -434,8 +433,6 @@ USING
 
 
 			this.$cache.grid_labels = [];
-
-			window.cancelAnimationFrame(this.raf_id);
 		},
 
 		//bindEvents
