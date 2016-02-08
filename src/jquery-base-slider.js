@@ -21,9 +21,7 @@ USING
       var len = this.length >>> 0;
 
       var from = Number(arguments[1]) || 0;
-      from = (from < 0)
-      ? Math.ceil(from)
-      : Math.floor(from);
+      from = (from < 0) ? Math.ceil(from) : Math.floor(from);
       if (from < 0)
         from += len;
 
