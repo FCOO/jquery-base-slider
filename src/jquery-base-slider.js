@@ -14,12 +14,39 @@ USING
 ;(function ($, window, document, undefined) {
 	"use strict";
 
+	//Polifil for Array.indexOf
+	if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(elt /*, from*/)
+    {
+      var len = this.length >>> 0;
+
+      var from = Number(arguments[1]) || 0;
+      from = (from < 0)
+      ? Math.ceil(from)
+      : Math.floor(from);
+      if (from < 0)
+        from += len;
+
+      for (; from < len; from++)
+      {
+        if (from in this &&
+            this[from] === elt)
+          return from;
+      }
+      return -1;
+    };
+  }
+
+
+
+
+
 	//Original irs.slider - with modifications
 	var plugin_count = 0;
 
   // Template
 	var base_html =
-		'<span class="bs">' + 
+		'<span class="bs">' +
 			'<span class="line" tabindex="-1">'+
 				'<span class="line-left"></span>'+
 			'</span>' +
@@ -29,7 +56,7 @@ USING
 			'<span class="marker-to">0</span>'+
 			'<span class="marker-single">0</span>' +
 		'</span>' +
-		'<span class="grid"></span>' + 
+		'<span class="grid"></span>' +
 		'<span class="bar"></span>';
 
 	var single_html =
@@ -79,9 +106,9 @@ USING
 			s_to: null,
 			grid: null,
 			grid_labels: [],
-			buttons: { 
-				from: {}, 
-				to	: {} 
+			buttons: {
+				from: {},
+				to	: {}
 			}
 		};
 
@@ -92,7 +119,7 @@ USING
 
 			isInterval: (options.type == 'double'),
 
-			pin_value: null, 
+			pin_value: null,
 
 			min: 10,
 			max: 100,
@@ -100,26 +127,26 @@ USING
 			to: null,
 			step: 1,
 			step_offset: 0,
-	
+
 			min_interval: 0,
 			max_interval: 0,
-	
+
 			p_values: [],
-	
+
 			from_fixed: false,
 			from_min: null,
 			from_max: null,
-	
+
 			to_fixed: false,
 			to_min: null,
 			to_max: null,
-	
+
 			prettify: null,
 			prettify_text: null,
-			
+
 
 			marker_frame: false,
-	
+
 			impact_line: false,
 			impact_line_reverse: false,
 			hide_bar_color: false,
@@ -131,19 +158,19 @@ USING
 			grid: false,
 			hide_minor_ticks: false,
 			major_ticks: null, // => calculated automatic
-			major_ticks_offset: 0, 
-			major_ticks_factor: 1, 
+			major_ticks_offset: 0,
+			major_ticks_factor: 1,
 
 			ticks_on_line: false,
 			hide_min_max: true,
 			hide_from_to: false,
-	
+
 			prefix: "",
 			postfix: "",
 			max_postfix: "",
 			decorate_both: true,
 			values_separator: " - ",
-	
+
 			disable: false,
 
 			buttons_attr	: ['firstBtn', 'previousBtn', 'nowBtn', 'nextBtn', 'lastBtn'],
@@ -151,13 +178,13 @@ USING
 			buttons				: {from: {}, to: {} },
 
 			gridDistances : [1, 2, 5, 10, 20, 50, 100],
-			
+
 			onStart: null,
 			onChange: null,
 			onFinish: null,
 			onUpdate: null
 		}, options);
-	
+
 		this.validate();
 
 		//Add options.step to gridDistances
@@ -169,7 +196,7 @@ USING
 				}
 		if (this.options.gridDistances.indexOf(this.options.step) == -1)
 			this.options.gridDistances.push(this.options.step);
-	
+
 
 		this.options.has_pin = (this.options.pin_value !== null);
 		this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
@@ -178,12 +205,12 @@ USING
 			// left
 			x_gap: 0,
 			x_pointer: 0,
-	
+
 			// width
 			w_rs: 0,
 			w_rs_old: 0,
 			w_handle: 0,
-	
+
 			// percents
 			p_gap: 0,
 			p_gap_left: 0,
@@ -201,7 +228,7 @@ USING
 			p_bar_w: 0,
 			p_min: 0,
 			p_max: 0,
-	
+
 			// min and max coorected with step and step_offset
 			true_min: 0,
 			true_max: 0,
@@ -209,23 +236,23 @@ USING
 			// grid
 			grid_gap: 0,
 		};
-	
+
 		this.result = {
 			input: this.$cache.input,
 			slider: null,
-	
+
 			min: this.options.min,
 			max: this.options.max,
-	
+
 			from: this.options.from,
 			from_percent: 0,
 			from_value: null,
-	
+
 			to: this.options.to,
 			to_percent: 0,
 			to_value: null
 		};
-	
+
 		this.labels = {
 			// width
 			w_min: 0,
@@ -233,7 +260,7 @@ USING
 			w_from: 0,
 			w_to: 0,
 			w_single: 0,
-	
+
 			// percents
 			p_min: 0,
 			p_max: 0,
@@ -244,7 +271,7 @@ USING
 			p_single: 0,
 			p_single_left: 0
 		};
-	
+
 	  this.init();
 
 	};
@@ -256,8 +283,8 @@ USING
 			this.options.stepP	= this.options.step*this.options.oneP; //this.toFixed(o.step / (total / 100));
 
 			var factor = 100/this.options.total;
-			this.coords.p_step = this.options.step * factor; 
-			this.coords.p_step_offset = this.options.step == 1 ? 0 : this.options.step_offset * factor; 
+			this.coords.p_step = this.options.step * factor;
+			this.coords.p_step_offset = this.options.step == 1 ? 0 : this.options.step_offset * factor;
 
 			this.coords.true_min = this.options.min + this.options.step_offset;
 			this.coords.true_max = this.coords.true_min;
@@ -265,7 +292,7 @@ USING
 				this.coords.true_max += this.options.step;
 			this.coords.p_min = (this.coords.true_min - this.options.min) * this.options.oneP;
 			this.coords.p_max = (this.coords.true_max - this.options.min) * this.options.oneP;
-			
+
 
 			this.options.from = this.adjustValue( this.options.from );
 			this.options.to = this.adjustValue( this.options.to );
@@ -280,7 +307,7 @@ USING
 			if (is_update) {
 				this.force_redraw = true;
 				this.calc(true);
-				this.onUpdate(); 
+				this.onUpdate();
 
 			} else {
 
@@ -289,14 +316,14 @@ USING
 				this.onStart();
 			}
 
-			this.drawHandles(); 
+			this.drawHandles();
 		},
 
 		//append
 		append: function () {
-			this.$cache.container = $('<span class="base-slider ' + this.options.slider + ' js-base-slider-' + this.plugin_count + '"></span>'); 
+			this.$cache.container = $('<span class="base-slider ' + this.options.slider + ' js-base-slider-' + this.plugin_count + '"></span>');
 			this.$cache.input.before(this.$cache.container);
-			
+
 			this.$cache.input.prop("readonly", true);
 			this.$cache.cont = this.$cache.input.prev();
 			this.result.slider = this.$cache.cont;
@@ -324,10 +351,10 @@ USING
 				this.$cache.cont.append(double_html);
 				this.$cache.s_from = this.$cache.cont.find(".from");
 				this.$cache.s_to = this.$cache.cont.find(".to");
-	
+
 				if (this.options.has_pin){
 					this.$cache.cont.append(pin_html);
-					this.$cache.s_pin = this.$cache.cont.find(".slider.pin"); 
+					this.$cache.s_pin = this.$cache.cont.find(".slider.pin");
 				}
 
 				//Add classs if it is a (reverse) impact-line
@@ -339,16 +366,16 @@ USING
 			}
 
 			if (this.options.hide_from_to) {
-				this.$cache.from.hide(); 
-				this.$cache.to.hide(); 
-				this.$cache.single.hide(); 
+				this.$cache.from.hide();
+				this.$cache.to.hide();
+				this.$cache.single.hide();
 			}
 
 
 			//Add class to set bar color same as line
 			if (this.options.hide_bar_color)
 				this.$cache.bar.addClass('hide-bar-color');
-			
+
 			//Set alternative bar color
 			if (this.options.bar_color)
 				this.$cache.bar.css('background-color', this.options.bar_color);
@@ -379,22 +406,22 @@ USING
 				this.$cache.buttons.from[ attrName ]	= getButton( this.options.buttons.from[ attrName ] );
 				this.$cache.buttons.to	[ attrName ]	= getButton( this.options.buttons.to	[ attrName ] );
 			}
-			
+
 			//Append grid(s)
 			this.currentGridContainer = null;
 			if (this.options.grid){
 				this.appendGrid();
-			} else { 
+			} else {
 				this.$cache.grid.remove();
 			}
 
 			if (this.options.disable) {
 				this.$cache.cont.addClass("disabled");
-				this.$cache.input.prop('disabled', true); 
-			} else 
+				this.$cache.input.prop('disabled', true);
+			} else
 				if (this.options.read_only){
 					this.$cache.cont.addClass("read-only");
-					this.$cache.input.prop('disabled', true); 
+					this.$cache.input.prop('disabled', true);
 				} else {
 					this.$cache.cont.addClass("active");
 					this.$cache.input.prop('disabled', false);
@@ -423,7 +450,7 @@ USING
 					attrName = this.options.buttons_attr[i];
 					$btn = this.$cache.buttons[id][attrName];
 					if ($btn)
-					  $btn.off( 
+					  $btn.off(
 							"mousedown.irs_" + this.plugin_count +
 							" mouseup.irs_" + this.plugin_count +
 							" mouseleave.irs_" + this.plugin_count +
@@ -437,29 +464,29 @@ USING
 
 		//bindEvents
 		bindEvents: function () {
-			this.$cache.body.on("touchmove.irs_" + this.plugin_count, this.pointerMove.bind(this));
-			this.$cache.body.on("mousemove.irs_" + this.plugin_count, this.pointerMove.bind(this));
+			this.$cache.body.on("touchmove.irs_" + this.plugin_count, $.proxy(this.pointerMove, this) ); /* this.pointerMove.bind(this) */
+			this.$cache.body.on("mousemove.irs_" + this.plugin_count, $.proxy( this.pointerMove, this) );	/*	this.pointerMove.bind(this) */
 
-			this.$cache.win.on("touchend.irs_" + this.plugin_count, this.pointerUp.bind(this));
-			this.$cache.win.on("mouseup.irs_" + this.plugin_count, this.pointerUp.bind(this));
+			this.$cache.win.on("touchend.irs_" + this.plugin_count,	$.proxy( this.pointerUp, this) );	/*	this.pointerUp.bind(this) */
+			this.$cache.win.on("mouseup.irs_" + this.plugin_count,	$.proxy( this.pointerUp, this) );	/*	this.pointerUp.bind(this) */
 
-			this.$cache.line.on("touchstart.irs_" + this.plugin_count, this.pointerClick.bind(this, "click"));
-			this.$cache.line.on("mousedown.irs_" + this.plugin_count, this.pointerClick.bind(this, "click"));
+			this.$cache.line.on("touchstart.irs_" + this.plugin_count,	$.proxy( this.pointerClick, this, "click") ); /* this.pointerClick.bind(this, "click") */
+			this.$cache.line.on("mousedown.irs_" + this.plugin_count,		$.proxy( this.pointerClick, this, "click") ); /* this.pointerClick.bind(this, "click") */
 
-			this.$cache.bar.on("touchstart.irs_" + this.plugin_count, this.pointerClick.bind(this, "click"));
-			this.$cache.bar.on("mousedown.irs_" + this.plugin_count, this.pointerClick.bind(this, "click"));
+			this.$cache.bar.on("touchstart.irs_" + this.plugin_count,	$.proxy( this.pointerClick, this, "click") ); /* this.pointerClick.bind(this, "click") */
+			this.$cache.bar.on("mousedown.irs_" + this.plugin_count,	$.proxy( this.pointerClick, this, "click") ); /* this.pointerClick.bind(this, "click") */
 
 			if (this.options.type === "single") {
-				this.$cache.s_single.on("touchstart.irs_" + this.plugin_count, this.pointerDown.bind(this, "single"));
-				this.$cache.s_single.on("mousedown.irs_" + this.plugin_count, this.pointerDown.bind(this, "single"));
+				this.$cache.s_single.on("touchstart.irs_" + this.plugin_count,	$.proxy( this.pointerDown, this, "single") );	/*	this.pointerDown.bind(this, "single")		*/
+				this.$cache.s_single.on("mousedown.irs_" + this.plugin_count,		$.proxy( this.pointerDown, this, "single") );	/*	this.pointerDown.bind(this, "single")		*/
 			} else {
-				this.$cache.s_from.on("touchstart.irs_" + this.plugin_count, this.pointerDown.bind(this, "from"));
-				this.$cache.s_to.on("touchstart.irs_" + this.plugin_count, this.pointerDown.bind(this, "to"));
-				this.$cache.s_from.on("mousedown.irs_" + this.plugin_count, this.pointerDown.bind(this, "from"));
-				this.$cache.s_to.on("mousedown.irs_" + this.plugin_count, this.pointerDown.bind(this, "to"));
+				this.$cache.s_from.on("touchstart.irs_" + this.plugin_count,	$.proxy( this.pointerDown, this, "from") );	/*	this.pointerDown.bind(this, "from")	*/
+				this.$cache.s_from.on("mousedown.irs_" + this.plugin_count,		$.proxy( this.pointerDown, this, "from") );	/*	this.pointerDown.bind(this, "from")	*/
+				this.$cache.s_to.on("mousedown.irs_" + this.plugin_count,		$.proxy( this.pointerDown, this, "to") );	/*	this.pointerDown.bind(this, "to")	*/
+				this.$cache.s_to.on("touchstart.irs_" + this.plugin_count,	$.proxy( this.pointerDown, this, "to") );	/*	this.pointerDown.bind(this, "to")	*/
 			}
 
-			this.$cache.line.on("keydown.irs_" + this.plugin_count, this.key.bind(this, "keyboard"));
+			this.$cache.line.on("keydown.irs_" + this.plugin_count, $.proxy( this.key, this, "keyboard") );	/*	this.key.bind(this, "keyboard")	*/
 
 			//Bind click on buttons
 			var id, i, attrName, delta, $btn;
@@ -469,13 +496,13 @@ USING
 					delta = this.options.buttons_delta[i];
 
 					$btn = this.$cache.buttons[id][attrName];
-					
+
 					if ($btn){
 						$btn
-							.on("mousedown.irs_" + this.plugin_count,		this.startRepeatingClick.bind(this)				)
-							.on("mouseup.irs_" + this.plugin_count,			this.endRepeatingClick.bind(this)					) 
-							.on("mouseleave.irs_" + this.plugin_count,	this.endRepeatingClick.bind(this, true)		) 
-							.on("click.irs_" + this.plugin_count,				this.buttonClick.bind(this, {id:id, delta:delta}) ); 
+							.on("mousedown.irs_" + this.plugin_count,		$.proxy( this.startRepeatingClick, this )				)	/* this.startRepeatingClick.bind(this)	*/
+							.on("mouseup.irs_" + this.plugin_count,			$.proxy( this.endRepeatingClick, this )					)	/* this.endRepeatingClick.bind(this)	*/
+							.on("mouseleave.irs_" + this.plugin_count,	$.proxy( this.endRepeatingClick, this, true )		)	/*	this.endRepeatingClick.bind(this, true)	*/
+							.on("click.irs_" + this.plugin_count,				$.proxy( this.buttonClick, this, {id:id, delta:delta} ) );	/*	this.buttonClick.bind(this, {id:id, delta:delta})	*/
 
 						if ( $btn.autoclickWhilePressed && (Math.abs(delta) == 1) && (!$btn.data('auto-click-when-pressed-added')) )
 							$btn.data('auto-click-when-pressed-added', true);
@@ -488,18 +515,18 @@ USING
 		//adjustResult - adjust this.resut before onStart,..,callback is called
 		adjustResult: function(){
 			//Nothing here but desencing class can overwrite it
-		}, 
+		},
 
 		//onFunc
-		onFunc: function(func){	
+		onFunc: function(func){
 			this.adjustResult();
-			if (func && typeof func === "function") 
-				func.call(this, this.result); 
+			if (func && typeof func === "function")
+				func.call(this, this.result);
 
 		},
 
 		//onCallback
-		onCallback: function(){ 
+		onCallback: function(){
 			this.lastResult = this.lastResult  || {};
 			if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {
 				this.adjustResult();
@@ -511,16 +538,16 @@ USING
 					this.options.callback( this.result );
 				this.lastResult = $.extend({}, this.result);
 			}
-		},			
-			
+		},
+
 		//onStart
-		onStart: function(){ 
+		onStart: function(){
 			this.onCallback();
 			this.onFunc(this.options.onStart);
-		},						
+		},
 
 		//onChange
-		onChange: function(){ 
+		onChange: function(){
 			//If it is dragging and no callback_on_dragging => set timeout to call callback after XX ms if the slider hasn't moved
 			if (this.dragging && !this.options.callback_on_dragging && this.options.callback_delay){
 				if (this.delayTimeout)
@@ -535,32 +562,32 @@ USING
 			if ( this.options.callback_on_dragging || (!this.is_repeating_click && !this.dragging) )
 				this.onCallback();
 			this.onFunc(this.options.onChange);
-		},		 
+		},
 
 		//onFinish
-		onFinish: function(){ 
+		onFinish: function(){
 			if (this.delayTimeout)
 				window.clearTimeout(this.delayTimeout);
 
 			if (!this.is_repeating_click)
 				this.onCallback();
 			this.onFunc(this.options.onFinish);
-		},		 
+		},
 
 		//onUpdate
-		onUpdate: function(){ 
+		onUpdate: function(){
 			this.onFunc(this.options.onUpdate);
-		},		 
+		},
 
 		//buttonClick
-		buttonClick: function (options){ 
+		buttonClick: function (options){
 			var newValue = options.id == 'from' ? this.result.from : this.result.to;
 			switch (options.delta){
 			  case	 0: newValue = 0; break;
 				case -99: newValue = this.options.min; break;
 				case  99: newValue = this.options.max; break;
-				case  +1: newValue = newValue + this.options.step; break;				
-				case  -1: newValue = newValue - this.options.step; break;				
+				case  +1: newValue = newValue + this.options.step; break;
+				case  -1: newValue = newValue - this.options.step; break;
 			}
 			if (options.id == 'from')
 				this.setFromValue( newValue );
@@ -574,14 +601,14 @@ USING
 		},
 
 		//endRepeatingClick
-		endRepeatingClick: function (callback) { 
+		endRepeatingClick: function (callback) {
 			this.is_repeating_click = false;
 			if (callback)
 				this.onCallback();
 		},
 
-		//textClick - click on label 
-		textClick: function( e ){ 
+		//textClick - click on label
+		textClick: function( e ){
 			var value = $(e.target).data('base-slider-value');
 			if (!this.options.isInterval){
 				this.setValue( value );
@@ -593,26 +620,26 @@ USING
 			else
 				if (this.result.to <= value)
 				  this.setToValue (value );
-				else 
+				else
 					if (Math.abs( this.result.from - value ) >= Math.abs( this.result.to - value ))
 						this.setToValue( value );
 					else
 						this.setFromValue( value );
-		}, 
+		},
 
-		
+
 		//pointerMove
-		pointerMove: function (e) { 
+		pointerMove: function (e) {
 			if (!this.dragging) {
 				return;
 			}
 
 			var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
-			
+
 			this.coords.x_pointer = this.pxToRem(x) - this.coords.x_gap;
 
 			this.calc();
-			this.drawHandles(); 
+			this.drawHandles();
 
 		},
 
@@ -639,7 +666,7 @@ USING
 		},
 
 		//pointerDown
-		pointerDown: function (target, e) { 
+		pointerDown: function (target, e) {
 			e.preventDefault();
 			var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
 			if (e.button === 2) {
@@ -696,7 +723,7 @@ USING
 
 			this.force_redraw = true;
 			this.calc(true);
-			this.drawHandles(); 
+			this.drawHandles();
 
 			this.$cache.line.trigger("focus");
 		},
@@ -727,7 +754,7 @@ USING
 
 		// Move by key beta
 		// TODO: refactor than have plenty of time
-		moveByKey: function (right) { 
+		moveByKey: function (right) {
 			var p = this.coords.p_pointer;
 			if (right) {
 				p += this.options.p_keyboard_step;
@@ -739,8 +766,8 @@ USING
 			this.calc();
 
 			this.force_redraw = true;
-			this.drawHandles(); 
-	
+			this.drawHandles();
+
 		},
 
 		//setMinMax
@@ -749,8 +776,8 @@ USING
 				return;
 			}
 			if (this.options.hide_min_max) {
-				this.$cache.min.hide(); 
-				this.$cache.max.hide(); 
+				this.$cache.min.hide();
+				this.$cache.max.hide();
 				return;
 			}
 			this.$cache.min.html(this.decorate(this._prettify(this.options.min), this.options.min));
@@ -771,7 +798,7 @@ USING
 
 			//Adjust with respect to max value
 			value = Math.min( this.coords.true_max, value );
-	
+
 			//Adjust with respect to step and step_offset
 			value = this.coords.true_min + this.options.step*Math.round( (value - this.coords.true_min)/this.options.step );
 
@@ -783,8 +810,8 @@ USING
 		setValue: function( value ) { this.setFromValue( value ); },
 
 		//setFromValue
-		setFromValue: function( value ) { 
-			value = this.adjustValue( value );			
+		setFromValue: function( value ) {
+			value = this.adjustValue( value );
 
 			if (this.options.isInterval)
 			  value = Math.min( value, this.result.to );
@@ -796,7 +823,7 @@ USING
 				this.is_key = true;
 				this.calc();
 				this.force_redraw = true;
-				this.drawHandles(); 
+				this.drawHandles();
 			}
 			this.onCallback();
 		},
@@ -804,7 +831,7 @@ USING
 		//setToValue
 		setToValue: function( value ) {
 			value = Math.max( value, this.result.from );
-			value = this.adjustValue( value );			
+			value = this.adjustValue( value );
 
 			this.old_to = this.result.to;
 			this.result.to = value;
@@ -813,7 +840,7 @@ USING
 				this.is_key = true;
 				this.calc();
 				this.force_redraw = true;
-				this.drawHandles(); 
+				this.drawHandles();
 			}
 			this.onCallback();
 		},
@@ -832,12 +859,12 @@ USING
 			this.$cache.s_pin.css({
 				left	: this.coords.p_pin_value + "%",
 				color	: color || 'black'
-			});			
+			});
 		},
 
 
 		//pxToRem
-		pxToRem: function( valuePx, inclUnit ){ 
+		pxToRem: function( valuePx, inclUnit ){
 			var fontSize = $('html').css('font-size') || $('body').css('font-size') || '16',
 					result = valuePx / parseFloat( fontSize );
 			return inclUnit ? result + 'rem' : result;
@@ -847,12 +874,12 @@ USING
 		getInnerWidth: function( $element, inclUnit, factor ){
 			return this.pxToRem( (factor ? factor : 1)*$element.innerWidth(), inclUnit );
 		},
-		
+
 		//getOuterWidth
 		getOuterWidth: function( $element, inclUnit, factor ){
 			return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
 		},
-		
+
 		//getCoords_w_rs
 		getCoords_w_rs: function(){
 			var result = this.getInnerWidth(this.$cache.container); //Bug fixed - didn't work in Chrome: this.$cache.bs.outerWidth(false);
@@ -861,12 +888,12 @@ USING
 		},
 
 		//calc
-		calc: function (update) { 
+		calc: function (update) {
 			if (!this.options) {
 				return;
 			}
-			if (update) { 
-				this.getCoords_w_rs(); 
+			if (update) {
+				this.getCoords_w_rs();
 				if (this.options.type === "single") {
 					this.coords.w_handle = this.getOuterWidth(this.$cache.s_single);
 				} else {
@@ -910,7 +937,7 @@ USING
 					this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
 					this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
-					if (this.options.has_pin){ 
+					if (this.options.has_pin){
 						var r = (this.options.pin_value - this.options.min) / w,
 								p_pin_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
 						this.coords.p_pin_value = this.toFixed(p_pin_value_real / 100 * real_width);
@@ -997,7 +1024,7 @@ USING
 
 			this.calcMinMax();
 			this.calcLabels();
-		
+
 		}, //end of calc()
 
 		//calcPointer
@@ -1076,16 +1103,16 @@ USING
 		},
 
 		// =============================================================================================================
-		// Drawings 
+		// Drawings
 
 		//drawHandles
-		drawHandles: function () { 
-			this.getCoords_w_rs(); 
+		drawHandles: function () {
+			this.getCoords_w_rs();
 
 			if (!this.coords.w_rs) {
 				return;
 			}
-			if (this.coords.w_rs !== this.coords.w_rs_old) { 
+			if (this.coords.w_rs !== this.coords.w_rs_old) {
 				this.target = "base";
 				this.is_resize = true;
 			}
@@ -1112,36 +1139,36 @@ USING
 			if (this.old_from !== this.result.from || this.old_to !== this.result.to || this.force_redraw || this.is_key) {
 
 				this.drawLabels();
-				this.$cache.bar.css('left', this.coords.p_bar_x + "%"); 
-				this.$cache.bar.css('width', this.coords.p_bar_w + "%"); 
+				this.$cache.bar.css('left', this.coords.p_bar_x + "%");
+				this.$cache.bar.css('width', this.coords.p_bar_w + "%");
 
 				if (this.options.type === "single") {
-					this.$cache.s_single.css('left', this.coords.p_single + "%");		
-					this.$cache.single.css('left', this.labels.p_single_left + "%"); 
+					this.$cache.s_single.css('left', this.coords.p_single + "%");
+					this.$cache.single.css('left', this.labels.p_single_left + "%");
 
 					this.$cache.input.prop("value", this.result.from);
 					this.$cache.input.data("from", this.result.from);
 
 				} else {
-					this.$cache.s_from.css('left', this.coords.p_from + "%"); 
-					this.$cache.s_to.css('left', this.coords.p_to + "%"); 
+					this.$cache.s_from.css('left', this.coords.p_from + "%");
+					this.$cache.s_to.css('left', this.coords.p_to + "%");
 
 					if (this.options.has_pin){
-						this.$cache.s_pin.css('left', this.coords.p_pin_value + "%");		
+						this.$cache.s_pin.css('left', this.coords.p_pin_value + "%");
 					}
 
 					if (this.$cache.lineLeft){
 						this.$cache.lineLeft.css({left: 0, width: this.coords.p_bar_x + "%"});
 					}
-	 
+
 					if (this.old_from !== this.result.from || this.force_redraw) {
-						this.$cache.from.css('left', this.labels.p_from_left + "%"); 
+						this.$cache.from.css('left', this.labels.p_from_left + "%");
 					}
 					if (this.old_to !== this.result.to || this.force_redraw) {
-						this.$cache.to.css('left', this.labels.p_to_left + "%"); 
+						this.$cache.to.css('left', this.labels.p_to_left + "%");
 					}
 
-					this.$cache.single.css('left', this.labels.p_single_left + "%"); 
+					this.$cache.single.css('left', this.labels.p_single_left + "%");
 					this.$cache.input.prop("value", this.result.from + ";" + this.result.to);
 					this.$cache.input.data("from", this.result.from);
 					this.$cache.input.data("to", this.result.to);
@@ -1173,7 +1200,7 @@ USING
 		},
 
 		//drawLabels
-		drawLabels: function () { 
+		drawLabels: function () {
 			if (!this.options) {
 				return;
 			}
@@ -1194,15 +1221,15 @@ USING
 				this.calcLabels();
 
 				if (this.labels.p_single_left < this.labels.p_min + 1) {
-					this.$cache.min.css('visibility', 'hidden'); 
+					this.$cache.min.css('visibility', 'hidden');
 				} else {
-					this.$cache.min.css('visibility', 'visible'); 
+					this.$cache.min.css('visibility', 'visible');
 				}
 
 				if (this.labels.p_single_left + this.labels.p_single > 100 - this.labels.p_max - 1) {
-					this.$cache.max.css('visibility', 'hidden'); 
+					this.$cache.max.css('visibility', 'hidden');
 				} else {
-					this.$cache.max.css('visibility', 'visible'); 
+					this.$cache.max.css('visibility', 'visible');
 				}
 
 		 } else {
@@ -1229,35 +1256,35 @@ USING
 				max = Math.max(single_left, to_left);
 
 				if (this.labels.p_from_left + this.labels.p_from >= this.labels.p_to_left) {
-					this.$cache.from.css('visibility', 'hidden'); 
-					this.$cache.to.css('visibility', 'hidden'); 
-					this.$cache.single.css('visibility', 'visible'); 
+					this.$cache.from.css('visibility', 'hidden');
+					this.$cache.to.css('visibility', 'hidden');
+					this.$cache.single.css('visibility', 'visible');
 
 					if (this.result.from === this.result.to) {
-						this.$cache.from.css('visibility', 'visible'); 
-						this.$cache.single.css('visibility', 'hidden'); 
+						this.$cache.from.css('visibility', 'visible');
+						this.$cache.single.css('visibility', 'hidden');
 						max = to_left;
 					} else {
-						this.$cache.from.css('visibility', 'hidden'); 
-						this.$cache.single.css('visibility', 'visible'); 
+						this.$cache.from.css('visibility', 'hidden');
+						this.$cache.single.css('visibility', 'visible');
 						max = Math.max(single_left, to_left);
 					}
 				} else {
-					this.$cache.from.css('visibility', 'visible'); 
-					this.$cache.to.css('visibility', 'visible'); 
-					this.$cache.single.css('visibility', 'hidden'); 
+					this.$cache.from.css('visibility', 'visible');
+					this.$cache.to.css('visibility', 'visible');
+					this.$cache.single.css('visibility', 'hidden');
 				}
 
 				if (min < this.labels.p_min + 1) {
-					this.$cache.min.css('visibility', 'hidden'); 
+					this.$cache.min.css('visibility', 'hidden');
 				} else {
-					this.$cache.min.css('visibility', 'visible'); 
+					this.$cache.min.css('visibility', 'visible');
 				}
 
 				if (max > 100 - this.labels.p_max - 1) {
-					this.$cache.max.css('visibility', 'hidden'); 
+					this.$cache.max.css('visibility', 'hidden');
 				} else {
-					this.$cache.max.css('visibility', 'visible'); 
+					this.$cache.max.css('visibility', 'visible');
 				}
 
 			}
@@ -1329,7 +1356,7 @@ USING
   		if (rounded > 100)								{ rounded = 100; }
 			if (percent === 100)							{ rounded = 100; }
 			if (rounded > this.coords.p_max)	{ rounded = this.coords.p_max; }
-			
+
 			return this.toFixed(rounded);
 		},
 
@@ -1405,12 +1432,12 @@ USING
 
 		//_prettify
 		_prettify: function (num) {
-			return (this.options.prettify && typeof this.options.prettify === "function") ? this.options.prettify(num) : num; 
+			return (this.options.prettify && typeof this.options.prettify === "function") ? this.options.prettify(num) : num;
 		},
 
 		//_prettify_text
 		_prettify_text: function (num) {
-			return (this.options.prettify_text && typeof this.options.prettify_text === "function") ? this.options.prettify_text(num) : num; 
+			return (this.options.prettify_text && typeof this.options.prettify_text === "function") ? this.options.prettify_text(num) : num;
 		},
 
 		//checkEdges
@@ -1543,22 +1570,22 @@ USING
 		// =============================================================================================================
 		// Grid - use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
 
-		appendGridContainer: function(){ 
-			this.getCoords_w_rs(); 
+		appendGridContainer: function(){
+			this.getCoords_w_rs();
 			if (this.currentGridContainer){
-				this.totalGridContainerTop += this.currentGridContainer.height();  
-				this.currentGridContainer = 
+				this.totalGridContainerTop += this.currentGridContainer.height();
+				this.currentGridContainer =
 					$('<span class="grid"></span>').insertAfter( this.currentGridContainer );
 				this.currentGridContainer.css('top', this.pxToRem( this.totalGridContainerTop, true) );
 			}
 			else {
 				this.currentGridContainer = this.$cache.grid;
-				this.totalGridContainerTop = this.currentGridContainer.position().top; 
+				this.totalGridContainerTop = this.currentGridContainer.position().top;
 			}
-			this.$cache.grid = this.$cache.cont.find(".grid"); 
+			this.$cache.grid = this.$cache.cont.find(".grid");
 			return this.currentGridContainer;
 		},
-		
+
 
 		//appendTick
 		appendTick: function( left, options ){
@@ -1567,20 +1594,20 @@ USING
 			}
 			options = $.extend( {minor: false, color: ''}, options );
 			var result = $('<span class="grid-pol" style="left:' + left + '%"></span>');
-			
+
 			if (options.minor)
-				result.addClass('minor');  
+				result.addClass('minor');
 			if (options.color)
-				result.css('background-color', options.color);  
-			
+				result.css('background-color', options.color);
+
 
 			result.appendTo( this.currentGridContainer );
 			return result;
-		
+
 		},
 
 		//appendText
-		appendText: function( left, value, options ){ 
+		appendText: function( left, value, options ){
 			if (!this.currentGridContainer){
 				return;
 			}
@@ -1602,13 +1629,13 @@ USING
 				options.clickable = (this.options.step == 1) ||
 														( ((value - this.options.step_offset) % this.options.step) === 0);
 			}
-			
+
 			if (options.clickable && !this.options.disable && !this.options.read_only){
 				//value = options.click_value !== undefined ? options.click_value : parseFloat( text );
 				value = options.click_value !== undefined ? options.click_value : value;
 				result
 					.data('base-slider-value', value)
-					.on("click.irs_" + this.plugin_count, this.textClick.bind(this) )
+					.on("click.irs_" + this.plugin_count, $.proxy( this.textClick, this ) ) /* this.textClick.bind(this) */
 					.addClass('clickable');
 			}
 			if (options.minor)
@@ -1618,38 +1645,38 @@ USING
 			if (options.color)
 				result.css('color', options.color);
 
-	
+
 			return result;
-		
+
 		},
 
 		//getTextWidth
 		getTextWidth: function( value, options ){
-			var 
+			var
 				elem = this.appendText( 0, value, options ),
 				result = parseFloat( elem.outerWidth(false) );
 			elem.remove();
 			return this.pxToRem(result);
 		},
 
-		//appendGrid 
-		appendGrid: function () { 
+		//appendGrid
+		appendGrid: function () {
 			if (!this.options.grid) {	return;	}
 			this.appendStandardGrid();
 		},
 
 		//appendStandardGrid - simple call _appendStandardGrid. Can be overwriten in decending classes
-		appendStandardGrid: function ( textOptions ) { 
+		appendStandardGrid: function ( textOptions ) {
 			this._appendStandardGrid( textOptions );
 		},
 
 		//_appendStandardGrid
-		_appendStandardGrid: function ( textOptions, tickOptions ) { 
+		_appendStandardGrid: function ( textOptions, tickOptions ) {
 			this.appendGridContainer();
 			this.calcGridMargin();
 
-			
-			var o = this.options,					
+
+			var o = this.options,
 					gridContainerWidth = this.getOuterWidth(this.$cache.grid),
 					gridDistanceIndex = 0,
 					value = o.min,
@@ -1657,7 +1684,7 @@ USING
 					valueP = 0,
 					valueOffset;
 			o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-			o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor; 
+			o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor;
 //			o.oneP = this.toFixed(100 / total);
 //			o.stepP = this.toFixed(o.step / (total / 100));
 
@@ -1665,7 +1692,7 @@ USING
 			tickOptions = tickOptions || {};
 
 
-			//Increse grid-distance until the space between two ticks are more than 4px 
+			//Increse grid-distance until the space between two ticks are more than 4px
 			while ( (o.stepRem*o.gridDistanceStep) <= this.pxToRem(4)){
 				gridDistanceIndex++;
 				if (gridDistanceIndex < o.gridDistances.length)
@@ -1683,7 +1710,7 @@ USING
 
 				//Find widest text/label
 				value = o.min;
-				while (value <= o.max){				
+				while (value <= o.max){
 					//if value corrected by o.major_ticks_offset and o.major_ticks_factor is a DIV of the tick distance => calculate the width of the tick
 					if ((value - o.major_ticks_offset)*o.major_ticks_factor % o.tickDistanceNum === 0){
 						maxTextWidth = Math.max( maxTextWidth, this.getTextWidth( value ) );
@@ -1703,11 +1730,11 @@ USING
 						_major_ticks = _major_ticks*2;
 				}
 			}
-			
+
 			o.majorTickDistanceNum = o.tickDistanceNum*_major_ticks;
 
 			//Add all the minor and major ticks
-			value = o.min;			
+			value = o.min;
 			while (value <= o.max){
 				valueOffset = (value - o.major_ticks_offset)*o.major_ticks_factor;
 				if (valueOffset % o.tickDistanceNum === 0){
@@ -1720,16 +1747,16 @@ USING
 						if (!o.hide_minor_ticks)
 							//Add minor tick
 							this.appendTick( valueP, { minor:true } );
-				}				
-				value += 1; 
-				valueP += o.oneP; 
+				}
+				value += 1;
+				valueP += o.oneP;
 			}
 		},
 
 
 		//calcGridMargin
-		calcGridMargin: function () { 
-			this.getCoords_w_rs(); 
+		calcGridMargin: function () {
+			this.getCoords_w_rs();
 			if (!this.coords.w_rs) {
 				return;
 			}
