@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "2.4.8",
+  "version": "2.4.9",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
@@ -15,7 +15,7 @@
     "url": "git://github.com/NielsHolt/jquery-base-slider.git"
   },
   "dependencies": {
-    "jquery": "~1.9",
+    "jquery": "latest",
     "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed"
   },
   "devDependencies": {
