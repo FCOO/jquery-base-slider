@@ -18,6 +18,11 @@
     "jquery": "~1",
     "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed"
   },
+  "overrides": {  
+    "jquery-autoclick-while-pressed": {
+      "main": ["autoclick-while-pressed.js"]
+    }
+  },
   "devDependencies": {
     "bourbon": "*"
   },
