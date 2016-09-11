@@ -1,27 +1,22 @@
 {
   "name": "jquery-base-slider",
-  "version": "2.4.13",
+  "version": "2.4.14",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
   ],
   "description": "A plugin to create a slider",
   "main": [
-    "dist/jquery-base-slider.min.js",
-    "dist/jquery-base-slider.min.css"
+    "dist/jquery-base-slider.js",
+    "dist/jquery-base-slider.css"
   ],
   "repository": {
     "type": "git",
     "url": "git://github.com/NielsHolt/jquery-base-slider.git"
   },
   "dependencies": {
-    "jquery": "~1",
-    "jquery-autoclick-while-pressed": "silviubogan/jquery-autoclick-while-pressed"
-  },
-  "overrides": {  
-    "jquery-autoclick-while-pressed": {
-      "main": ["autoclick-while-pressed.js"]
-    }
+    "jquery": "latest",
+    "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0"
   },
   "devDependencies": {
     "bourbon": "*"
