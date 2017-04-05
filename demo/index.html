@@ -49,17 +49,19 @@
 </head>
 
 <body>
-	<h4>Scale</h4>
+	<h4>Scale &#177; </h4>
 	<div>
-		<input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off">60%</label>
-    <input type="radio" class="scaleRadio" name="options" id="option2" value="80" autocomplete="off">80%</label>
-    <input type="radio" class="scaleRadio" name="options" id="option3" value="100" autocomplete="off" checked>100%</label>
-    <input type="radio" class="scaleRadio" name="options" id="option4" value="120" autocomplete="off">120%</label>
-    <input type="radio" class="scaleRadio" name="options" id="option5" value="150" autocomplete="off">150%</label>
-    <input type="radio" class="scaleRadio" name="options" id="option6" value="300" autocomplete="off">300%</label>
+	    <input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off">60%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option2" value="80" autocomplete="off">80%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option3" value="100" autocomplete="off" checked>100%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option4" value="120" autocomplete="off">120%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option5" value="150" autocomplete="off">150%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option6" value="300" autocomplete="off">300%</label>
 	</div>
-	<br><br>
-	<div style="position: relative; width:50%;">
+
+    <br><br>
+
+    <div style="position: relative; width:50%;">
 		<div class="slider-container">
 			<div class="code-container" id="options_01"></div><hr>
 			<input type="text" id="example_01"/>
@@ -106,7 +108,7 @@
 
 		
 		
-		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true});
+		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, pin_value:50, hide_bar_color:true});
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
 		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
 
@@ -128,7 +130,12 @@
 
 		$("#example_06").baseSlider({		
 			min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true, 
-			buttons: {	from: {	previousBtn: 'btnPrevFrom',		nowBtn: 'btnNowFrom', nextBtn: 'btnNextFrom'}}
+			buttons: {	
+                from: {	previousBtn: 'btnPrevFrom',
+                        nowBtn     : 'btnNowFrom', 
+                        nextBtn    : 'btnNextFrom'
+                      }
+                    }
 		});
 		$("#options_06").html('<strong>#6: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
 		                      'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');

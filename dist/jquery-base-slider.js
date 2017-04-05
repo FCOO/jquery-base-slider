@@ -102,7 +102,7 @@
             grid_labels: [],
             buttons: {
                 from: {},
-                to    : {}
+                to  : {}
             }
         };
 
@@ -167,13 +167,13 @@
 
             disable: false,
 
-            buttons_attr    : ['firstBtn', 'previousBtn', 'nowBtn', 'nextBtn', 'lastBtn'],
-            buttons_delta    : [-99, -1, 0, +1, +99],
-            buttons                : {from: {}, to: {} },
+            buttons_attr : ['firstBtn', 'previousBtn', 'nowBtn', 'nextBtn', 'lastBtn'],
+            buttons_delta: [-99, -1, 0, +1, +99],
+            buttons      : {from: {}, to: {} },
 
-            gridDistances : [1, 2, 5, 10, 20, 50, 100],
+            gridDistances: [1, 2, 5, 10, 20, 50, 100],
 
-            onStart: null,
+            onStart : null,
             onChange: null,
             onFinish: null,
             onUpdate: null
@@ -272,9 +272,9 @@
 
     window.BaseSlider.prototype = {
         init: function (is_update) {
-            this.options.total    = this.options.max - this.options.min;
-            this.options.oneP        = this.toFixed(100 / this.options.total);
-            this.options.stepP    = this.options.step*this.options.oneP; //this.toFixed(o.step / (total / 100));
+            this.options.total= this.options.max - this.options.min;
+            this.options.oneP = this.toFixed(100 / this.options.total);
+            this.options.stepP= this.options.step*this.options.oneP; //this.toFixed(o.step / (total / 100));
 
             var factor = 100/this.options.total;
             this.coords.p_step = this.options.step * factor;
@@ -289,9 +289,9 @@
 
 
             this.options.from = this.adjustValue( this.options.from );
-            this.options.to = this.adjustValue( this.options.to );
-            this.result.from = this.options.from;
-            this.result.to = this.options.to;
+            this.options.to   = this.adjustValue( this.options.to );
+            this.result.from  = this.options.from;
+            this.result.to    = this.options.to;
 
             this.target = "base";
 
