@@ -4,65 +4,79 @@
 	<title>fcoo.dk - jquery-base-slider - Example</title>
 	<meta charset="iso-8859-1" />
 	<meta charset="iso-8859-1" /> <!-- OR "utf-8" -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv='x-dns-prefetch-control' content='on'>
-
-<!-- <meta http-equiv="refresh" content="30"> -->
-<!-- <meta name='description' content='150 words'> -->
-<!-- <meta name='subject' content='your website's subject'> -->
-<!-- <meta http-equiv='Expires' content='0'> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv='x-dns-prefetch-control' content='on'>
 	<meta name='copyright' content='FCOO'>
 	<meta name='owner' content='FCOO'>
 
-  <link  href="bower_components.css" rel="stylesheet">	
-  <link  href="../src/jquery-base-slider.css" rel="stylesheet">	
+    <link  href="../src/jquery-base-slider.css" rel="stylesheet">	
 	<style>
 		.slider-container {
-			width: 25rem;
-			height: 8rem;
-			border: 0.12rem solid red; 
+			width  : 25rem;
+			height : 8rem;
+			border : 0.12rem solid red; 
 			padding:.25rem;
+            margin-left: 2rem;
 		}
 		.date-box {
-			display: inline-block;
-			border:0.12rem solid green; 
-			padding: .25rem;
-			width: 7.5rem;
+			display : inline-block;
+			border  : 0.12rem solid green; 
+			padding : .25rem;
+			width   : 7.5rem;
 		}
 		.slider-container .code-container { 
-			width				: 100%;
+			width			: 100%;
 			padding			: 0.125rem;
-			font-family	: monospace;
+			font-family	    : monospace;
 			font-size		: 0.667rem;
 			background-color: #DDDDDD;
 		}
 
 		code {
 			font-family: monospace;
-			font-size		: 0.8rem;
+			font-size	: 0.8rem;
 		}
 		h4 { 
-			margin		: 0;
-			font-size	: 120%; 
+			margin	: 0;
+			font-size: 120%; 
 		}
+        .center-line {
+            box-sizing: border-box;
+            border: 1px solid blue;   
+            //margin-left: 2rem;
+            height: 4rem;
+            position: relative;
+            top: -8rem;
+            width: 50%;
+
+        }
 	</style>
 </head>
 
 <body>
 	<h4>Scale &#177; </h4>
 	<div>
-	    <input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off">60%</label>
-        <input type="radio" class="scaleRadio" name="options" id="option2" value="80" autocomplete="off">80%</label>
-        <input type="radio" class="scaleRadio" name="options" id="option3" value="100" autocomplete="off" checked>100%</label>
-        <input type="radio" class="scaleRadio" name="options" id="option4" value="120" autocomplete="off">120%</label>
-        <input type="radio" class="scaleRadio" name="options" id="option5" value="150" autocomplete="off">150%</label>
-        <input type="radio" class="scaleRadio" name="options" id="option6" value="300" autocomplete="off">300%</label>
+	    <input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off"><label for="option1">60%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option2" value="80" autocomplete="off"><label for="option2">80%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option3" value="100" autocomplete="off" checked><label for="option3">100%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option4" value="120" autocomplete="off"><label for="option4">120%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option5" value="150" autocomplete="off"><label for="option5">150%</label>
+        <input type="radio" class="scaleRadio" name="options" id="option6" value="300" autocomplete="off"><label for="option6">300%</label>
 	</div>
 
     <br><br>
 
-    <div style="position: relative; width:50%;">
-		<div class="slider-container">
+    <div style="position: relative; width:100%;">
+
+
+		<div class="slider-container" style="width:80%">
+			<div class="code-container" id="options_00"></div><hr>
+			<input type="text" id="example_00"/>
+
+            <!-- <div class="center-line"></div> -->
+        </div>
+
+        <div class="slider-container">
 			<div class="code-container" id="options_01"></div><hr>
 			<input type="text" id="example_01"/>
 		</div>
@@ -106,9 +120,10 @@
 			$('html').css('font-size', percent+'px');
 		});
 
-		
-		
-		$("#example_01").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, pin_value:50, hide_bar_color:true});
+		$("#example_00").baseSlider(   {fixed_handle: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true});
+		$("#options_00").html('<strong>#0: Fixed handler</strong><br>'+
+		                      'options={fixed_handle: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true}');
+		$("#example_01").baseSlider(   {min:0, max:100, from: 20, major_ticks_offset:0, step:1, step_offset:0, grid:true});
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
 		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
 
@@ -140,19 +155,7 @@
 		$("#options_06").html('<strong>#6: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
 		                      'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
 
-/*
-		$("#example_02").baseSlider({
-			type: 'double',
-			min	: -20,
-			max	: +40,
-			from: -10,
-			to	: +10,
-			grid: true,
-		});
-*/
 
-
-	
 	</script>
 </body>
 </html>

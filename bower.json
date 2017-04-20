@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "2.4.16",
+  "version": "2.5.0",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "jquery": "latest",
-    "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0"
+    "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0",
+    "jquery-detect-element-resize": "fcoo/jquery-detect-element-resize#^1.0.0"
   },
   "devDependencies": {
     "bourbon": "*"

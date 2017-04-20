@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "2.4.16",
+  "version": "2.5.0",
   "description": "package.json is only use for building the package. see bower.json for more info",
   "author": "Niels Holt nho@fcoo.dk",
   "license": "MIT",
