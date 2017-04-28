@@ -22,6 +22,7 @@
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
                                  // A value for options.width OR options.value_distances must be provided
         clicable    : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
+        mousewheel  : false,     // Only for type:'single': Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
 
         //Dimensions (only for options.fixed_handle: true)
         width          : 0, // The total width of the slider (in px for rem = 16px)
@@ -50,10 +51,13 @@
         min_interval: 0,    // Set minimum diapason between sliders. Only in "double" type  
         max_interval: 0,    // Set maximum diapason between sliders. Only in "double" type  
 
+        mousewheel_step_factor: 1, //Only for mousewheel:true: For each mousewheel move the from-value changes by +/- options.mousewheel_step_factor x options.step 
+
         //Slide-line
         impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red  
         impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green  
         bar_color          : null,  // The color of the bar 
+//TODO bar_color = [] of { value, color }
         hide_bar_color     : false, // The bar gets same color as the line  
 
         //Grid (ticks and text)
@@ -147,6 +151,10 @@
 
         this.options.isSingle = (this.options.type == 'single');
         this.options.isInterval = (this.options.type == 'double');
+
+        if (this.options.isInterval){
+            this.options.mousewheel = false;          
+        }
 
         this.validate();
 
@@ -290,7 +298,9 @@
                 return result;
             }
 
-            this.cache.$container = $span( 'base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
+            //this.cache.$container = $span( 'base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
+            this.cache.$container = $('<div/>');
+            this.cache.$container.addClass('base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
 
             this.cache.$input.before(this.cache.$container);
             this.cache.$input.prop("readonly", true);
@@ -346,12 +356,9 @@
                 this.cache.$lineLeft = $span('line-left', this.cache.$line);
 
             if (!this.options.hide_from_to) {
-                if (this.options.isSingle) 
-                    this.cache.$single = $span('marker-single', this.cache.$bs);
-                else {
-                    this.cache.$from = $span('marker-from',   this.cache.$bs);
-                    this.cache.$to   = $span('marker-to',     this.cache.$bs);
-                }
+                this.cache.$single = $span('marker-single', this.cache.$bs);
+                this.cache.$from = $span('marker-from',   this.cache.$bs);
+                this.cache.$to   = $span('marker-to',     this.cache.$bs);
             }
 
             this.cache.$min = $span('marker-min', this.cache.$bs);
@@ -498,6 +505,15 @@
             else
                 this._onEvents( this.cache.$s_single, "touchstart mousedown", this.pointerDown, "single" ); 
 
+
+            if (this.options.mousewheel){
+                //Add horizontal sliding with mousewheel
+                if (this.options.fixed_handle)
+                    this._onEvents( this.cache.$outerContainer, 'mousewheel', this.mousewheel );
+                else
+                    this._onEvents( this.cache.$container.parent(), 'mousewheel', this.mousewheel );
+            }
+
             this._onEvents( this.cache.$s_from,   "touchstart mousedown", this.pointerDown, "from" ); 
             this._onEvents( this.cache.$s_to,     "touchstart mousedown", this.pointerDown, "to" ); 
 
@@ -637,6 +653,11 @@
                         this.setFromValue( value );
         },
 
+        //mousewheel moves options.mousewheel_step_factor steps pro delta
+        mousewheel: function( e, delta ){
+            this.setFromValue( this.result.from + delta*this.options.mousewheel_step_factor*this.options.step );
+            e.preventDefault();
+        },
 
         //pointerMove
         pointerMove: function (e) {
@@ -885,7 +906,7 @@
         },
 
         //getOuterWidth
-        getOuterWidth: function( $element, inclUnit, factor ){
+        getOuterWidth: function( $element, inclUnit, factor ){ 
             return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
         },
 
@@ -1105,6 +1126,7 @@
                 this.labels.p_single_left = ((this.labels.p_from_left + this.labels.p_to_left + this.labels.p_to) / 2) - (this.labels.p_single / 2);
                 this.labels.p_single_left = this.toFixed(this.labels.p_single_left);
                 this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
+
             }
         },
 

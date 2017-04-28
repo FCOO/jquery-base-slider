@@ -22,6 +22,8 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `fixed_handle` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.value_distances` must be provided | 
 | `clicable` | `true` | `boolean` | Allows click on lables and line. Default = `true` except for `fixed_handle:true` where default = `false` | 
+| `mousewheel` | `false` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
+
 
 ### Dimensions (only for `options.fixed_handle: true`)
 | Option | Defaults | Type | Description |
@@ -52,6 +54,8 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `step_offset` | `0` | `number` | When `step` > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for `type="single"` | 
 | `min_interval` | `-` | `number` | Set minimum diapason between sliders. Only in "double" type | 
 | `max_interval` | `-` | `number` | Set maximum diapason between sliders. Only in "double" type | 
+| `mousewheel_step_factor` | `1` | `number` | Only for `mousewheel:true`: For each mousewheel move the from-value changes by +/- `options.mousewheel_step_factor` x `options.step` | 
+ 
 
 ### Slide-line
 | Option | Defaults | Type | Description |
@@ -131,7 +135,7 @@ Copyright (c) 2015 [Niels Holt](https://github.com/NielsHolt)
 
 ## Contact information
 
-Niels Holt <niels@steenbuchholt.dk>
+Niels Holt <nho@fcoo.dk>
 
 
 ## Credits and acknowledgements
