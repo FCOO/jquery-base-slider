@@ -17,9 +17,6 @@ The scss is divided in two parts: First the common part equal for all types and 
 //BOURBON - http://bourbon.io/
 @import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
 
-
-.TEST:hover { background-color: red; }
-
 @function myRem($pxval) {
   $base: 16;
   $em-base: 16px;
@@ -63,6 +60,7 @@ $rangeValueLineTop: $markerHeight;
 
 
 //Ticks on grids
+$tickWidth      : myRem(1px); 
 $tickHeightMinor: $lineHeight;
 $tickHeight     : 1.5 * $tickHeightMinor;
 $labelFontSize  : myRem(9px);
@@ -99,6 +97,7 @@ COMMON STYLE
     user-select: none;
 
     .line {
+
         position: relative; 
         display: block;
         overflow: hidden;
@@ -114,7 +113,7 @@ COMMON STYLE
         background-color: $background-color;
         cursor: pointer;
 
-        .line-left {
+        .line-left { 
             position: absolute; 
             display: none;
             top: 0;
@@ -310,9 +309,10 @@ COMMON STYLE
     
     .grid-pol {
         position  : absolute;
+        z-index   : 2;
         top       : 0; 
         left      : 0;
-        width     : myRem(1px); 
+        width     : $tickWidth; 
         height    : $tickHeight;
         background: black; 
 
@@ -322,6 +322,7 @@ COMMON STYLE
 
     .grid-text {
         position: absolute;
+        z-index : 2;
         top     : $tickHeight + $margin;
         &.low { 
             top: $tickHeight + $margin + $labelHeight + $margin; 
@@ -344,6 +345,15 @@ COMMON STYLE
         cursor: default; 
         &.clickable { cursor: pointer; }
     }
+
+    .grid-color {
+        position: absolute;
+        z-index : 1;
+        top     : 0; 
+        height  : $tickHeight;
+    }
+
+
 } //end of .grid
 
 
@@ -373,7 +383,7 @@ COMMON STYLE
 /***************************************************************
 STYLE FOR SPECIFIC TYPE
 ***************************************************************/
-$sliderTypeList: default, small, round, range;
+$sliderTypeList: default, small, round, range, fixed;
 
 @each $sliderType in $sliderTypeList {
     $sliderWidth                : null; 
@@ -381,6 +391,7 @@ $sliderTypeList: default, small, round, range;
     $lineTopRelativeToSlider    : null;
     $sliderBackgroundImage      : null;
     $sliderBackgroundImage_hover: null;
+    $gridTop                    : null;
 
     @if $sliderType == default {
     //TYPE == default            
@@ -415,6 +426,20 @@ $sliderTypeList: default, small, round, range;
         $sliderHeight: $lineHeight; 
         $sliderWidth : $sliderHeight; 
         $lineTopRelativeToSlider: $sliderHeight/2 - $lineHeight/2; 
+
+    } @else if $sliderType == fixed {
+    //TYPE == fixed 
+        $margin: $tickWidth; //Border-width/margin = $tickWidth
+
+        $sliderHeight           : myRem(18px); 
+        $sliderWidth            : myRem(11px); //myRem(9px); 
+        $lineTopRelativeToSlider: 2 * $margin;
+        //$lineTopRelativeToSlider: $sliderHeight/2 - $lineHeight/2;
+        $gridTop                : $sliderTop + $lineTopRelativeToSlider + $margin + $lineHeight; // = $lineTop + $margin  + lineHeight
+        
+        $sliderBackgroundImage      : url("images/slider.fixed.png");
+        $sliderBackgroundImage_hover: null; 
+
     }
 
     $lineTop        : $sliderTop         + $lineTopRelativeToSlider;
@@ -428,23 +453,32 @@ $sliderTypeList: default, small, round, range;
             top: $lineTop;
         }
         .slider {
+            box-sizing: border-box;
             width : $sliderWidth; 
             height: $sliderHeight;
-            background-image: $sliderBackgroundImage;
+            @if $sliderBackgroundImage != null {
+                background-image: $sliderBackgroundImage;
+            }
         }
 
         .pin { 
             top: $lineTop;                    
         }
 
-        //hover on slider but only if it is active (not read-only)
-        &.active .slider {
-            &.state_hover, &:hover { 
-                background-image: $sliderBackgroundImage_hover;
-            } 
+        @if $sliderBackgroundImage_hover != null {
+            //hover on slider but only if it is active (not read-only)
+            &.active .slider {
+                &.state_hover, &:hover { 
+                    background-image: $sliderBackgroundImage_hover;
+                } 
+            }
         }
         .grid {
-            top: $sliderTop + $sliderHeight;
+            @if $gridTop == null {            
+                top: $sliderTop + $sliderHeight;
+            } @else {
+                top: $gridTop;
+            }
         }
 
 
@@ -472,3 +506,4 @@ $sliderTypeList: default, small, round, range;
         }
     } //end of .base-slider-container.#{$sliderType}
 } //end of @each $sliderType in $sliderTypeList 
+

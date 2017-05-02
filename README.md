@@ -17,7 +17,7 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
 | `type` | `"single"` | `string` | Choose single or double, could be `single` - for one handle, or `double` for two handles | 
-| `slider` | `"default"` | `string` | Choose slider type, could be `default`, `small`, `round`, or `range` | 
+| `slider` | `"default"` | `string` | Choose slider type, could be `default`, `small`, `round`, or `range`, or `fixed` | 
 | `read_only` | `false` | `boolean` | Locks slider and makes it inactive. | 
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `fixed_handle` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.value_distances` must be provided | 
@@ -75,6 +75,9 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `hide_minor_ticks` | `false` | `boolean` | Hide minor ticks. | 
 | `gridDistances` | `[1, 2, 5, 10, 20, 50, 100]` | `array of number` | Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24] |
 | `ticks_on_line` | `false` | `boolean` | Place the ticks in the (first) grid on the line with the sliders. | 
+| `grid_colors` | `null` | `[]` | `Array of { [fromValue, ]value, color }` to set colors on the bar. If no `fromValue` is given the the previous `value` is used.<br>TODO: If `value == null` => A triangle is added to the left indicating *below min*<br>TODO: If `value > max` =>  A triangle is added to the right indicating *above max*   |  
+
+
 
 ### Labels above slider 
 | Option | Defaults | Type | Description |

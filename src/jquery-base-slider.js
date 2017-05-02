@@ -16,7 +16,7 @@
     var defaultOptions = {    
         //Type and slider
         type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles  
-        slider      : "default", // Choose slider type, could be "default","small","round", or "range"  
+        slider      : "default", // Choose slider type, could be "default","small","round", "range", or '"fixed"  
         read_only   : false,     // Locks slider and makes it inactive.
         disable     : false,     // Locks slider and makes it disable ("dissy")
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
@@ -57,7 +57,6 @@
         impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red  
         impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green  
         bar_color          : null,  // The color of the bar 
-//TODO bar_color = [] of { value, color }
         hide_bar_color     : false, // The bar gets same color as the line  
 
         //Grid (ticks and text)
@@ -69,6 +68,9 @@
         ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.  
         major_ticks_factor: 1,                          // Not documented
 
+        grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
+                                  //TODO: If value == null => A triangle is added to the left indicating 'below min'. 
+                                  //      If value > max =>  A triangle is added to the right indicating 'above max'.    
 
 
         //Labels above slider 
@@ -357,8 +359,10 @@
 
             if (!this.options.hide_from_to) {
                 this.cache.$single = $span('marker-single', this.cache.$bs);
-                this.cache.$from = $span('marker-from',   this.cache.$bs);
-                this.cache.$to   = $span('marker-to',     this.cache.$bs);
+                if (this.options.isInterval){
+                    this.cache.$from   = $span('marker-from',   this.cache.$bs);
+                    this.cache.$to     = $span('marker-to',     this.cache.$bs);
+                }
             }
 
             this.cache.$min = $span('marker-min', this.cache.$bs);
@@ -922,10 +926,9 @@
 
             if (update) {
                 this.getCoords_w_rs();
-                if (this.options.isSingle)
-                    this.coords.w_handle = this.getOuterWidth(this.cache.$s_single);
-                else
-                    this.coords.w_handle = this.getOuterWidth(this.cache.$s_from);
+
+                this.calcHandleWidth();
+
                 this.coords.w_container = this.getInnerWidth(this.cache.$container); 
                 this.coords.w_outerContainer = this.getInnerWidth(this.cache.$outerContainer); 
 
@@ -964,7 +967,7 @@
                     this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
                     this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
 
-                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f));
+                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f)); 
                     this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
                     this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
@@ -981,8 +984,8 @@
                     if (this.options.from_fixed) break;
 
                     this.coords.p_single_real = this.calcWithStep((this.options.fixed_handle ? real_x_raw : real_x) / real_width * 100);
-                    this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width);
+                    //this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
+                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width); 
                     
                     break;
 
@@ -1187,7 +1190,6 @@
                     if (this.options.fixed_handle)
                         //Keep the handle centered in in container
                         this.cache.$container.css('left', - this.coords.w_container*this.coords.p_single/100
-                                                          - this.coords.w_handle/2
                                                           + 0.5*this.coords.w_outerContainer + 'rem' );
                 } 
                 else {
@@ -1224,7 +1226,7 @@
         },
 
         //drawLabels
-        drawLabels: function () {
+        drawLabels: function () { 
             if (!this.options || this.options.hide_from_to) return;
 
             var text_single, text_from, text_to;
@@ -1236,15 +1238,10 @@
 
                 this.calcLabels();
 
-                if (this.labels.p_single_left < this.labels.p_min + 1)
-                    this.cache.$min.css('visibility', 'hidden');
-                else
-                    this.cache.$min.css('visibility', 'visible');
-
-                if (this.labels.p_single_left + this.labels.p_single > 100 - this.labels.p_max - 1)
-                    this.cache.$max.css('visibility', 'hidden');
-                else
-                    this.cache.$max.css('visibility', 'visible');
+                if (!this.options.hide_min_max){
+                    this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );       
+                    this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );       
+                }
 
             } 
             else {
@@ -1290,18 +1287,10 @@
                     this.cache.$single.css('visibility', 'hidden');
                 }
 
-                if (min < this.labels.p_min + 1) {
-                    this.cache.$min.css('visibility', 'hidden');
-                } else {
-                    this.cache.$min.css('visibility', 'visible');
+                if (!this.options.hide_min_max){
+                    this.cache.$min.toggle( min >= this.labels.p_min + 1 );       
+                    this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );       
                 }
-
-                if (max > 100 - this.labels.p_max - 1) {
-                    this.cache.$max.css('visibility', 'hidden');
-                } else {
-                    this.cache.$max.css('visibility', 'visible');
-                }
-
             }
         }, //end of drawLabels
 
@@ -1598,9 +1587,9 @@
             var text = this._prettify_text( value );
 
             if (this.options.decorate_text)
-              text =    (this.options.prefix ? this.options.prefix : '') +
-                                text +
-                                (this.options.postfix ? this.options.postfix : '');
+              text = (this.options.prefix ? this.options.prefix : '') +
+                     text +
+                     (this.options.postfix ? this.options.postfix : '');
             var result = $('<span class="grid-text" style="background-color:transparent; left: ' + left + '%">' + text + '</span>');
             result.appendTo( this.currentGridContainer );
 
@@ -1660,12 +1649,12 @@
             this.calcGridMargin();
 
             var o = this.options,
-                    gridContainerWidth = this.getOuterWidth(this.cache.$grid),
-                    gridDistanceIndex = 0,
-                    value = o.min,
-                    maxTextWidth = 0,
-                    valueP = 0,
-                    valueOffset;
+                gridContainerWidth = this.getOuterWidth(this.cache.$grid),
+                gridDistanceIndex = 0,
+                value = o.min,
+                maxTextWidth = 0,
+                valueP = 0,
+                valueOffset;
             o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
             o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor;
 //            o.oneP = this.toFixed(100 / total);
@@ -1684,7 +1673,7 @@
                     o.gridDistanceStep = o.gridDistanceStep*2;
             }
             o.tickDistanceNum = o.gridDistanceStep*o.step;    //The numerical distance between each ticks
-            o.tickDistanceRem = o.gridDistanceStep*o.stepRem;        //The rem distance between each ticks
+            o.tickDistanceRem = o.gridDistanceStep*o.stepRem; //The rem distance between each ticks
 
 
             var _major_ticks = o.major_ticks;
@@ -1733,24 +1722,64 @@
                 value += 1;
                 valueP += o.oneP;
             }
+        
+            if (this.options.grid_colors)
+                this.appendGridColors( this.options.grid_colors );  
+                    
+        
+        
         },
 
+        //addGridColor
+        appendGridColors: function( gridColors ){
+            var fromValue,
+                toValue  = this.options.min,
+                i,
+                gridColor,
+                percentFactor = 100 / (this.options.max - this.options.min)
+            
+            for (i=0; i<gridColors.length; i++ ){
+                gridColor = gridColors[i];
+                fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
+                toValue = gridColor.value;
+
+                $('<span/>')
+                    .addClass('grid-color')
+                    .css({
+                        'left'            : percentFactor*(fromValue - this.options.min) + '%',
+                        'width'           : percentFactor*(toValue-fromValue) + '%',
+                        'background-color': gridColor.color                                                
+                        })
+                    .appendTo( this.currentGridContainer );
+            }
+           
+
+        },
+
+        //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle 
+        calcHandleWidth: function(){
+            var $handle  = this.options.isSingle ? this.cache.$s_single : this.cache.$s_from,
+                widthPx  = $handle.outerWidth(false),
+                widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ) //Round down the width to even number to assure that width/2 is a hole number
+
+            if (this.options.isSingle) 
+                this.coords.w_handle = widthRem;
+            else
+                this.coords.w_handle = widthRem;
+        },
 
         //calcGridMargin
         calcGridMargin: function () {
             this.getCoords_w_rs();
             if (!this.coords.w_rs) return;
-
-            if (this.options.isSingle) {
-                this.coords.w_handle = this.getOuterWidth(this.cache.$s_single);
-            } else {
-                this.coords.w_handle = this.getOuterWidth(this.cache.$s_from);
-            }
+            
+            this.calcHandleWidth();
+            
             this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
 
             this.cache.$grid.css({
-                'width'    : this.toFixed(100 - this.coords.p_handle) + "%",
-                'left'    : this.toFixed(this.coords.w_handle / 2 ) + "rem"
+                'width': this.toFixed(100 - this.coords.p_handle) + "%",
+                'left' : this.toFixed(this.coords.w_handle / 2 ) + "rem"
             });
         },
 
