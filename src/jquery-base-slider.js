@@ -1738,22 +1738,41 @@
                 gridColor,
                 percentFactor = 100 / (this.options.max - this.options.min)
             
+
+
+
             for (i=0; i<gridColors.length; i++ ){
                 gridColor = gridColors[i];
-                fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
-                toValue = gridColor.value;
+                if (gridColor.value < this.options.min){
+                  //add triangle to the left
+                    $('<span/>')
+                        .addClass('grid-color lt_min')
+                        .css('color', gridColor.color)
+                        .appendTo( this.currentGridContainer );
+                }
+                else
+                    if (gridColor.value > this.options.max){
+                        //Add triangle to the right         
+                        $('<span/>')
+                            .addClass('grid-color gt_max')
+                            .css('color', gridColor.color)
+                            .appendTo( this.currentGridContainer );
+                        
+                    }
+                    else {
+                        fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
+                        toValue = gridColor.value;
 
-                $('<span/>')
-                    .addClass('grid-color')
-                    .css({
-                        'left'            : percentFactor*(fromValue - this.options.min) + '%',
-                        'width'           : percentFactor*(toValue-fromValue) + '%',
-                        'background-color': gridColor.color                                                
-                        })
-                    .appendTo( this.currentGridContainer );
+                        $('<span/>')
+                            .addClass('grid-color' + (i%2?' to':' from'))
+                            .css({
+                                'left'            : percentFactor*(fromValue - this.options.min) + '%',
+                                'width'           : percentFactor*(toValue-fromValue) + '%',
+                                'background-color': gridColor.color
+                                })
+                            .appendTo( this.currentGridContainer );
+                    }
             }
-           
-
         },
 
         //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle 

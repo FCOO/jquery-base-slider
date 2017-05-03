@@ -132,7 +132,23 @@
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
 		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true}');
 
-        $("#example_02").baseSlider(   {type:"double", min:0, max:100, from: 20, to: 40, major_ticks_offset:0, step:1, step_offset:0, grid:true, grid_colors:[{value: 30, color:'red'},{value:50, color:'blue'}]});
+        var vind_grid_colors = [
+            {value: -99, color: "#003569"},
+            {value: -15, color: "#0069A2"},
+            {value: -10, color: "#00A6DF"},
+            {value:  -5, color: "#00A673"},
+            {value:   0, color: "#009B0F"},
+            {value:   5, color: "#37AF00"},
+            {value:  10, color: "#A6D900"},
+            {value:  15, color: "#FCF000"},
+            {value:  20, color: "#EDAA00"},
+            {value:  25, color: "#DE6400"},
+            {value:  30, color: "#CC1A00"},
+            {value:  35, color: "#800D00"},
+            {value: 999, color: "#4D0000"}
+        ];
+
+        $("#example_02").baseSlider(   {type:"double", min:-20, max:35, from: 2, to: 14, major_ticks_offset:0, step:1, step_offset:0, grid:true, grid_colors:vind_grid_colors });
 		$("#options_02").html('<strong>#2: Double with grid colors</strong><br>'+
 		                      'options={type:"double", min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true}');
 
