@@ -69,8 +69,8 @@
         major_ticks_factor: 1,                          // Not documented
 
         grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
-                                  //TODO: If value == null => A triangle is added to the left indicating 'below min'. 
-                                  //      If value > max =>  A triangle is added to the right indicating 'above max'.    
+                                  //If value == null or < min => A triangle is added to the left indicating 'below min'. 
+                                  //If value > max            =>  A triangle is added to the right indicating 'above max'.    
 
 
         //Labels above slider 
@@ -1743,35 +1743,25 @@
 
             for (i=0; i<gridColors.length; i++ ){
                 gridColor = gridColors[i];
-                if (gridColor.value < this.options.min){
-                  //add triangle to the left
+                if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) )
+                  //add triangle to the left or right
                     $('<span/>')
-                        .addClass('grid-color lt_min')
+                        .addClass( gridColor.value > this.options.max ? 'grid-color gt_max' : 'grid-color lt_min')
                         .css('color', gridColor.color)
                         .appendTo( this.currentGridContainer );
-                }
-                else
-                    if (gridColor.value > this.options.max){
-                        //Add triangle to the right         
-                        $('<span/>')
-                            .addClass('grid-color gt_max')
-                            .css('color', gridColor.color)
-                            .appendTo( this.currentGridContainer );
-                        
-                    }
-                    else {
-                        fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
-                        toValue = gridColor.value;
+                else {
+                    fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
+                    toValue = gridColor.value;
 
-                        $('<span/>')
-                            .addClass('grid-color' + (i%2?' to':' from'))
-                            .css({
-                                'left'            : percentFactor*(fromValue - this.options.min) + '%',
-                                'width'           : percentFactor*(toValue-fromValue) + '%',
-                                'background-color': gridColor.color
-                                })
-                            .appendTo( this.currentGridContainer );
-                    }
+                    $('<span/>')
+                        .addClass('grid-color' + (i%2?' to':' from'))
+                        .css({
+                            'left'            : percentFactor*(fromValue - this.options.min) + '%',
+                            'width'           : percentFactor*(toValue-fromValue) + '%',
+                            'background-color': gridColor.color
+                           })
+                        .appendTo( this.currentGridContainer );
+                }
             }
         },
 
