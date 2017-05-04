@@ -1736,7 +1736,7 @@
                 toValue  = this.options.min,
                 i,
                 gridColor,
-                percentFactor = 100 / (this.options.max - this.options.min)
+                percentFactor = 100 / (this.options.max - this.options.min);
             
 
 
@@ -1769,7 +1769,7 @@
         calcHandleWidth: function(){
             var $handle  = this.options.isSingle ? this.cache.$s_single : this.cache.$s_from,
                 widthPx  = $handle.outerWidth(false),
-                widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ) //Round down the width to even number to assure that width/2 is a hole number
+                widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ); //Round down the width to even number to assure that width/2 is a hole number
 
             if (this.options.isSingle) 
                 this.coords.w_handle = widthRem;

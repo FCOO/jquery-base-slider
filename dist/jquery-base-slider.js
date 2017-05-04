@@ -16,12 +16,13 @@
     var defaultOptions = {    
         //Type and slider
         type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles  
-        slider      : "default", // Choose slider type, could be "default","small","round", or "range"  
+        slider      : "default", // Choose slider type, could be "default","small","round", "range", or '"fixed"  
         read_only   : false,     // Locks slider and makes it inactive.
         disable     : false,     // Locks slider and makes it disable ("dissy")
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
                                  // A value for options.width OR options.value_distances must be provided
         clicable    : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
+        mousewheel  : false,     // Only for type:'single': Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
 
         //Dimensions (only for options.fixed_handle: true)
         width          : 0, // The total width of the slider (in px for rem = 16px)
@@ -50,6 +51,8 @@
         min_interval: 0,    // Set minimum diapason between sliders. Only in "double" type  
         max_interval: 0,    // Set maximum diapason between sliders. Only in "double" type  
 
+        mousewheel_step_factor: 1, //Only for mousewheel:true: For each mousewheel move the from-value changes by +/- options.mousewheel_step_factor x options.step 
+
         //Slide-line
         impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red  
         impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green  
@@ -65,6 +68,9 @@
         ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.  
         major_ticks_factor: 1,                          // Not documented
 
+        grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
+                                  //If value == null or < min => A triangle is added to the left indicating 'below min'. 
+                                  //If value > max            =>  A triangle is added to the right indicating 'above max'.    
 
 
         //Labels above slider 
@@ -147,6 +153,10 @@
 
         this.options.isSingle = (this.options.type == 'single');
         this.options.isInterval = (this.options.type == 'double');
+
+        if (this.options.isInterval){
+            this.options.mousewheel = false;          
+        }
 
         this.validate();
 
@@ -290,7 +300,9 @@
                 return result;
             }
 
-            this.cache.$container = $span( 'base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
+            //this.cache.$container = $span( 'base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
+            this.cache.$container = $('<div/>');
+            this.cache.$container.addClass('base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
 
             this.cache.$input.before(this.cache.$container);
             this.cache.$input.prop("readonly", true);
@@ -346,11 +358,10 @@
                 this.cache.$lineLeft = $span('line-left', this.cache.$line);
 
             if (!this.options.hide_from_to) {
-                if (this.options.isSingle) 
-                    this.cache.$single = $span('marker-single', this.cache.$bs);
-                else {
-                    this.cache.$from = $span('marker-from',   this.cache.$bs);
-                    this.cache.$to   = $span('marker-to',     this.cache.$bs);
+                this.cache.$single = $span('marker-single', this.cache.$bs);
+                if (this.options.isInterval){
+                    this.cache.$from   = $span('marker-from',   this.cache.$bs);
+                    this.cache.$to     = $span('marker-to',     this.cache.$bs);
                 }
             }
 
@@ -498,6 +509,15 @@
             else
                 this._onEvents( this.cache.$s_single, "touchstart mousedown", this.pointerDown, "single" ); 
 
+
+            if (this.options.mousewheel){
+                //Add horizontal sliding with mousewheel
+                if (this.options.fixed_handle)
+                    this._onEvents( this.cache.$outerContainer, 'mousewheel', this.mousewheel );
+                else
+                    this._onEvents( this.cache.$container.parent(), 'mousewheel', this.mousewheel );
+            }
+
             this._onEvents( this.cache.$s_from,   "touchstart mousedown", this.pointerDown, "from" ); 
             this._onEvents( this.cache.$s_to,     "touchstart mousedown", this.pointerDown, "to" ); 
 
@@ -637,6 +657,11 @@
                         this.setFromValue( value );
         },
 
+        //mousewheel moves options.mousewheel_step_factor steps pro delta
+        mousewheel: function( e, delta ){
+            this.setFromValue( this.result.from + delta*this.options.mousewheel_step_factor*this.options.step );
+            e.preventDefault();
+        },
 
         //pointerMove
         pointerMove: function (e) {
@@ -885,7 +910,7 @@
         },
 
         //getOuterWidth
-        getOuterWidth: function( $element, inclUnit, factor ){
+        getOuterWidth: function( $element, inclUnit, factor ){ 
             return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
         },
 
@@ -901,10 +926,9 @@
 
             if (update) {
                 this.getCoords_w_rs();
-                if (this.options.isSingle)
-                    this.coords.w_handle = this.getOuterWidth(this.cache.$s_single);
-                else
-                    this.coords.w_handle = this.getOuterWidth(this.cache.$s_from);
+
+                this.calcHandleWidth();
+
                 this.coords.w_container = this.getInnerWidth(this.cache.$container); 
                 this.coords.w_outerContainer = this.getInnerWidth(this.cache.$outerContainer); 
 
@@ -943,7 +967,7 @@
                     this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
                     this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
 
-                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f));
+                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f)); 
                     this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
                     this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
@@ -960,8 +984,8 @@
                     if (this.options.from_fixed) break;
 
                     this.coords.p_single_real = this.calcWithStep((this.options.fixed_handle ? real_x_raw : real_x) / real_width * 100);
-                    this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width);
+                    //this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
+                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width); 
                     
                     break;
 
@@ -1105,6 +1129,7 @@
                 this.labels.p_single_left = ((this.labels.p_from_left + this.labels.p_to_left + this.labels.p_to) / 2) - (this.labels.p_single / 2);
                 this.labels.p_single_left = this.toFixed(this.labels.p_single_left);
                 this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
+
             }
         },
 
@@ -1165,7 +1190,6 @@
                     if (this.options.fixed_handle)
                         //Keep the handle centered in in container
                         this.cache.$container.css('left', - this.coords.w_container*this.coords.p_single/100
-                                                          - this.coords.w_handle/2
                                                           + 0.5*this.coords.w_outerContainer + 'rem' );
                 } 
                 else {
@@ -1202,7 +1226,7 @@
         },
 
         //drawLabels
-        drawLabels: function () {
+        drawLabels: function () { 
             if (!this.options || this.options.hide_from_to) return;
 
             var text_single, text_from, text_to;
@@ -1214,15 +1238,10 @@
 
                 this.calcLabels();
 
-                if (this.labels.p_single_left < this.labels.p_min + 1)
-                    this.cache.$min.css('visibility', 'hidden');
-                else
-                    this.cache.$min.css('visibility', 'visible');
-
-                if (this.labels.p_single_left + this.labels.p_single > 100 - this.labels.p_max - 1)
-                    this.cache.$max.css('visibility', 'hidden');
-                else
-                    this.cache.$max.css('visibility', 'visible');
+                if (!this.options.hide_min_max){
+                    this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );       
+                    this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );       
+                }
 
             } 
             else {
@@ -1268,18 +1287,10 @@
                     this.cache.$single.css('visibility', 'hidden');
                 }
 
-                if (min < this.labels.p_min + 1) {
-                    this.cache.$min.css('visibility', 'hidden');
-                } else {
-                    this.cache.$min.css('visibility', 'visible');
+                if (!this.options.hide_min_max){
+                    this.cache.$min.toggle( min >= this.labels.p_min + 1 );       
+                    this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );       
                 }
-
-                if (max > 100 - this.labels.p_max - 1) {
-                    this.cache.$max.css('visibility', 'hidden');
-                } else {
-                    this.cache.$max.css('visibility', 'visible');
-                }
-
             }
         }, //end of drawLabels
 
@@ -1576,9 +1587,9 @@
             var text = this._prettify_text( value );
 
             if (this.options.decorate_text)
-              text =    (this.options.prefix ? this.options.prefix : '') +
-                                text +
-                                (this.options.postfix ? this.options.postfix : '');
+              text = (this.options.prefix ? this.options.prefix : '') +
+                     text +
+                     (this.options.postfix ? this.options.postfix : '');
             var result = $('<span class="grid-text" style="background-color:transparent; left: ' + left + '%">' + text + '</span>');
             result.appendTo( this.currentGridContainer );
 
@@ -1638,12 +1649,12 @@
             this.calcGridMargin();
 
             var o = this.options,
-                    gridContainerWidth = this.getOuterWidth(this.cache.$grid),
-                    gridDistanceIndex = 0,
-                    value = o.min,
-                    maxTextWidth = 0,
-                    valueP = 0,
-                    valueOffset;
+                gridContainerWidth = this.getOuterWidth(this.cache.$grid),
+                gridDistanceIndex = 0,
+                value = o.min,
+                maxTextWidth = 0,
+                valueP = 0,
+                valueOffset;
             o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
             o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor;
 //            o.oneP = this.toFixed(100 / total);
@@ -1662,7 +1673,7 @@
                     o.gridDistanceStep = o.gridDistanceStep*2;
             }
             o.tickDistanceNum = o.gridDistanceStep*o.step;    //The numerical distance between each ticks
-            o.tickDistanceRem = o.gridDistanceStep*o.stepRem;        //The rem distance between each ticks
+            o.tickDistanceRem = o.gridDistanceStep*o.stepRem; //The rem distance between each ticks
 
 
             var _major_ticks = o.major_ticks;
@@ -1711,24 +1722,73 @@
                 value += 1;
                 valueP += o.oneP;
             }
+        
+            if (this.options.grid_colors)
+                this.appendGridColors( this.options.grid_colors );  
+                    
+        
+        
         },
 
+        //addGridColor
+        appendGridColors: function( gridColors ){
+            var fromValue,
+                toValue  = this.options.min,
+                i,
+                gridColor,
+                percentFactor = 100 / (this.options.max - this.options.min);
+            
+
+
+
+            for (i=0; i<gridColors.length; i++ ){
+                gridColor = gridColors[i];
+                if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) )
+                  //add triangle to the left or right
+                    $('<span/>')
+                        .addClass( gridColor.value > this.options.max ? 'grid-color gt_max' : 'grid-color lt_min')
+                        .css('color', gridColor.color)
+                        .appendTo( this.currentGridContainer );
+                else {
+                    fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
+                    toValue = gridColor.value;
+
+                    $('<span/>')
+                        .addClass('grid-color' + (i%2?' to':' from'))
+                        .css({
+                            'left'            : percentFactor*(fromValue - this.options.min) + '%',
+                            'width'           : percentFactor*(toValue-fromValue) + '%',
+                            'background-color': gridColor.color
+                           })
+                        .appendTo( this.currentGridContainer );
+                }
+            }
+        },
+
+        //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle 
+        calcHandleWidth: function(){
+            var $handle  = this.options.isSingle ? this.cache.$s_single : this.cache.$s_from,
+                widthPx  = $handle.outerWidth(false),
+                widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ); //Round down the width to even number to assure that width/2 is a hole number
+
+            if (this.options.isSingle) 
+                this.coords.w_handle = widthRem;
+            else
+                this.coords.w_handle = widthRem;
+        },
 
         //calcGridMargin
         calcGridMargin: function () {
             this.getCoords_w_rs();
             if (!this.coords.w_rs) return;
-
-            if (this.options.isSingle) {
-                this.coords.w_handle = this.getOuterWidth(this.cache.$s_single);
-            } else {
-                this.coords.w_handle = this.getOuterWidth(this.cache.$s_from);
-            }
+            
+            this.calcHandleWidth();
+            
             this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
 
             this.cache.$grid.css({
-                'width'    : this.toFixed(100 - this.coords.p_handle) + "%",
-                'left'    : this.toFixed(this.coords.w_handle / 2 ) + "rem"
+                'width': this.toFixed(100 - this.coords.p_handle) + "%",
+                'left' : this.toFixed(this.coords.w_handle / 2 ) + "rem"
             });
         },
 
