@@ -659,7 +659,7 @@
 
         //mousewheel moves options.mousewheel_step_factor steps pro delta
         mousewheel: function( e, delta ){
-            this.setFromValue( this.result.from + delta*this.options.mousewheel_step_factor*this.options.step );
+            this.setFromValue( this.result.from - delta*this.options.mousewheel_step_factor*this.options.step );
             e.preventDefault();
         },
 
