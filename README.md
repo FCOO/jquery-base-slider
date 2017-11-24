@@ -54,7 +54,8 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `step_offset` | `0` | `number` | When `step` > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for `type="single"` | 
 | `min_interval` | `-` | `number` | Set minimum diapason between sliders. Only in "double" type | 
 | `max_interval` | `-` | `number` | Set maximum diapason between sliders. Only in "double" type | 
-| `mousewheel_step_factor` | `1` | `number` | Only for `mousewheel:true`: For each mousewheel move the from-value changes by +/- `options.mousewheel_step_factor` x `options.step` | 
+| `keyboard_shift_step_factor` | `5` | `number` | Step-factor when stepping using keyboard and holding down shift xor ctrl. Etc. shift-left compare to left |
+| `keyboard_page_step_factor` | `20` | `number` | Step-factor when stepping pressing PgDn or PrUp or arrows and holding down shift and ctrl |
  
 
 ### Slide-line
