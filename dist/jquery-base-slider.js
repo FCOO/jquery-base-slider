@@ -13,10 +13,10 @@
     /************************************
     DEFAULT OPTIONS
     ************************************/
-    var defaultOptions = {    
+    var defaultOptions = {
         //Type and slider
-        type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles  
-        slider      : "default", // Choose slider type, could be "default","small","round", "range", or '"fixed"  
+        type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles
+        slider      : "default", // Choose slider type, could be "default","small","round", "range", or '"fixed"
         read_only   : false,     // Locks slider and makes it inactive.
         disable     : false,     // Locks slider and makes it disable ("dissy")
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
@@ -29,69 +29,70 @@
         value_distances: 3, // The distance between each values on the slider (in px for rem = 16px). Width will be value_distances*( max - min )
 
         //Ranges and value
-        min : 10,           // Set slider minimum value  
-        max : 100,          // Set slider maximum value  
-        from: null,         // Set start position for left handle (or for single handle)  
-        to  : null,         // Set start position for right handle  
+        min : 10,           // Set slider minimum value
+        max : 100,          // Set slider maximum value
+        from: null,         // Set start position for left handle (or for single handle)
+        to  : null,         // Set start position for right handle
 
-        from_fixed: false,  // Fix position of left (or single) handle.  
-        from_min  : null,   // Set minimum limit for left handle.  
-        from_max  : null,   // Set the maximum limit for left handle  
+        from_fixed: false,  // Fix position of left (or single) handle.
+        from_min  : null,   // Set minimum limit for left handle.
+        from_max  : null,   // Set the maximum limit for left handle
 
-        to_fixed: false,    // Fix position of right handle.  
-        to_min  : null,     // Set the minimum limit for right handle  
-        to_max  : null,     // Set the maximum limit for right handle  
+        to_fixed: false,    // Fix position of right handle.
+        to_min  : null,     // Set the minimum limit for right handle
+        to_max  : null,     // Set the maximum limit for right handle
 
-        pin_value: null,    // The value for the pin. Use  setPin( value [, color] )  to change the value dynamical  
-        pin_color: 'black', // The color of the pin. Use  setPin( value , color )  to change the color dynamical  
+        pin_value: null,    // The value for the pin. Use  setPin( value [, color] )  to change the value dynamical
+        pin_color: 'black', // The color of the pin. Use  setPin( value , color )  to change the color dynamical
 
         //Steps
-        step: 1,            // Set sliders step. Always > 0. Could be fractional.  
-        step_offset : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for  type="single"   
-        min_interval: 0,    // Set minimum diapason between sliders. Only in "double" type  
-        max_interval: 0,    // Set maximum diapason between sliders. Only in "double" type  
+        step        : 1,    // Set sliders step. Always > 0. Could be fractional.
+        step_offset : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for  type="single"
+        min_interval: 0,    // Set minimum diapason between sliders. Only in "double" type
+        max_interval: 0,    // Set maximum diapason between sliders. Only in "double" type
 
-        mousewheel_step_factor: 1, //Only for mousewheel:true: For each mousewheel move the from-value changes by +/- options.mousewheel_step_factor x options.step 
+        keyboard_shift_step_factor: 5,  //Factor when pressing etc. shift-left compare to left
+        keyboard_page_step_factor : 20, //Step-factor when pressing pgUp or PgDn
 
         //Slide-line
-        impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red  
-        impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green  
-        bar_color          : null,  // The color of the bar 
-        hide_bar_color     : false, // The bar gets same color as the line  
+        impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red
+        impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green
+        bar_color          : null,  // The color of the bar
+        hide_bar_color     : false, // The bar gets same color as the line
 
         //Grid (ticks and text)
-        grid              : false,                      // Enables grid of values.  
-        major_ticks       : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic  
-        major_ticks_offset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  major_ticks_offset:4  the major ticks would be placed on values=4,14,24,...,84,94  
-        hide_minor_ticks  : false,                      // Hide minor ticks.  
-        gridDistances     : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24] 
-        ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.  
+        grid              : false,                      // Enables grid of values.
+        major_ticks       : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic
+        major_ticks_offset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  major_ticks_offset:4  the major ticks would be placed on values=4,14,24,...,84,94
+        hide_minor_ticks  : false,                      // Hide minor ticks.
+        gridDistances     : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24]
+        ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.
         major_ticks_factor: 1,                          // Not documented
 
         grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
-                                  //If value == null or < min => A triangle is added to the left indicating 'below min'. 
-                                  //If value > max            =>  A triangle is added to the right indicating 'above max'.    
+                                  //If value == null or < min => A triangle is added to the left indicating 'below min'.
+                                  //If value > max            =>  A triangle is added to the right indicating 'above max'.
 
 
-        //Labels above slider 
-        hide_min_max: true,     // Hides min and max labels  
-        hide_from_to: false,    // Hide from and to labels  
-        marker_frame: false,    // Frame the from- and to-marker  
+        //Labels above slider
+        hide_min_max: true,     // Hides min and max labels
+        hide_from_to: false,    // Hide from and to labels
+        marker_frame: false,    // Frame the from- and to-marker
 
         //Adjust text and labels
-        prettify        : null,  // Set up your prettify function. Can be anything. For example, you can set up unix time as slider values and than transform them to cool looking dates.  
-        prettify_text   : null,  // As  prettify  but for the text/labels in the grid.  
+        prettify        : null,  // Set up your prettify function. Can be anything. For example, you can set up unix time as slider values and than transform them to cool looking dates.
+        prettify_text   : null,  // As  prettify  but for the text/labels in the grid.
         prefix          : "",    // Set prefix for values. Will be set up right before the number: $100
         postfix         : "",    // Set postfix for values. Will be set up right after the number: 100k
         max_postfix     : "",    // Special postfix, used only for maximum value. Will be showed after handle will reach maximum right position. For example 0 - 100+
         decorate_both   : true,  // Used for "double" type and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
-        decorate_text   : false, // The text/labels in the grid also gets  prefix  and/or  postfix 
+        decorate_text   : false, // The text/labels in the grid also gets  prefix  and/or  postfix
         values_separator: " - ", // Text between min and max value when labels are combined. values_separator:" to " => "12 to 24"
 
         //Callback
-        callback            : null, // Is called when the  from  or  to  value are changed. 
-        callback_on_dragging: true, // If false the callback-function is only called when dragging the sliding is finish. 
-        callback_delay      : 500,  // If  callback_on_dragging  is false the  callback  is called when the slider has been on the same tick for  callback_delay  milliseconds. Set to zero to avoid any callback before mouseup-event 
+        callback            : null, // Is called when the  from  or  to  value are changed.
+        callback_on_dragging: true, // If false the callback-function is only called when dragging the sliding is finish.
+        callback_delay      : 500,  // If  callback_on_dragging  is false the  callback  is called when the slider has been on the same tick for  callback_delay  milliseconds. Set to zero to avoid any callback before mouseup-event
 
         //Buttons
         buttons      : {from: {}, to: {} }, // JSON-record with id or buttons for first, previous, (now,) next, and last value = {from: {buttonList}, to: {buttonList}}, where
@@ -101,7 +102,7 @@
                                             //      nowBtn     : element or string,
                                             //      nextBtn    : element or string,
                                             //      lastBtn    : element or string
-                                            //  }  
+                                            //  }
 
         buttons_attr : ['firstBtn', 'previousBtn', 'nowBtn', 'nextBtn', 'lastBtn'], //Internal
         buttons_delta: [-99, -1, 0, +1, +99], //Internal
@@ -110,9 +111,9 @@
         onStart : null, // Callback. Is called on slider start.
         onChange: null, // Callback. IS called on each values change.
         onFinish: null, // Callback. Is called than user releases handle.
-        onUpdate: null  // Callback. Is called than slider is modified by external methods  update  or  reset 
+        onUpdate: null  // Callback. Is called than slider is modified by external methods  update  or  reset
     };
-    
+
 
     /************************************
     BaseSlider
@@ -121,7 +122,7 @@
     window.BaseSlider = function (input, options, plugin_count) {
         this.input = input;
         this.plugin_count = plugin_count;
-        
+
         this.current_plugin = 0;
         this.old_from = 0;
         this.old_to = 0;
@@ -146,16 +147,16 @@
         this.options = $.extend( {}, defaultOptions, options );
 
         if (this.options.fixed_handle){
-            this.options.type = 'single';         
+            this.options.type = 'single';
             if (options.clicable === undefined)
-                this.options.clicable = false;  
+                this.options.clicable = false;
         }
 
         this.options.isSingle = (this.options.type == 'single');
         this.options.isInterval = (this.options.type == 'double');
 
         if (this.options.isInterval){
-            this.options.mousewheel = false;          
+            this.options.mousewheel = false;
         }
 
         this.validate();
@@ -170,9 +171,7 @@
         if (this.options.gridDistances.indexOf(this.options.step) == -1)
             this.options.gridDistances.push(this.options.step);
 
-
         this.options.has_pin = (this.options.pin_value !== null);
-        this.options.p_keyboard_step = 100*this.options.step / (this.options.max - this.options.min);
 
         this.coords = {
             // left
@@ -210,7 +209,7 @@
 
         this.result = {
             $input: this.cache.$input,
-            input: this.cache.$input,  //Backward compatibility 
+            input: this.cache.$input,  //Backward compatibility
             slider: null,
 
             min: this.options.min,
@@ -252,7 +251,7 @@
         init: function (is_update) {
             this.options.total = this.options.max - this.options.min;
             this.options.oneP  = this.toFixed(100 / this.options.total);
-            this.options.stepP = this.options.step*this.options.oneP; 
+            this.options.stepP = this.options.step*this.options.oneP;
 
             var factor = 100/this.options.total;
             this.coords.p_step        = this.options.step * factor;
@@ -330,13 +329,13 @@
                 //Update the slider when $outerContainer is resized
                 var _this = this;
                 this.cache.$outerContainer.resize( function(){
-                    _this.force_redraw = true; 
+                    _this.force_redraw = true;
                     _this.drawHandles();
                 });
-            
+
             }
-            
-            /* Create structure       
+
+            /* Create structure
             <span class="bs">
                 <span class="line" tabindex="-1">
                     <span class="line-left"></span>
@@ -437,12 +436,12 @@
             if (this.options.disable) {
                 this.cache.$container.addClass("disabled");
                 this.cache.$input.prop('disabled', true);
-            } 
+            }
             else
                 if (this.options.read_only){
                     this.cache.$container.addClass("read-only");
                     this.cache.$input.prop('disabled', true);
-                } 
+                }
                 else {
                     if (!this.options.fixed_handle)
                         this.cache.$container.addClass("active");
@@ -457,9 +456,9 @@
         _offEvents: function( $elem, eventNames ){
             if (!$elem) return;
             var count = this.plugin_count;
-            $.each( eventNames.split(' '), function( index, eventName ){ 
+            $.each( eventNames.split(' '), function( index, eventName ){
                 $elem.off( eventName + ".irs_" + count );
-            });            
+            });
         },
 
         //remove
@@ -488,27 +487,26 @@
             var count = this.plugin_count,
                 f = param ? $.proxy( func, this, param) : $.proxy( func, this );
 
-            $.each( eventNames.split(' '), function( index, eventName ){ 
+            $.each( eventNames.split(' '), function( index, eventName ){
                 $elem.on( eventName + ".irs_" + count,  f );
-            });            
+            });
         },
 
         //bindEvents
         bindEvents: function () {
-            this._onEvents( this.cache.$body, "touchmove mousemove",  this.pointerMove ); 
+            this._onEvents( this.cache.$body, "touchmove mousemove",  this.pointerMove );
 
-            this._onEvents( this.cache.$win,  "touchend mouseup",     this.pointerUp ); 
+            this._onEvents( this.cache.$win,  "touchend mouseup",     this.pointerUp );
 
             if (this.options.clicable){
-                this._onEvents( this.cache.$line, "touchstart mousedown", this.pointerClick, "click" ); 
-                this._onEvents( this.cache.$bar,  "touchstart mousedown", this.pointerClick, "click" ); 
+                this._onEvents( this.cache.$line, "touchstart mousedown", this.pointerClick, "click" );
+                this._onEvents( this.cache.$bar,  "touchstart mousedown", this.pointerClick, "click" );
             }
 
             if (this.options.fixed_handle)
-                this._onEvents( this.cache.$fullWidthContainer, "touchstart mousedown", this.pointerDown, "single" ); 
+                this._onEvents( this.cache.$fullWidthContainer, "touchstart mousedown", this.pointerDown, "single" );
             else
-                this._onEvents( this.cache.$s_single, "touchstart mousedown", this.pointerDown, "single" ); 
-
+                this._onEvents( this.cache.$s_single, "touchstart mousedown", this.pointerDown, "single" );
 
             if (this.options.mousewheel){
                 //Add horizontal sliding with mousewheel
@@ -518,10 +516,10 @@
                     this._onEvents( this.cache.$container.parent(), 'mousewheel', this.mousewheel );
             }
 
-            this._onEvents( this.cache.$s_from,   "touchstart mousedown", this.pointerDown, "from" ); 
-            this._onEvents( this.cache.$s_to,     "touchstart mousedown", this.pointerDown, "to" ); 
+            this._onEvents( this.cache.$s_from,   "touchstart mousedown", this.pointerDown, "from" );
+            this._onEvents( this.cache.$s_to,     "touchstart mousedown", this.pointerDown, "to" );
 
-            this._onEvents( this.cache.$line, "keydown", this.key, "keyboard" ); 
+            this._onEvents( this.cache.$line, "keydown", this.key, "keyboard" );
 
             //Bind click on buttons
             var id, i, attrName, delta, $btn;
@@ -583,8 +581,8 @@
                 if (this.delayTimeout)
                     window.clearTimeout(this.delayTimeout);
                 var _this = this;
-                this.delayTimeout = window.setTimeout( 
-                                        function () { _this.onCallback(); }, 
+                this.delayTimeout = window.setTimeout(
+                                        function () { _this.onCallback(); },
                                         this.options.callback_delay
                                     );
             }
@@ -657,10 +655,16 @@
                         this.setFromValue( value );
         },
 
-        //mousewheel moves options.mousewheel_step_factor steps pro delta
+        //mousewheel
         mousewheel: function( e, delta ){
-            this.setFromValue( this.result.from - delta*this.options.mousewheel_step_factor*this.options.step );
-            e.preventDefault();
+            return this._moveByKeyboardOrMouseWheel({
+                event         : e,
+                delta         : 1,
+                shiftDelta    : 2,
+                ctrlShiftDelta: 3,
+                sign          : delta
+
+            });
         },
 
         //pointerMove
@@ -686,7 +690,7 @@
 
             if (this.is_active)
                 this.is_active = false;
-            else 
+            else
                 return;
 
             if ($.contains(this.cache.$container[0], e.target) || this.dragging)
@@ -701,7 +705,7 @@
         //pointerDown
         pointerDown: function (target, e) {
             e.preventDefault();
-            var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX; 
+            var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
             if (e.button === 2) return;
 
             this.current_plugin = this.plugin_count;
@@ -715,8 +719,8 @@
 
             switch (target) {
                 case "single":
-                    this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_single); 
-            
+                    this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_single);
+
                     if (this.options.fixed_handle)
                         //Save initial mouse position to calc reverse mouse movment
                         this.coords.x_start = x;
@@ -766,50 +770,110 @@
             this.cache.$line.trigger("focus");
         },
 
-        //key
+        //key - event keydown
         key: function (target, e) {
-            if (this.current_plugin !== this.plugin_count || e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) return;
+            if (this.current_plugin !== this.plugin_count || e.altKey || e.metaKey) return;
+
+            var options;
 
             switch (e.which) {
                 case 83: // W
                 case 65: // A
                 case 40: // DOWN
                 case 37: // LEFT
-                    e.preventDefault();
-                    this.moveByKey(false);
+                    options = {delta: 1, shiftDelta: 2, ctrlShiftDelta: 3, sign: -1};
                     break;
                 case 87: // S
                 case 68: // D
                 case 38: // UP
                 case 39: // RIGHT
-                    e.preventDefault();
-                    this.moveByKey(true);
+                    options = {delta: 1, shiftDelta: 2, ctrlShiftDelta: 3, sign: +1};
                     break;
+                case 33: // page up
+                    options = {delta: 3, shiftDelta: 99, sign: -1};
+                    break;
+                case 34: // page down
+                    options = {delta: 3, shiftDelta: 99, sign: +1};
+                    break;
+                case 35: // end
+                    options = {delta: 99, sign: +1};
+                    break;
+                case 36: // home
+                    options  = {delta: 99, sign: -1};
+                    break;
+                default:
+                    options = {delta: 0};
             }
-            return true;
+
+            options.event = e;
+
+            if (options.delta)
+                return this._moveByKeyboardOrMouseWheel( options );
         },
 
-        // Move by key beta
-        // TODO: refactor than have plenty of time
-        moveByKey: function (right) {
-            var p = this.coords.p_pointer;
-            if (right)
-                p += this.options.p_keyboard_step;
-            else
-                p -= this.options.p_keyboard_step;
-            this.coords.x_pointer = this.toFixed(this.coords.w_rs / 100 * p);
-            this.is_key = true;
-            this.calc();
 
-            this.force_redraw = true;
-            this.drawHandles();
+        //_moveByKeyboardOrMouseWheel options = { sign, delta, shiftDelta, ctrlShiftDelta, event }
+        _moveByKeyboardOrMouseWheel: function( options ){
+            /*
+            Setting delta:
+                +/-  1: step = this.options.step
+                +/-  2: step = this.options.keyboard_shift_step_factor * this.options.step
+                +/-  3: step = this.options.keyboard_page_step_factor * this.options.step
+                +/- 99: To the end/start
+            */
+            var delta = options.delta;
 
+            //If shift XOR ctrl is pressed..
+            if ((options.event.ctrlKey && !options.event.shiftKey) || (!options.event.ctrlKey && options.event.shiftKey))
+                delta = options.shiftDelta || delta;
+
+            //If shift AND ctrl is pressed..
+            if (options.event.ctrlKey && options.event.shiftKey)
+                delta = options.ctrlShiftDelta || options.shiftDelta || delta;
+
+            delta = options.sign*delta;
+
+            //If the slider has two handle (this.options.isInterval == true) both handles are moved euqal distance to keep the distance between them constant
+
+            //oldValue = original value depending on type and direction
+            var oldValue =  (this.options.isSingle || (delta < 0)) ? this.result.from : this.result.to,
+                newValue;
+            switch (delta){
+                case -99: newValue = this.options.min; break;
+                case  99: newValue = this.options.max; break;
+                case  +1: newValue = oldValue + this.options.step; break;
+                case  -1: newValue = oldValue - this.options.step; break;
+                case  +2: newValue = oldValue + this.options.keyboard_shift_step_factor * this.options.step; break;
+                case  -2: newValue = oldValue - this.options.keyboard_shift_step_factor * this.options.step; break;
+                case  +3: newValue = oldValue + this.options.keyboard_page_step_factor * this.options.step; break;
+                case  -3: newValue = oldValue - this.options.keyboard_page_step_factor * this.options.step; break;
+            }
+            if (this.options.isSingle)
+                this.setFromValue( newValue );
+            else {
+                //Adjust newValue to range
+                newValue = this.adjustValue( newValue );
+
+                //Find delta-value
+                var deltaValue = newValue - oldValue;
+                if (delta > 0){
+                    this.setToValue( newValue );
+                    this.setFromValue( this.result.from + deltaValue );
+                }
+                else {
+                    this.setFromValue( newValue );
+                    this.setToValue( this.result.to + deltaValue );
+                }
+            }
+
+            event.preventDefault();
+            return true;
         },
 
         //setMinMax
         setMinMax: function () {
             if (!this.options) return;
-            
+
             if (this.options.hide_min_max) {
                 this.cache.$min.hide();
                 this.cache.$max.hide();
@@ -910,18 +974,18 @@
         },
 
         //getOuterWidth
-        getOuterWidth: function( $element, inclUnit, factor ){ 
+        getOuterWidth: function( $element, inclUnit, factor ){
             return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
         },
 
         //getCoords_w_rs
         getCoords_w_rs: function(){
-            var result = this.getInnerWidth( this.cache.$fullWidthContainer ? this.cache.$fullWidthContainer : this.cache.$container); 
+            var result = this.getInnerWidth( this.cache.$fullWidthContainer ? this.cache.$fullWidthContainer : this.cache.$container);
             this.coords.w_rs = result ? result : this.coords.w_rs;
         },
 
         //calc
-        calc: function (update) { 
+        calc: function (update) {
             if (!this.options) return;
 
             if (update) {
@@ -929,8 +993,8 @@
 
                 this.calcHandleWidth();
 
-                this.coords.w_container = this.getInnerWidth(this.cache.$container); 
-                this.coords.w_outerContainer = this.getInnerWidth(this.cache.$outerContainer); 
+                this.coords.w_container = this.getInnerWidth(this.cache.$container);
+                this.coords.w_outerContainer = this.getInnerWidth(this.cache.$outerContainer);
 
             }
             if (!this.coords.w_rs) return;
@@ -949,12 +1013,12 @@
 
             if (real_x < 0)
                 real_x = 0;
-            else 
+            else
                 if (real_x > real_width)
                     real_x = real_width;
 
             switch (this.target) {
-                case "base": 
+                case "base":
                     var w = (this.options.max - this.options.min) / 100,
                     f = (this.result.from - this.options.min) / w,
                     t = (this.result.to - this.options.min) / w;
@@ -967,7 +1031,7 @@
                     this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
                     this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
 
-                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f)); 
+                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f));
                     this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
                     this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
 
@@ -985,8 +1049,8 @@
 
                     this.coords.p_single_real = this.calcWithStep((this.options.fixed_handle ? real_x_raw : real_x) / real_width * 100);
                     //this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width); 
-                    
+                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width);
+
                     break;
 
                 case "from":
@@ -1069,7 +1133,7 @@
 
             if (this.coords.x_pointer < 0 || isNaN(this.coords.x_pointer)  )
                 this.coords.x_pointer = 0;
-            else 
+            else
                 if (this.coords.x_pointer > this.coords.w_rs)
                     this.coords.x_pointer = this.coords.w_rs;
 
@@ -1110,7 +1174,7 @@
                 if (!this.options.fixed_handle)
                     this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
 
-            } 
+            }
             else {
                 this.labels.w_from = this.getOuterWidth(this.cache.$from);
                 this.labels.p_from = this.labels.w_from / this.coords.w_rs * 100;
@@ -1144,9 +1208,9 @@
                 if (!$elem) return;
                 var css = {};
                 if (left !== null)
-                    css.left = left + (left ? '%' : '');                  
+                    css.left = left + (left ? '%' : '');
                 if (width !== null)
-                    css.width = width + (width ? '%' : '');                  
+                    css.width = width + (width ? '%' : '');
                 $elem.css( css );
             }
 
@@ -1169,7 +1233,7 @@
                 this.coords.w_rs_old = this.coords.w_rs;
             }
 
-            if (!this.coords.w_rs) return; 
+            if (!this.coords.w_rs) return;
 
             if (!this.dragging && !this.force_redraw && !this.is_key) return;
 
@@ -1191,7 +1255,7 @@
                         //Keep the handle centered in in container
                         this.cache.$container.css('left', - this.coords.w_container*this.coords.p_single/100
                                                           + 0.5*this.coords.w_outerContainer + 'rem' );
-                } 
+                }
                 else {
                     setLeftAndWidth( this.cache.$s_from, this.coords.p_from );
                     setLeftAndWidth( this.cache.$s_to, this.coords.p_to );
@@ -1226,7 +1290,7 @@
         },
 
         //drawLabels
-        drawLabels: function () { 
+        drawLabels: function () {
             if (!this.options || this.options.hide_from_to) return;
 
             var text_single, text_from, text_to;
@@ -1239,11 +1303,11 @@
                 this.calcLabels();
 
                 if (!this.options.hide_min_max){
-                    this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );       
-                    this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );       
+                    this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );
+                    this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );
                 }
 
-            } 
+            }
             else {
 
                 if (this.options.decorate_both) {
@@ -1288,8 +1352,8 @@
                 }
 
                 if (!this.options.hide_min_max){
-                    this.cache.$min.toggle( min >= this.labels.p_min + 1 );       
-                    this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );       
+                    this.cache.$min.toggle( min >= this.labels.p_min + 1 );
+                    this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );
                 }
             }
         }, //end of drawLabels
@@ -1339,7 +1403,7 @@
 
             if (number < this.options.min)
                 number = this.options.min;
-            else 
+            else
                 if (number > this.options.max)
                     number = this.options.max;
 
@@ -1375,7 +1439,7 @@
             if (type === "from") {
                 if (next - current < o.min_interval)
                     current = next - o.min_interval;
-            } 
+            }
             else
                 if (current - next < o.min_interval)
                     current = next + o.min_interval;
@@ -1398,7 +1462,7 @@
             if (type === "from") {
                 if (next - current > o.max_interval)
                     current = next - o.max_interval;
-            } 
+            }
             else
                 if (current - next > o.max_interval)
                     current = next + o.max_interval;
@@ -1439,7 +1503,7 @@
         checkEdges: function (left, width) {
             if (left < 0)
                 left = 0;
-            else 
+            else
                 if (left > 100 - width)
                     left = 100 - width;
             return this.toFixed(left);
@@ -1598,7 +1662,7 @@
 
             if (options.clickable){
                 //Check if the value for the label is a selectable one
-                options.clickable = 
+                options.clickable =
                     (this.options.step == 1) ||
                     ( ((value - this.options.step_offset) % this.options.step) === 0);
             }
@@ -1722,12 +1786,12 @@
                 value += 1;
                 valueP += o.oneP;
             }
-        
+
             if (this.options.grid_colors)
-                this.appendGridColors( this.options.grid_colors );  
-                    
-        
-        
+                this.appendGridColors( this.options.grid_colors );
+
+
+
         },
 
         //addGridColor
@@ -1737,7 +1801,7 @@
                 i,
                 gridColor,
                 percentFactor = 100 / (this.options.max - this.options.min);
-            
+
 
 
 
@@ -1765,13 +1829,13 @@
             }
         },
 
-        //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle 
+        //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle
         calcHandleWidth: function(){
             var $handle  = this.options.isSingle ? this.cache.$s_single : this.cache.$s_from,
                 widthPx  = $handle.outerWidth(false),
                 widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ); //Round down the width to even number to assure that width/2 is a hole number
 
-            if (this.options.isSingle) 
+            if (this.options.isSingle)
                 this.coords.w_handle = widthRem;
             else
                 this.coords.w_handle = widthRem;
@@ -1781,9 +1845,9 @@
         calcGridMargin: function () {
             this.getCoords_w_rs();
             if (!this.coords.w_rs) return;
-            
+
             this.calcHandleWidth();
-            
+
             this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
 
             this.cache.$grid.css({
