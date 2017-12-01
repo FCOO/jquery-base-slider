@@ -1,10 +1,10 @@
 /****************************************************************************
     jquery-base-slider, Description from README.md
 
-    (c) 2015, Niels Holt
+    (c) 2015, FCOO
 
-    https://github.com/NielsHolt/jquery-base-slider
-    https://github.com/NielsHolt
+    https://github.com/fcoo/jquery-base-slider
+    https://github.com/fcoo
 
 ****************************************************************************/
 (function ($, window, document, undefined) {
@@ -16,13 +16,13 @@
     var defaultOptions = {
         //Type and slider
         type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles
-        slider      : "default", // Choose slider type, could be "default","small","round", "range", or '"fixed"
+        slider      : "down",    // Choose slider type, could be "horizontal", "vertical", "down", "up", "left", "right", "round", "range", or "fixed"
         read_only   : false,     // Locks slider and makes it inactive.
         disable     : false,     // Locks slider and makes it disable ("dissy")
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
                                  // A value for options.width OR options.value_distances must be provided
         clicable    : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
-        mousewheel  : false,     // Only for type:'single': Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
+        mousewheel  : false,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
 
         //Dimensions (only for options.fixed_handle: true)
         width          : 0, // The total width of the slider (in px for rem = 16px)
@@ -42,8 +42,9 @@
         to_min  : null,     // Set the minimum limit for right handle
         to_max  : null,     // Set the maximum limit for right handle
 
-        pin_value: null,    // The value for the pin. Use  setPin( value [, color] )  to change the value dynamical
-        pin_color: 'black', // The color of the pin. Use  setPin( value , color )  to change the color dynamical
+        pin_value: null,            // The value for the pin. Use  setPin( value [, color] )  to change the value dynamical
+        pin_color: 'black',         // The color of the pin. Use  setPin( value , color )  to change the color dynamical
+        pin_icon : 'fa-map-marker', // The class-name from Fontawasome setting the icon used as pin
 
         //Steps
         step        : 1,    // Set sliders step. Always > 0. Could be fractional.
@@ -145,6 +146,14 @@
 
         // get config from options
         this.options = $.extend( {}, defaultOptions, options );
+
+        //Backward compatibility
+        if (options.slider == 'default')
+            options.slider = 'down';
+        if (options.slider == 'small')
+            options.slider = 'down';
+
+
 
         if (this.options.fixed_handle){
             this.options.type = 'single';
@@ -390,7 +399,7 @@
 
 
             if (this.options.has_pin)
-                this.cache.$s_pin = $span('slider pin', this.cache.$container);
+                this.cache.$s_pin = $span('pin fa', this.cache.$container);
 
             //Add class to set bar color same as line
             if (this.options.hide_bar_color)
@@ -944,20 +953,30 @@
             this.onCallback();
         },
 
-        setPin: function( value, color ) {
+        setPin: function( value, color, icon ) {
             if (!this.options.has_pin) return;
 
-            value = Math.min( this.options.max, value );
-            value = Math.max( this.options.min, value );
-            this.options.pin_value = value;
+            if (value !== null){
+                value = Math.min( this.options.max, value );
+                value = Math.max( this.options.min, value );
+                this.options.pin_value = value;
+            }
+
+            this.options.pin_color = color || this.options.pin_color || 'black';
+
+            var oldIcon = this.options.pin_icon || '';
+            this.options.pin_icon = icon || this.options.pin_icon || 'fa-map-marker';
 
             this.target = "base";
             this.calc(true);
 
-            this.cache.$s_pin.css({
-                left : this.coords.p_pin_value + "%",
-                color: color || 'black'
-            });
+            this.cache.$s_pin
+                .css({
+                    left : this.coords.p_pin_value + "%",
+                    color: this.options.pin_color //color || 'black'
+                })
+                .removeClass( oldIcon )
+                .addClass( this.options.pin_icon );
         },
 
 
@@ -1242,10 +1261,12 @@
                 setLeftAndWidth( this.cache.$bar, this.coords.p_bar_x, this.coords.p_bar_w );
 
                 if (this.options.has_pin)
-                    this.cache.$s_pin.css({
-                        "left" : this.coords.p_pin_value + "%",
-                        "color": this.options.pin_color
-                    });
+                    this.cache.$s_pin
+                        .css({
+                            "left" : this.coords.p_pin_value + "%",
+                            "color": this.options.pin_color
+                        })
+                        .addClass( this.options.pin_icon );
 
                 if (this.options.isSingle) {
                     setLeftAndWidth( this.cache.$s_single, this.coords.p_single );
@@ -1807,12 +1828,22 @@
 
             for (i=0; i<gridColors.length; i++ ){
                 gridColor = gridColors[i];
-                if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) )
-                  //add triangle to the left or right
-                    $('<span/>')
-                        .addClass( gridColor.value > this.options.max ? 'grid-color gt_max' : 'grid-color lt_min')
-                        .css('color', gridColor.color)
-                        .appendTo( this.currentGridContainer );
+                if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) ){
+                    //add triangle to the left or right
+                    var $span = $('<span/>')
+                                    .addClass( 'grid-color _fa')
+                                    //.addClass( gridColor.value > this.options.max ? 'fa-caret-right gt_max' : '_fa-caret-left lt_min')
+//                                    .css('color', gridColor.color)
+                                    .appendTo( this.currentGridContainer );
+                    if (gridColor.value > this.options.max)
+                        $span
+                            .addClass('gt_max')
+                            .css('border-left-color', gridColor.color);
+                    else
+                        $span
+                            .addClass('lt_min')
+                            .css('border-right-color', gridColor.color);
+                }
                 else {
                     fromValue = gridColor.fromValue !== undefined ? gridColor.fromValue : toValue;
                     toValue = gridColor.value;
