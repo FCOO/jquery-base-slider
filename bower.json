@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
@@ -18,7 +18,8 @@
     "jquery": "latest",
     "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0",
     "jquery-detect-element-resize": "fcoo/jquery-detect-element-resize#^1.0.0",
-    "jquery-mousewheel": "^3.1.13"
+    "jquery-mousewheel": "^3.1.13",
+    "font-awesome": "fontawesome#^4.7.0"
   },
   "devDependencies": {
     "bourbon": "*"

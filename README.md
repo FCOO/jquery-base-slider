@@ -16,8 +16,8 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 ### Type and slider
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `type` | `"single"` | `string` | Choose single or double, could be `single` - for one handle, or `double` for two handles | 
-| `slider` | `"default"` | `string` | Choose slider type, could be `default`, `small`, `round`, or `range`, or `fixed` | 
+| `type` | `"single"` | `string` | Choose single or double, could be `"single"` - for one handle, or `"double"` for two handles | 
+| `slider` | `"down"` | `string` | Choose slider type, could be `"horizontal"`, `"vertical"`, `"down"`, `"up"`, `"left"`, `"right"`, `"round"`, `"range"`, or `"fixed"`| 
 | `read_only` | `false` | `boolean` | Locks slider and makes it inactive. | 
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `fixed_handle` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.value_distances` must be provided | 
@@ -44,8 +44,13 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `to_fixed` | `false` | `boolean` | Fix position of right handle. | 
 | `to_min` | `min` | `number` | Set the minimum limit for right handle | 
 | `to_max` | `max` | `number` | Set the maximum limit for right handle | 
-| `pin_value` | `null` | `number` | The value for the pin.<br>Use `setPin( value [, color] )` to change the value dynamical | 
-| `pin_color` | `"black"` | `string` | The color of the pin.<br>Use `setPin( value, color )` to change the color dynamical | 
+
+### Pin
+| Option | Defaults | Type | Description |
+| :--: | :--: | :--: | :-- |
+| `pin_value` | `null` | `number` | The value for the pin.<br>Use `setPin( value [, color] )` to change the value dynamical |
+| `pin_color` | `"black"` | `string` | The color of the pin.<br>Use `setPin( value, color, icon )` to change the color dynamical |
+| `pin_icon` | `"fa-map-marker"` | `string` | The class-name from [Fontawasome](http://fontawesome.io/) setting the icon used as pin.<br>Use `setPin( value, color, icon )` to change the icon dynamical |
 
 ### Steps
 | Option | Defaults | Type | Description |
