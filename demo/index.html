@@ -129,7 +129,9 @@
 		$("#options_00").html('<strong>#0: Fixed handler</strong><br>'+
 		                      'options={fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true}');
 
-        $("#example_01").baseSlider(   {min:0, max:100, from: 20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true});
+        $("#example_01")
+            .baseSlider(   {min:0, max:100, from: 20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true, pin_value: 40})
+            //.data("baseSlider").setPin( 42 );
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
 		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true}');
 

@@ -973,7 +973,7 @@
             this.cache.$s_pin
                 .css({
                     left : this.coords.p_pin_value + "%",
-                    color: this.options.pin_color //color || 'black'
+                    color: this.options.pin_color
                 })
                 .removeClass( oldIcon )
                 .addClass( this.options.pin_icon );

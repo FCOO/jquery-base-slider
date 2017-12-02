@@ -523,7 +523,8 @@ $sliderTypeList: horizontal, vertical, down, up, right, left, round, fixed, rang
         }
         
         .pin { 
-            top: $lineTop;                    
+            top: $lineTop;
+            width : $sliderWidth; 
         }
 
         @if $sliderBackgroundImage_hover != null {
