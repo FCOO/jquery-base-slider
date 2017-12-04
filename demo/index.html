@@ -115,7 +115,7 @@
 	</div>
 
 		<script>
-/*
+
         var start = (new Date()).getTime(),
             last = start;
         function test(txt){
@@ -123,7 +123,7 @@
             console.log(txt, now - start, now - last );
             last = now;
         }
-*/
+
     </script>
 
 	
@@ -135,13 +135,22 @@
 			var percent = 16*parseInt($(event.target).attr('value'))/100;
 			$('html').css('font-size', percent+'px');
 		});
-		$("#example_00").baseSlider(   {clickable: true, fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, hide_bar_color:true, marker_frame:true});
+test('START');
+        var slider0 = 
+		        $("#example_00")
+                    .baseSlider(   {clickable: true, fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, hide_bar_color:true, marker_frame:true})
+                        .data("baseSlider");
+test('END');
+        slider0.update();
+test('update end ');
+                    
 		$("#options_00").html('<strong>#0: Fixed handler</strong><br>'+
 		                      'options={fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true}');
 
+
+        //Ex #1        
         $("#example_01")
-            .baseSlider(   {min:0, max:100, from: 20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true, pin_value: 40})
-            //.data("baseSlider").setPin( 42 );
+                    .baseSlider(   {min:0, max:100, from: 20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true, pin_value: 40})
 		$("#options_01").html('<strong>#1: Normal</strong><br>'+
 		                      'options={min:0, max:100, from:20, major_ticks_offset:0, step:1, step_offset:0, grid:true, hide_bar_color:true, mousewheel: true}');
 

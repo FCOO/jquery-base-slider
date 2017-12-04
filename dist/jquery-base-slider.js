@@ -486,8 +486,14 @@
 
         //remove
         remove: function () {
-            this.cache.$container.remove();
-            this.cache.$container = null;
+            if (this.cache.$outerContainer){
+              this.cache.$outerContainer.remove();
+              this.cache.$outerContainer = null;
+            }
+            else {
+                this.cache.$container.remove();
+                this.cache.$container = null;
+            }
 
             this._offEvents( this.cache.$line, "keydown" );
             this._offEvents( this.cache.$body, "touchmove mousemove" );
@@ -1744,10 +1750,6 @@
             }
             if (this.textElement.className != newClassName )
                 this.textElement.className = newClassName;
-//            this.$text
-//                    .text( text )
-//                    .toggleClass( 'minor', !!options.minor)
-//                    .toggleClass( 'italic', !!options.italic);
             this.textElement.textContent = text;
 
             return this.pxToRem( parseFloat( this.textElement.offsetWidth ) + 1 );  // + 1 for rounding-error
