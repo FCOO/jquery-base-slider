@@ -114,7 +114,18 @@
 	
 	</div>
 
-	
+		<script>
+/*
+        var start = (new Date()).getTime(),
+            last = start;
+        function test(txt){
+            var now = (new Date()).getTime();
+            console.log(txt, now - start, now - last );
+            last = now;
+        }
+*/
+    </script>
+
 	
 	<script src="bower_components.js"></script>
 	<script src="../src/jquery-base-slider.js"></script>
@@ -124,8 +135,7 @@
 			var percent = 16*parseInt($(event.target).attr('value'))/100;
 			$('html').css('font-size', percent+'px');
 		});
-
-		$("#example_00").baseSlider(   {fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true, marker_frame:true});
+		$("#example_00").baseSlider(   {clickable: true, fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, hide_bar_color:true, marker_frame:true});
 		$("#options_00").html('<strong>#0: Fixed handler</strong><br>'+
 		                      'options={fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*400, min:-400, max:400, from:50, grid:true, hide_bar_color:true}');
 
@@ -183,8 +193,6 @@
 		});
 		$("#options_07").html('<strong>#7: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
 		                      'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
-
-
 	</script>
 </body>
 </html>

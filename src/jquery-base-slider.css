@@ -82,8 +82,8 @@ COMMON STYLE
       background-color: inherit; }
   .base-slider-container.impact-line .bar, .base-slider-container.impact-line-reverse .bar {
     background-color: yellow; }
-  .base-slider-container.not-clicable .line,
-  .base-slider-container.not-clicable .bar,
+  .base-slider-container.not-clickable .line,
+  .base-slider-container.not-clickable .bar,
   .base-slider-container.disabled .line,
   .base-slider-container.disabled .bar,
   .base-slider-container.read-only .line,
@@ -191,6 +191,7 @@ COMMON STYLE
     position: absolute;
     z-index: 2;
     top: 0.6875rem;
+    background-color: transparent;
     left: 0;
     white-space: nowrap;
     text-align: center;

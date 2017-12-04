@@ -156,8 +156,8 @@ COMMON STYLE
     
 
     //Adjust cursor when slider is disabled or read-only
-    &.not-clicable .line,
-    &.not-clicable .bar,
+    &.not-clickable .line,
+    &.not-clickable .bar,
     &.disabled .line,
     &.disabled .bar,
     &.read-only .line,
@@ -291,7 +291,7 @@ COMMON STYLE
         &.low { 
             top: $tickHeight + $margin + $labelHeight + $margin; 
         }
-
+        background-color: transparent;
         left: 0;
         white-space: nowrap;
         text-align : center;

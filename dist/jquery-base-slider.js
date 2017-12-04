@@ -21,7 +21,7 @@
         disable     : false,     // Locks slider and makes it disable ("dissy")
         fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
                                  // A value for options.width OR options.value_distances must be provided
-        clicable    : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
+        clickable   : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
         mousewheel  : false,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
 
         //Dimensions (only for options.fixed_handle: true)
@@ -153,13 +153,8 @@
         if (options.slider == 'small')
             options.slider = 'down';
 
-
-
-        if (this.options.fixed_handle){
+        if (this.options.fixed_handle)
             this.options.type = 'single';
-            if (options.clicable === undefined)
-                this.options.clicable = false;
-        }
 
         this.options.isSingle = (this.options.type == 'single');
         this.options.isInterval = (this.options.type == 'double');
@@ -167,6 +162,25 @@
         if (this.options.isInterval){
             this.options.mousewheel = false;
         }
+
+        //Get font-size for the html
+        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || '16' );
+
+        //Create element outside DOM used to calc width of text-elements
+        this.$outerTextElement =
+            $('<div/>')
+                .addClass('grid')
+                .css({
+                    position: 'absolute',
+                    top     : -1000
+                })
+                .appendTo( $('body') );
+
+        this.textElement =
+            $('<span/>')
+                .addClass('grid-text')
+                .appendTo( this.$outerTextElement )
+                .get(0);
 
         this.validate();
 
@@ -437,7 +451,7 @@
             }
 
             //Append grid(s)
-            this.currentGridContainer = null;
+            this.$currentGridContainer = null;
             if (this.options.grid)
                 this.appendGrid();
 
@@ -457,8 +471,8 @@
                     this.cache.$input.prop('disabled', false);
                     this.bindEvents();
                 }
-            if (!this.options.clicable)
-                this.cache.$container.addClass("not-clicable");
+            if (!this.options.clickable || this.options.fixed_handle)
+                this.cache.$container.addClass("not-clickable");
         },
 
         //_offEvents
@@ -507,7 +521,7 @@
 
             this._onEvents( this.cache.$win,  "touchend mouseup",     this.pointerUp );
 
-            if (this.options.clicable){
+            if (this.options.clickable && !this.options.fixed_handle){
                 this._onEvents( this.cache.$line, "touchstart mousedown", this.pointerClick, "click" );
                 this._onEvents( this.cache.$bar,  "touchstart mousedown", this.pointerClick, "click" );
             }
@@ -646,7 +660,7 @@
 
         //textClick - click on label
         textClick: function( e ){
-            var value = $(e.target).data('base-slider-value');
+            var value = parseFloat( e.target.getAttribute('data-base-slider-value') );
             if (!this.options.isInterval){
                 this.setValue( value );
                 return;
@@ -982,9 +996,7 @@
 
         //pxToRem
         pxToRem: function( valuePx, inclUnit ){
-            var fontSize = $('html').css('font-size') || $('body').css('font-size') || '16',
-                result = valuePx / parseFloat( fontSize );
-            return inclUnit ? result + 'rem' : result;
+            return valuePx / this.options.fontSize + (inclUnit ? 'rem' : 0);
         },
 
         //getInnerWidth
@@ -1631,42 +1643,42 @@
 
         appendGridContainer: function(){
             this.getCoords_w_rs();
-            if (this.currentGridContainer){
-                this.totalGridContainerTop += this.currentGridContainer.height();
-                this.currentGridContainer =
-                    $('<span class="grid"></span>').insertAfter( this.currentGridContainer );
-                this.currentGridContainer.css('top', this.pxToRem( this.totalGridContainerTop, true) );
+            if (this.$currentGridContainer){
+                this.totalGridContainerTop += this.$currentGridContainer.height();
+                this.$currentGridContainer =
+                    $('<span class="grid"></span>').insertAfter( this.$currentGridContainer );
+                this.$currentGridContainer.css('top', this.pxToRem( this.totalGridContainerTop, true) );
             }
             else {
-                this.currentGridContainer = this.cache.$grid;
-                this.totalGridContainerTop = this.currentGridContainer.position().top;
+                this.$currentGridContainer = this.cache.$grid;
+                this.totalGridContainerTop = this.$currentGridContainer.position().top;
             }
             this.cache.$grid = this.cache.$container.find(".grid");
-            return this.currentGridContainer;
+            return this.$currentGridContainer;
         },
 
 
         //appendTick
         appendTick: function( left, options ){
-            if (!this.currentGridContainer) return;
+            if (!this.$currentGridContainer) return;
 
             options = $.extend( {minor: false, color: ''}, options );
-            var result = $('<span class="grid-pol" style="left:' + left + '%"></span>');
 
-            if (options.minor)
-                result.addClass('minor');
+            var result = document.createElement("span");
+            result.className = "grid-pol" + (options.minor ? ' minor' : '');
+            result.style.left = left + '%';
+
             if (options.color)
-                result.css('background-color', options.color);
+                result.style.backgroundColor = options.color;
 
-
-            result.appendTo( this.currentGridContainer );
+            this.currentGridContainer.appendChild( result );
             return result;
 
         },
 
         //appendText
         appendText: function( left, value, options ){
-            if (!this.currentGridContainer) return;
+            if (!this.$currentGridContainer) return;
 
             options = $.extend( {color: ''}, options );
             var text = this._prettify_text( value );
@@ -1675,11 +1687,19 @@
               text = (this.options.prefix ? this.options.prefix : '') +
                      text +
                      (this.options.postfix ? this.options.postfix : '');
-            var result = $('<span class="grid-text" style="background-color:transparent; left: ' + left + '%">' + text + '</span>');
-            result.appendTo( this.currentGridContainer );
 
-            //Center the label
-            result.css( 'margin-left', this.getOuterWidth(result, true, -0.5) );
+            var result = document.createElement("span"),
+                className = 'grid-text';
+
+            result.textContent = text;
+            result.style.left  = 'calc('+left+'% - ' + this.getDecorateTextWidth( text, options )/2 + 'rem)'; //Center the label
+
+            if (options.minor)
+                className += ' minor';
+            if (options.italic)
+                className += ' italic';
+            if (options.color)
+                result.style.color = options.color;
 
             if (options.clickable){
                 //Check if the value for the label is a selectable one
@@ -1689,33 +1709,50 @@
             }
 
             if (options.clickable && !this.options.disable && !this.options.read_only){
-                //value = options.click_value !== undefined ? options.click_value : parseFloat( text );
                 value = options.click_value !== undefined ? options.click_value : value;
-                result
-                    .data('base-slider-value', value)
-                    .on("click.irs_" + this.plugin_count, $.proxy( this.textClick, this ) ) /* this.textClick.bind(this) */
-                    .addClass('clickable');
+
+                result.setAttribute('data-base-slider-value', value);
+                result.addEventListener('click', $.proxy( this.textClick, this ));
+                className += ' clickable';
             }
-            if (options.minor)
-                result.addClass('minor');
-            if (options.italic)
-                result.addClass('italic');
-            if (options.color)
-                result.css('color', options.color);
 
-
+            result.className = className;
+            this.currentGridContainer.appendChild( result );
             return result;
-
         },
+
 
         //getTextWidth
         getTextWidth: function( value, options ){
-            var
-                elem = this.appendText( 0, value, options ),
-                result = parseFloat( elem.outerWidth(false) );
-            elem.remove();
-            return this.pxToRem(result);
+            var text = this._prettify_text( value );
+
+            if (this.options.decorate_text)
+                text =  (this.options.prefix ? this.options.prefix : '') +
+                        text +
+                        (this.options.postfix ? this.options.postfix : '');
+
+            return this.getDecorateTextWidth( text, options );
         },
+
+        getDecorateTextWidth: function( text, options ){
+            var newClassName = 'grid-text';
+            if (options){
+                if (options.minor)
+                    newClassName += ' minor';
+                if (options.italic)
+                    newClassName += ' italic';
+            }
+            if (this.textElement.className != newClassName )
+                this.textElement.className = newClassName;
+//            this.$text
+//                    .text( text )
+//                    .toggleClass( 'minor', !!options.minor)
+//                    .toggleClass( 'italic', !!options.italic);
+            this.textElement.textContent = text;
+
+            return this.pxToRem( parseFloat( this.textElement.offsetWidth ) + 1 );  // + 1 for rounding-error
+        },
+
 
         //appendGrid
         appendGrid: function () {
@@ -1728,10 +1765,35 @@
             this._appendStandardGrid( textOptions );
         },
 
+
+        //preAppendGrid and postAppendGrid - must be called as first and last when creating a grid - used if a new appendStandardGrid is used
+
+        preAppendGrid: function(){
+            this.appendGridContainer();
+
+            this.calcGridMargin();
+
+            //The DOM-version of this.$currentGridContainer
+            this.currentGridContainer = this.$currentGridContainer.get(0);
+
+            //Create the grid outside the DOM
+            //Save width in % and set in in px instead of %
+            this.currentGridContainerWidth = this.currentGridContainer.style.width;
+            this.$currentGridContainer.css('width', this.$currentGridContainer.width());
+            this.$currentGridContainer.width( this.$currentGridContainer.width() );
+            this.$currentGridContainerMarker = $('<div/>').insertAfter( this.$currentGridContainer );
+            this.$currentGridContainer.detach();
+        },
+        postAppendGrid: function(){
+            //Insert the created grid into the DOM
+            this.$currentGridContainer.insertBefore( this.$currentGridContainerMarker );
+            this.$currentGridContainer.css('width', this.currentGridContainerWidth );
+            this.$currentGridContainerMarker.remove();
+        },
+
         //_appendStandardGrid
         _appendStandardGrid: function ( textOptions, tickOptions ) {
-            this.appendGridContainer();
-            this.calcGridMargin();
+            this.preAppendGrid();
 
             var o = this.options,
                 gridContainerWidth = this.getOuterWidth(this.cache.$grid),
@@ -1742,10 +1804,8 @@
                 valueOffset;
             o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
             o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor;
-//            o.oneP = this.toFixed(100 / total);
-//            o.stepP = this.toFixed(o.step / (total / 100));
 
-            textOptions = $.extend( textOptions || {}, {clickable: this.options.clicable} );
+            textOptions = $.extend( textOptions || {}, {clickable: this.options.clickable} );
             tickOptions = tickOptions || {};
 
 
@@ -1811,8 +1871,7 @@
             if (this.options.grid_colors)
                 this.appendGridColors( this.options.grid_colors );
 
-
-
+            this.postAppendGrid();
         },
 
         //addGridColor
@@ -1834,7 +1893,7 @@
                                     .addClass( 'grid-color _fa')
                                     //.addClass( gridColor.value > this.options.max ? 'fa-caret-right gt_max' : '_fa-caret-left lt_min')
 //                                    .css('color', gridColor.color)
-                                    .appendTo( this.currentGridContainer );
+                                    .appendTo( this.$currentGridContainer );
                     if (gridColor.value > this.options.max)
                         $span
                             .addClass('gt_max')
@@ -1855,7 +1914,7 @@
                             'width'           : percentFactor*(toValue-fromValue) + '%',
                             'background-color': gridColor.color
                            })
-                        .appendTo( this.currentGridContainer );
+                        .appendTo( this.$currentGridContainer );
                 }
             }
         },

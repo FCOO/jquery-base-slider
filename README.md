@@ -21,7 +21,7 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `read_only` | `false` | `boolean` | Locks slider and makes it inactive. | 
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `fixed_handle` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.value_distances` must be provided | 
-| `clicable` | `true` | `boolean` | Allows click on lables and line. Default = `true` except for `fixed_handle:true` where default = `false` | 
+| `clickable` | `true` | `boolean` | Allows click on lables and line. Default = `true` except for `fixed_handle:true` where default = `false` | 
 | `mousewheel` | `false` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
 
 
