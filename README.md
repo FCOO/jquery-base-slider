@@ -69,7 +69,7 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `impact_line` | `false` | `boolean` | The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red | 
 | `impact_line_reverse` | `false` | `boolean` | The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green | 
 | `bar_color` | `null` | `string` | The color of the bar |
-| `hide_bar_color` | `false` | `boolean` | The bar gets same color as the line | 
+| `show_bar_color` | `true` | `boolean` | The bar gets same color as the line | 
 
 
 ### Grid (ticks and text)
@@ -78,18 +78,19 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `grid` | `false` | `boolean` | Enables grid of values. | 
 | `major_ticks` | `null` | `number` | Nummber of `step` between major ticks. Default=null=> Calculated automatic | 
 | `major_ticks_offset` | `0` | `number` | Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With `major_ticks_offset:4` the major ticks would be placed on values=4,14,24,...,84,94 | 
-| `hide_minor_ticks` | `false` | `boolean` | Hide minor ticks. | 
+| `show_minor_ticks` | `true` | `boolean` | Show minor ticks. | 
 | `gridDistances` | `[1, 2, 5, 10, 20, 50, 100]` | `array of number` | Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24] |
 | `ticks_on_line` | `false` | `boolean` | Place the ticks in the (first) grid on the line with the sliders. | 
 | `grid_colors` | `null` | `[]` | `Array of { [fromValue, ]value, color }` to set colors on the bar. If no `fromValue` is given the the previous `value` is used.<br>If `value == null or < min` => A triangle is added to the left indicating *below min*<br>If `value > max` =>  A triangle is added to the right indicating *above max*   |  
+| `labelColors` | `null` | `[]` | `Array of {value, className, color, backgroundColor}` to set frame around and `className`, `color`, `backgroundColor` for the label with the given value |
 
 
 
 ### Labels above slider 
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `hide_min_max` | `true` | `boolean` | Hides min and max labels | 
-| `hide_from_to` | `false` | `boolean` | Hide from and to labels | 
+| `show_min_max` | `false` | `boolean` | Show min and max labels | 
+| `show_from_to` | `true` | `boolean` | Show from and to labels | 
 | `marker_frame` | `false` | `boolean` | Frame the from- and to-marker | 
 
 
