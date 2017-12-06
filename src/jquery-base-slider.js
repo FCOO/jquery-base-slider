@@ -176,10 +176,6 @@
             });
 
 
-
-        //Get font-size for the html
-        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || '16' );
-
         //Create element outside DOM used to calc width of text-elements
         this.$outerTextElement =
             $outerTextElement ||
@@ -284,11 +280,23 @@
             p_single_left: 0
         };
 
-      this.init();
+        //Get font-size for the html
+        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || $.DEFAULT_BROWSER_FONT_SIZE || '16px' );
 
+        this.init();
+
+        //Update slider when browser font-size is changed
+        $.onFontSizeChanged( this.onFontSizeChange, this );
     };
 
     window.BaseSlider.prototype = {
+        //onFontSizeChange - called when the font-size of the browser is chnaged
+        onFontSizeChange: function( event, fontSize ){
+            this.options.fontSize = parseFloat( fontSize.fontSizePx ) || this.options.fontSize;
+            this.update();
+        },
+
+        //init
         init: function (is_update) {
             this.options.total = this.options.max - this.options.min;
             this.options.oneP  = this.toFixed(100 / this.options.total);
@@ -1141,7 +1149,6 @@
                     if (this.options.from_fixed || this.options.to_fixed) {
                         break;
                     }
-
                     real_x = this.toFixed(real_x + (this.coords.p_handle * 0.1));
 
                     this.coords.p_from_real = this.calcWithStep((real_x - this.coords.p_gap_left) / real_width * 100);
@@ -1348,7 +1355,7 @@
 
         //drawLabels
         drawLabels: function () {
-            if (!this.options || !this.options.show_from_to) return;
+            if (!this.options || this.options.s_from_to) return;
 
             var text_single, text_from, text_to;
 

@@ -59,13 +59,13 @@
         impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red
         impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green
         bar_color          : null,  // The color of the bar
-        hide_bar_color     : false, // The bar gets same color as the line
+        show_bar_color     : true, // The bar gets same color as the line
 
         //Grid (ticks and text)
         grid              : false,                      // Enables grid of values.
         major_ticks       : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic
         major_ticks_offset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  major_ticks_offset:4  the major ticks would be placed on values=4,14,24,...,84,94
-        hide_minor_ticks  : false,                      // Hide minor ticks.
+        show_minor_ticks  : true,                      // Show minor ticks.
         gridDistances     : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24]
         ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.
         major_ticks_factor: 1,                          // Not documented
@@ -73,11 +73,11 @@
         grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
                                   //If value == null or < min => A triangle is added to the left indicating 'below min'.
                                   //If value > max            =>  A triangle is added to the right indicating 'above max'.
-
+        textColors        : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
 
         //Labels above slider
-        hide_min_max: true,     // Hides min and max labels
-        hide_from_to: false,    // Hide from and to labels
+        show_min_max: false,    // Show min and max labels
+        show_from_to: true,     // Show from and to labels
         marker_frame: false,    // Frame the from- and to-marker
 
         //Adjust text and labels
@@ -114,6 +114,10 @@
         onFinish: null, // Callback. Is called than user releases handle.
         onUpdate: null  // Callback. Is called than slider is modified by external methods  update  or  reset
     };
+
+    //'Global' text-element to be used by getTextWidth
+    var $outerTextElement = null,
+        textElement       = null;
 
 
     /************************************
@@ -163,11 +167,18 @@
             this.options.mousewheel = false;
         }
 
-        //Get font-size for the html
-        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || '16' );
+        //Convert textColors = [] of {value, color, backgroundColor, className} to textColorRec = { value1: { color, backgroundColor, className }, value2: color, backgroundColor, className },...}
+        this.options.textColorRec = {};
+        var _this = this;
+        if (this.options.textColors)
+            $.each( this.options.textColors, function( index, rec ){
+                _this.options.textColorRec[ rec.value ] = rec;
+            });
+
 
         //Create element outside DOM used to calc width of text-elements
         this.$outerTextElement =
+            $outerTextElement ||
             $('<div/>')
                 .addClass('grid')
                 .css({
@@ -175,12 +186,15 @@
                     top     : -1000
                 })
                 .appendTo( $('body') );
+        $outerTextElement = this.$outerTextElement;
 
         this.textElement =
-            $('<span/>')
+            textElement ||
+            $('<div/>')
                 .addClass('grid-text')
                 .appendTo( this.$outerTextElement )
                 .get(0);
+        textElement = this.textElement;
 
         this.validate();
 
@@ -266,11 +280,23 @@
             p_single_left: 0
         };
 
-      this.init();
+        //Get font-size for the html
+        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || $.DEFAULT_BROWSER_FONT_SIZE || '16px' );
 
+        this.init();
+
+        //Update slider when browser font-size is changed
+        $.onFontSizeChanged( this.onFontSizeChange, this );
     };
 
     window.BaseSlider.prototype = {
+        //onFontSizeChange - called when the font-size of the browser is chnaged
+        onFontSizeChange: function( event, fontSize ){
+            this.options.fontSize = parseFloat( fontSize.fontSizePx ) || this.options.fontSize;
+            this.update();
+        },
+
+        //init
         init: function (is_update) {
             this.options.total = this.options.max - this.options.min;
             this.options.oneP  = this.toFixed(100 / this.options.total);
@@ -379,7 +405,7 @@
             if (this.options.isInterval)
                 this.cache.$lineLeft = $span('line-left', this.cache.$line);
 
-            if (!this.options.hide_from_to) {
+            if (this.options.show_from_to) {
                 this.cache.$single = $span('marker-single', this.cache.$bs);
                 if (this.options.isInterval){
                     this.cache.$from   = $span('marker-from',   this.cache.$bs);
@@ -416,7 +442,7 @@
                 this.cache.$s_pin = $span('pin fa', this.cache.$container);
 
             //Add class to set bar color same as line
-            if (this.options.hide_bar_color)
+            if (!this.options.show_bar_color)
                 this.cache.$bar.addClass('hide-bar-color');
 
             //Set alternative bar color
@@ -428,7 +454,7 @@
                 this.cache.$container.addClass('marker-frame');
 
             //Adjust top-position if no marker is displayed
-            if (this.options.hide_min_max && this.options.hide_from_to)
+            if (!this.options.show_min_max && !this.options.show_from_to)
                 this.cache.$container.addClass("no-marker");
 
             //Adjust top-position of first grid if tick must be on the slider
@@ -903,7 +929,7 @@
         setMinMax: function () {
             if (!this.options) return;
 
-            if (this.options.hide_min_max) {
+            if (!this.options.show_min_max) {
                 this.cache.$min.hide();
                 this.cache.$max.hide();
                 return;
@@ -1123,7 +1149,6 @@
                     if (this.options.from_fixed || this.options.to_fixed) {
                         break;
                     }
-
                     real_x = this.toFixed(real_x + (this.coords.p_handle * 0.1));
 
                     this.coords.p_from_real = this.calcWithStep((real_x - this.coords.p_gap_left) / real_width * 100);
@@ -1202,7 +1227,7 @@
 
         //calcLabels
         calcLabels: function () {
-            if (!this.coords.w_rs || this.options.hide_from_to) return;
+            if (!this.coords.w_rs || !this.options.show_from_to) return;
 
             if (this.options.isSingle) {
                 this.labels.w_single = this.getOuterWidth(this.cache.$single);
@@ -1330,7 +1355,7 @@
 
         //drawLabels
         drawLabels: function () {
-            if (!this.options || this.options.hide_from_to) return;
+            if (!this.options || this.options.s_from_to) return;
 
             var text_single, text_from, text_to;
 
@@ -1341,7 +1366,7 @@
 
                 this.calcLabels();
 
-                if (!this.options.hide_min_max){
+                if (this.options.show_min_max){
                     this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );
                     this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );
                 }
@@ -1390,7 +1415,7 @@
                     this.cache.$single.css('visibility', 'hidden');
                 }
 
-                if (!this.options.hide_min_max){
+                if (this.options.show_min_max){
                     this.cache.$min.toggle( min >= this.labels.p_min + 1 );
                     this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );
                 }
@@ -1682,23 +1707,28 @@
 
         },
 
+        //_valueToText
+        _valueToText: function( value ){
+            var result = this._prettify_text( value );
+            if (this.options.decorate_text)
+              result = (this.options.prefix ? this.options.prefix : '') +
+                       result +
+                       (this.options.postfix ? this.options.postfix : '');
+            return result;
+        },
+
         //appendText
         appendText: function( left, value, options ){
             if (!this.$currentGridContainer) return;
 
             options = $.extend( {color: ''}, options );
-            var text = this._prettify_text( value );
 
-            if (this.options.decorate_text)
-              text = (this.options.prefix ? this.options.prefix : '') +
-                     text +
-                     (this.options.postfix ? this.options.postfix : '');
-
-            var result = document.createElement("span"),
+            var text = this._valueToText( value ),
+                result = document.createElement("span"),
                 className = 'grid-text';
 
             result.textContent = text;
-            result.style.left  = 'calc('+left+'% - ' + this.getDecorateTextWidth( text, options )/2 + 'rem)'; //Center the label
+            result.style.left  = 'calc('+left+'% - ' + this.getDecorateTextWidth( text, options, .5, true ) + 'rem)'; //Center the label
 
             if (options.minor)
                 className += ' minor';
@@ -1706,6 +1736,18 @@
                 className += ' italic';
             if (options.color)
                 result.style.color = options.color;
+
+            if (this.options.textColorRec[value]){
+                var textOptions = this.options.textColorRec[value];
+                className += ' frame';
+                if (textOptions.className)
+                    className += ' '+textOptions.className;
+                if (textOptions.color)
+                    result.style.color = textOptions.color;
+                if (textOptions.backgroundColor)
+                    result.style.backgroundColor = textOptions.backgroundColor;
+            }
+
 
             if (options.clickable){
                 //Check if the value for the label is a selectable one
@@ -1728,19 +1770,21 @@
         },
 
 
-        //getTextWidth
+        //getTextWidth - get width of value as text OR max width of all values in array of value
         getTextWidth: function( value, options ){
-            var text = this._prettify_text( value );
-
-            if (this.options.decorate_text)
-                text =  (this.options.prefix ? this.options.prefix : '') +
-                        text +
-                        (this.options.postfix ? this.options.postfix : '');
-
-            return this.getDecorateTextWidth( text, options );
+            var _this = this;
+            if ($.isArray( value )){
+                var html = '';
+                $.each( value, function(index, one_value ){
+                    html += _this._valueToText( one_value ) + '<br>';
+                });
+                return this.getDecorateTextWidth( html, options );
+            }
+            else
+                return this.getDecorateTextWidth( this._valueToText( value ) , options );
         },
 
-        getDecorateTextWidth: function( text, options ){
+        getDecorateTextWidth: function( html, options, factor, floor ){
             var newClassName = 'grid-text';
             if (options){
                 if (options.minor)
@@ -1750,9 +1794,15 @@
             }
             if (this.textElement.className != newClassName )
                 this.textElement.className = newClassName;
-            this.textElement.textContent = text;
+            this.textElement.innerHTML = html;
 
-            return this.pxToRem( parseFloat( this.textElement.offsetWidth ) + 1 );  // + 1 for rounding-error
+            var result = parseFloat( this.textElement.offsetWidth );
+            if (factor)
+                result = factor*result;
+            if (floor)
+                result = Math.floor(result);
+
+            return this.pxToRem( result );
         },
 
 
@@ -1829,13 +1879,14 @@
 
                 //Find widest text/label
                 value = o.min;
+                var valueList = [];
                 while (value <= o.max){
                     //if value corrected by o.major_ticks_offset and o.major_ticks_factor is a DIV of the tick distance => calculate the width of the tick
                     if ((value - o.major_ticks_offset)*o.major_ticks_factor % o.tickDistanceNum === 0)
-                        maxTextWidth = Math.max( maxTextWidth, this.getTextWidth( value ) );
+                        valueList.push( value );
                     value += 1;
                 }
-                maxTextWidth += this.pxToRem(6); //Adding min space between text/labels
+                maxTextWidth = this.getTextWidth( valueList ) + this.pxToRem(6); //Adding min space between text/labels
 
                 //Find ticks between each major tick
                 gridDistanceIndex = 0;
@@ -1862,7 +1913,7 @@
                         this.appendText( valueP, value, textOptions );
                     }
                     else
-                        if (!o.hide_minor_ticks)
+                        if (o.show_minor_ticks)
                             //Add minor tick
                             this.appendTick( valueP, { minor:true } );
                 }

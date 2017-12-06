@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="da" style="font-size: 16px">
+<html id="theHTML" lang="da" style="font-size: 16px">
 <head>
     <title>fcoo.dk - jquery-base-slider - Example</title>
     <meta charset="iso-8859-1" />
@@ -123,7 +123,7 @@
             console.log(txt, now - start, now - last );
             last = now;
         }
-
+   
     </script>
 
     
@@ -135,18 +135,20 @@
             var percent = 16*parseInt($(event.target).attr('value'))/100;
             $('html').css('font-size', percent+'px');
         });
-test('START');
-        var slider0 = 
-                $("#example_00")
-                    .baseSlider(   {fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, show_bar_color:false, marker_frame:true, textColors:[{value:0, backgroundColor:'green', color:'white'}]})
-                        .data("baseSlider");
-test('END');
-        //slider0.update();
-test('update end ');
-                    
-        $("#options_00").html('<strong>#0: Fixed handler</strong><br>'+
-                              'options={fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, show_bar_color:false, marker_frame:true, textColors:[{value:0, backgroundColor:"green", color:"white"}]}}');
 
+
+
+
+//Debug: test('START');
+        $("#example_00")
+            .baseSlider(   {fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, show_bar_color:false, marker_frame:true, textColors:[{value:0, backgroundColor:'green', color:'white'}]})
+//Debug: test('END');
+                    
+        $("#options_00")
+            .html(
+                '<strong>#0: Fixed handler</strong><br>'+
+                'options={fixed_handle: true, slider:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, show_bar_color:false, marker_frame:true, textColors:[{value:0, backgroundColor:"green", color:"white"}]}}'
+            );
 
         //Ex #1        
         $("#example_01")
@@ -194,11 +196,12 @@ test('update end ');
         $("#example_07").baseSlider({        
             min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true, 
             buttons: {    
-                from: {    previousBtn: 'btnPrevFrom',
-                        nowBtn     : 'btnNowFrom', 
-                        nextBtn    : 'btnNextFrom'
-                      }
-                    }
+                from: {    
+                    previousBtn: 'btnPrevFrom',
+                    nowBtn     : 'btnNowFrom', 
+                    nextBtn    : 'btnNextFrom'
+                }
+            }
         });
         $("#options_07").html('<strong>#7: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
                               'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
