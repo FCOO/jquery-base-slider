@@ -1857,7 +1857,8 @@
             o.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
             o.stepRem = o.step*gridContainerWidth/o.total  / o.major_ticks_factor;
 
-            textOptions = $.extend( textOptions || {}, {clickable: this.options.clickable} );
+            textOptions = $.extend( {clickable: this.options.clickable}, textOptions || {}  );
+
             tickOptions = tickOptions || {};
 
 
