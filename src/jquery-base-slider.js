@@ -10,33 +10,39 @@
 (function ($, window, document, undefined) {
     "use strict";
 
-    /************************************
+    /*******************************************************************
+    ********************************************************************
     DEFAULT OPTIONS
-    ************************************/
+    ********************************************************************
+    *******************************************************************/
     var defaultOptions = {
-        //Type and slider
+        //Type and handle
         type        : "single",  // Choose single or double, could be "single" - for one handle, or "double" for two handles
-        slider      : "down",    // Choose slider type, could be "horizontal", "vertical", "down", "up", "left", "right", "round", "range", or "fixed"
+        handle      : "down",    // Choose handle type, could be "horizontal", "vertical", "down", "up", "left", "right", "round", "range", or "fixed"
         read_only   : false,     // Locks slider and makes it inactive.
         disable     : false,     // Locks slider and makes it disable ("dissy")
-        fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. slider is set to "single"
+        fixed_handle: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                  // A value for options.width OR options.value_distances must be provided
         clickable   : true,      // Allows click on lables and line. Default = true except for fixed_handle:true where default = false
-        mousewheel  : false,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
+        mousewheel  : true,      // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
 
         //Dimensions (only for options.fixed_handle: true)
-        width          : 0, // The total width of the slider (in px for rem = 16px)
-        value_distances: 3, // The distance between each values on the slider (in px for rem = 16px). Width will be value_distances*( max - min )
+        width          : 0, // The total width of the slider (in px for 1rem = 16px)
+        value_distances: 3, // The distance between each values on the slider (in px for 1rem = 16px). Width will be value_distances*( max - min )
 
         //Ranges and value
-        min : 10,           // Set slider minimum value
+        min : 0,            // Set slider minimum value
         max : 100,          // Set slider maximum value
-        from: null,         // Set start position for left handle (or for single handle)
-        to  : null,         // Set start position for right handle
+        value: null,        // Set start position for single handle
+        from : null,        // Set start position for left handle
+        to   : null,        // Set start position for right handle
 
-        from_fixed: false,  // Fix position of left (or single) handle.
-        from_min  : null,   // Set minimum limit for left handle.
-        from_max  : null,   // Set the maximum limit for left handle
+        value_min  : null,   // Minimum limit single handle.
+        value_max  : null,   // Maximum limit single handle
+
+        from_fixed: false,  // Fix position of left handle.
+        from_min  : null,   // Minimum limit for left handle.
+        from_max  : null,   // Maximum limit left handle
 
         to_fixed: false,    // Fix position of right handle.
         to_min  : null,     // Set the minimum limit for right handle
@@ -49,17 +55,22 @@
         //Steps
         step        : 1,    // Set sliders step. Always > 0. Could be fractional.
         step_offset : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, step_offset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for  type="single"
-        min_interval: 0,    // Set minimum diapason between sliders. Only in "double" type
-        max_interval: 0,    // Set maximum diapason between sliders. Only in "double" type
+        min_interval: 0,    // Minimum interval between left and right handles. Only in "double" type
+        max_interval: 0,    // Maximum interval between left and right handles. Only in "double" type
 
         keyboard_shift_step_factor: 5,  //Factor when pressing etc. shift-left compare to left
         keyboard_page_step_factor : 20, //Step-factor when pressing pgUp or PgDn
 
         //Slide-line
-        impact_line        : false, // The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red
-        impact_line_reverse: false, // The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green
-        bar_color          : null,  // The color of the bar
-        show_bar_color     : true, // The bar gets same color as the line
+        lineBackgroundColor: '#d1d6e0', //The bakground color of the line
+
+        showLineColor      : true,
+        lineColor          : '#428BCA', //The color of the line left of the handle (single) or between the two handles (double)
+
+        showImpactLineColor   : false, // The line on a double slider is coloured as green-[handle]-yellow-[handle]-red
+        impactLineColors      : {green: "green", yellow: "yellow", red: "red"}, //The line colors used when showImpactLineColor: true
+        reverseImpactLineColor: false, // The line on a double slider is colored as red-[handle]-yellow-[handle]-green. Must have showImpactLineColor: true
+
 
         //Grid (ticks and text)
         grid              : false,                      // Enables grid of values.
@@ -67,33 +78,37 @@
         major_ticks_offset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  major_ticks_offset:4  the major ticks would be placed on values=4,14,24,...,84,94
         show_minor_ticks  : true,                      // Show minor ticks.
         gridDistances     : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24]
-        ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the sliders.
+        ticks_on_line     : false,                      // Place the ticks in the (first) grid on the line with the handles.
         major_ticks_factor: 1,                          // Not documented
 
-        grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the bar. If no fromValue is given the the previous value is used.
+        grid_colors       : null, //Array of { [fromValue, ]value, color } to set colors on the line. If no fromValue is given the the previous value is used.
                                   //If value == null or < min => A triangle is added to the left indicating 'below min'.
                                   //If value > max            =>  A triangle is added to the right indicating 'above max'.
         textColors        : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
 
-        //Labels above slider
-        show_min_max: false,    // Show min and max labels
-        show_from_to: true,     // Show from and to labels
+        //Marker above handle
+        show_min_max: false,    // Show min and max markers
+        show_from_to: true,     // Show from and to markers
         marker_frame: false,    // Frame the from- and to-marker
 
-        //Adjust text and labels
+        //Adjust text-labels and markers
         prettify        : null,  // Set up your prettify function. Can be anything. For example, you can set up unix time as slider values and than transform them to cool looking dates.
         prettify_text   : null,  // As  prettify  but for the text/labels in the grid.
         prefix          : "",    // Set prefix for values. Will be set up right before the number: $100
         postfix         : "",    // Set postfix for values. Will be set up right after the number: 100k
-        max_postfix     : "",    // Special postfix, used only for maximum value. Will be showed after handle will reach maximum right position. For example 0 - 100+
         decorate_both   : true,  // Used for "double" type and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
         decorate_text   : false, // The text/labels in the grid also gets  prefix  and/or  postfix
         values_separator: " - ", // Text between min and max value when labels are combined. values_separator:" to " => "12 to 24"
 
         //Callback
-        callback            : null, // Is called when the  from  or  to  value are changed.
-        callback_on_dragging: true, // If false the callback-function is only called when dragging the sliding is finish.
-        callback_delay      : 500,  // If  callback_on_dragging  is false the  callback  is called when the slider has been on the same tick for  callback_delay  milliseconds. Set to zero to avoid any callback before mouseup-event
+        onStart : null, // Callback. Is called on slider start.
+        onChange: null, // Callback. Is called on each values change.
+        onFinish: null, // Callback. Is called than user releases handle.
+        onUpdate: null, // Callback. Is called than slider is modified by external methods  update  or  reset
+        callback: function( result ){ console.log( result.from, result.value, result.to ); },//HER null, // Callback. Is called when the value, from, or to  value are changed.
+        callback_on_dragging: true, // If false callback-function is only called when dragging the sliding is finish.
+        callback_delay      : 500,  // If callback_on_dragging == false the callback-function is called when the slider has been on the same tick for callback_delay milliseconds. Set to zero to avoid any callback before mouseup-event
+
 
         //Buttons
         buttons      : {from: {}, to: {} }, // JSON-record with id or buttons for first, previous, (now,) next, and last value = {from: {buttonList}, to: {buttonList}}, where
@@ -108,29 +123,210 @@
         buttons_attr : ['firstBtn', 'previousBtn', 'nowBtn', 'nextBtn', 'lastBtn'], //Internal
         buttons_delta: [-99, -1, 0, +1, +99], //Internal
 
-        //Methods
-        onStart : null, // Callback. Is called on slider start.
-        onChange: null, // Callback. IS called on each values change.
-        onFinish: null, // Callback. Is called than user releases handle.
-        onUpdate: null  // Callback. Is called than slider is modified by external methods  update  or  reset
     };
+
+    /*******************************************************************
+    ********************************************************************
+    COMMON FUNCTIONS
+    ********************************************************************
+    *******************************************************************/
+
+    /*******************************************************************
+    toFixed
+    Round num to 5 digits
+    *******************************************************************/
+    function toFixed( num ) {
+        return +num.toFixed(5);
+    }
+
+    /*******************************************************************
+    adjustToMinMax
+    Check and adjust num to be in range [min,max]
+    *******************************************************************/
+    function adjustToMinMax( num, min, max ) {
+        if (isNaN(num))
+            return min;
+        return Math.max( Math.min(num, max), min);
+    }
+
+    /*******************************************************************
+    SliderValue
+    Object to store and alter "value" releated to the slider
+    The object contains the following items:
+        value   : The actual value ,
+        percent : The value as percent of the total slider width
+        rem     : The value converted to rem
+    *******************************************************************/
+    var SliderValue = function( options ){
+        this.slider = options.slider;
+        this.percentFactor = 100/(this.slider.options.max - this.slider.options.min);
+        this.sliderMin = this.slider.options.min;
+        this.adjustToStep = !!options.adjustToStep;
+        this.fixed = !!options.fixed;
+        this.value   = 0;
+        this.rem     = 0;
+        this.percent = 0;
+        this.minList = [];
+        this.maxList = [];
+
+        var _this = this;
+        $.each( options.minList || [], function( index, sliderValueMin ){ _this.addMin( sliderValueMin ); });
+        $.each( options.maxList || [], function( index, sliderValueMax ){ _this.addMax( sliderValueMax ); });
+
+        this.setValue( options.value );
+    };
+
+    SliderValue.prototype = {
+        //addMin( sliderValue, minDistance )
+        //Add sliderValue to list of SliderValue that this must allways be greater than or equal to
+        addMin: function( sliderValue, minDistance = 0 ){
+            if (sliderValue === null) return this;
+            if ($.isNumeric(sliderValue))
+                sliderValue = new SliderValue({ value: sliderValue, slider: this.slider });
+            this.minList.push( {sliderValue: sliderValue, minDistance: minDistance || 0} );
+            this.update();
+            return this;
+        },
+
+        //addMax( sliderValue, minDistance )
+        //Add sliderValue to list of SliderValue that this must allways be less than or equal to
+        addMax: function( sliderValue, minDistance = 0 ){
+            if (sliderValue === null) return this;
+            if ($.isNumeric(sliderValue))
+                sliderValue = new SliderValue({ value: sliderValue, slider: this.slider });
+            this.maxList.push( {sliderValue: sliderValue, minDistance: minDistance || 0} );
+            this.update();
+            return this;
+        },
+
+        setValue: function( newValue ){
+            this.value = newValue;
+            this.update();
+            return this;
+        },
+
+
+        setPercent( newPercent ){
+            this.setValue( newPercent/this.percentFactor + this.sliderMin );
+        },
+
+        update: function(){
+            if (this.fixed)
+                return this;
+
+            //Adjust this.value with respect to {sliderValue,minDistance} in this.minList
+            var _this = this;
+            $.each( this.minList, function( index, rec ){
+                if (rec.sliderValue)
+                    _this.value = Math.max( _this.value, rec.sliderValue.value + rec.minDistance );
+            });
+            //Adjust this.value with respect to {sliderValue,minDistance} in this.maxList
+            $.each( this.maxList, function( index, rec ){
+                if (rec.sliderValue)
+                    _this.value = Math.min( _this.value, rec.sliderValue.value - rec.minDistance );
+            });
+
+            if (this.adjustToStep){
+                //Adjust this.value with respect to step and step_offset
+                var offset = this.slider.options.min + this.slider.options.step_offset;
+                this.value -= offset;
+                this.value = this.slider.options.step * Math.round( this.value/this.slider.options.step );
+                this.value += offset;
+            }
+
+            //Calculate precent
+            this.percent = (this.value - this.sliderMin)*this.percentFactor;
+            return this;
+        },
+
+        getValue: function(){
+            return toFixed( this.value );
+        },
+
+        getPercent: function( inclUnit ){
+            return toFixed( this.percent ) + (inclUnit ? '%' : 0);
+        },
+
+        getRem: function( inclUnit ){
+            return toFixed( this.rem ) + (inclUnit ? 'rem' : 0);
+        }
+
+    };
+
+
+    /*******************************************************************
+    Get font-size for the html
+    *******************************************************************/
+    var htmlFontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || $.DEFAULT_BROWSER_FONT_SIZE || '16px' );
+
+    function onFontSizeChange( event, fontSize ){
+        htmlFontSize = parseFloat( fontSize.fontSizePx ) || htmlFontSize;
+    };
+
+    $.onFontSizeChanged( onFontSizeChange );
+
+
+    /*******************************************************************
+    pxToRem
+    *******************************************************************/
+    function pxToRem( valuePx, inclUnit ){
+        return valuePx / htmlFontSize + (inclUnit ? 'rem' : 0);
+    }
+
+    /*******************************************************************
+    innerWidthRem
+    *******************************************************************/
+    function innerWidthRem( $element ){
+        return $element ? pxToRem( $element.innerWidth() ) : 0;
+    }
+
+    /*******************************************************************
+    outerWidthRem
+    *******************************************************************/
+    function outerWidthRem( $element ){
+        return $element ? pxToRem( $element.outerWidth(false) ) : 0;
+    }
+
+    /*******************************************************************
+    elementsOverlapping
+    Return true if $element1 and $element2 is overlapping horizontal
+    *******************************************************************/
+    function elementsOverlapping( $element1, $element2 ){
+        if ($element1 && $element2){
+            var rect1 = $element1.get(0).getBoundingClientRect(),
+                rect2 = $element2.get(0).getBoundingClientRect();
+            return ((rect1.left >= rect2.left) && (rect1.left <= rect2.right)) ||
+                    ((rect2.left >= rect1.left) && (rect2.left <= rect1.right));
+        }
+        return false;
+
+    }
+
+    /*******************************************************************
+    getEventLeft
+    Return the left (= x) position of an event
+    *******************************************************************/
+    function getEventLeft( e ){
+        return e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
+    }
+
 
     //'Global' text-element to be used by getTextWidth
     var $outerTextElement = null,
         textElement       = null;
 
 
-    /************************************
-    BaseSlider
-    ************************************/
+    /*******************************************************************
+    ********************************************************************
+    CONSTRUCTOR BaseSlider
+    ********************************************************************
+    *******************************************************************/
     var plugin_count = 0;
     window.BaseSlider = function (input, options, plugin_count) {
         this.input = input;
         this.plugin_count = plugin_count;
 
         this.current_plugin = 0;
-        this.old_from = 0;
-        this.old_to = 0;
         this.dragging = false;
         this.force_redraw = false;
         this.is_key = false;
@@ -141,6 +337,9 @@
         this.is_click = false;
         this.is_repeating_click = false;
 
+        this.htmlFontSize = htmlFontSize;
+
+        //this.cache = record with all DOM-elements or jQuery-objects
         this.cache = {
             $win   : $(window),
             $body  : $(document.body),
@@ -151,21 +350,13 @@
         // get config from options
         this.options = $.extend( {}, defaultOptions, options );
 
-        //Backward compatibility
-        if (options.slider == 'default')
-            options.slider = 'down';
-        if (options.slider == 'small')
-            options.slider = 'down';
-
-        if (this.options.fixed_handle)
-            this.options.type = 'single';
-
-        this.options.isSingle = (this.options.type == 'single');
-        this.options.isInterval = (this.options.type == 'double');
-
-        if (this.options.isInterval){
-            this.options.mousewheel = false;
+        if (this.options.fixed_handle){
+            this.options.type   = 'single'; //TODO Allow double slider when fixed (how??)
+            this.options.handle = 'fixed';
         }
+
+        this.options.isSingle   = (this.options.type == 'single');
+        this.options.isInterval = (this.options.type == 'double');
 
         //Convert textColors = [] of {value, color, backgroundColor, className} to textColorRec = { value1: { color, backgroundColor, className }, value2: color, backgroundColor, className },...}
         this.options.textColorRec = {};
@@ -175,28 +366,22 @@
                 _this.options.textColorRec[ rec.value ] = rec;
             });
 
-
         //Create element outside DOM used to calc width of text-elements
         this.$outerTextElement =
             $outerTextElement ||
             $('<div/>')
                 .addClass('grid')
-                .css({
-                    position: 'absolute',
-                    top     : -1000
-                })
+                .css({ position: 'absolute', top: -10000, left: -10000 })
                 .appendTo( $('body') );
         $outerTextElement = this.$outerTextElement;
 
         this.textElement =
             textElement ||
-            $('<div/>')
+            $('<span/>')
                 .addClass('grid-text')
                 .appendTo( this.$outerTextElement )
                 .get(0);
         textElement = this.textElement;
-
-        this.validate();
 
         //Add options.step to gridDistances
         if (this.options.gridDistances.indexOf(this.options.step) == -1)
@@ -210,33 +395,37 @@
 
         this.options.has_pin = (this.options.pin_value !== null);
 
+
+
+        /*******************************************************************
+        this.mouse, this.markers, this.handles
+        *******************************************************************/
         this.coords = {
+
+//            p_step        = this.options.step * factor;
+//            p_step_offset = this.options.step == 1 ? 0 : this.options.step_offset * factor;
+
+//x_start
+//p_pin_value
+            //Width of the container
+            containerWidthRem: 0,
+            old_containerWidthRem: 0,
+
+
+
+            //Mouse position
+            mouseOffsetP: 0,       //Different between the handler position (%) and the mouse position (%)
+
             // left
             x_gap: 0,
-            x_pointer: 0,
 
-            // width
-            w_rs: 0,
-            w_rs_old: 0,
-            w_handle: 0,
+            x_pointer: 0,
+            p_pointer: 0,
+
 
             // percents
-            p_gap: 0,
-            p_gap_left: 0,
-            p_gap_right: 0,
+
             p_step: 0,
-            p_pointer: 0,
-            p_handle: 0,
-            p_single: 0,
-            p_single_real: 0,
-            p_from: 0,
-            p_from_real: 0,
-            p_to: 0,
-            p_to_real: 0,
-            p_bar_x: 0,
-            p_bar_w: 0,
-            p_min: 0,
-            p_max: 0,
 
             // min and max coorected with step and step_offset
             true_min: 0,
@@ -244,62 +433,102 @@
 
         };
 
+        //this.handles = {from, single, to }
+        this.handles = {};
+
+        //this.markers = markers above handles and at ends = {min, from, single, to, max}
+        this.markers = {};
+
+        //this.result = record with the current result from the slider
         this.result = {
             $input: this.cache.$input,
-            input: this.cache.$input,  //Backward compatibility
-            slider: null,
-
-            min: this.options.min,
-            max: this.options.max,
-
-            from: this.options.from,
-            from_percent: 0,
-            from_value: null,
-
-            to: this.options.to,
-            to_percent: 0,
-            to_value: null
+            slider: this,
         };
 
-        this.labels = {
-            // width
-            w_min: 0,
-            w_max: 0,
-            w_from: 0,
-            w_to: 0,
-            w_single: 0,
-
-            // percents
-            p_min: 0,
-            p_max: 0,
-            p_from: 0,
-            p_from_left: 0,
-            p_to: 0,
-            p_to_left: 0,
-            p_single: 0,
-            p_single_left: 0
-        };
-
-        //Get font-size for the html
-        this.options.fontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || $.DEFAULT_BROWSER_FONT_SIZE || '16px' );
 
         this.init();
+
+        this.onStart();
 
         //Update slider when browser font-size is changed
         $.onFontSizeChanged( this.onFontSizeChange, this );
     };
 
     window.BaseSlider.prototype = {
-        //onFontSizeChange - called when the font-size of the browser is chnaged
-        onFontSizeChange: function( event, fontSize ){
-            this.options.fontSize = parseFloat( fontSize.fontSizePx ) || this.options.fontSize;
-            this.update();
-        },
+        /*******************************************************************
+        ********************************************************************
+        BUILD AND CREATE THE SLIDER
+        ********************************************************************
+        *******************************************************************/
 
-        //init
-        init: function (is_update) {
+        /*******************************************************************
+        init
+        *******************************************************************/
+        init: function () {
+            var _this = this;
+            /*******************************************************************
+            this.values = record with SliderValue-object representing the
+            different values and there relation
+            *******************************************************************/
+            this.values = {};
+            function addSliderValue(options /*id, optivalue, minList, maxList, adjustToStep*/){
+                options.slider = _this;
+                _this.values[options.id] = new SliderValue(options);
+            }
+
+            //min = Lowest value on the slider
+            addSliderValue({ id:'min', value:this.options.min });
+
+            //max = Highest value on the slider
+            addSliderValue({ id:'max', value:this.options.max });
+
+            //handleMin = Lowest value for any handle
+            addSliderValue({ id:'handleMin', value:this.options.min + this.options.step_offset });
+
+            //handleMax = Highest value for any handle
+            var maxSteps = Math.floor( (this.options.max - this.values.handleMin.value) / this.options.step );
+            addSliderValue({ id:'handleMax', value:this.values.handleMin.value + maxSteps*this.options.step });
+
+            if (this.options.isSingle)
+                //single = value for the single handle
+                addSliderValue({
+                    id          :'single',
+                    value       : this.options.value,
+                    minList     : [ this.values.handleMin, this.options.value_min ],
+                    maxList     : [ this.values.handleMax, this.options.value_max ],
+                    adjustToStep: true
+                });
+            else {
+                //from = value for the left handle
+                addSliderValue({
+                    id          : 'from',
+                    value       : this.options.from,
+                    minList     : [ this.values.handleMin, this.options.from_min ],
+                    maxList     : [ this.values.handleMax, this.options.from_max ],
+                    adjustToStep: true,
+                    fixed       : this.options.fixed_from
+                });
+
+                //to = value for the right handle
+                addSliderValue({
+                    id          : 'to',
+                    value       : this.options.to,
+                    minList     : [ this.values.handleMin, this.options.to_min ],
+                    maxList     : [ this.values.handleMax, this.options.to_max ],
+                    adjustToStep: true,
+                    fixed       : this.options.fixed_to
+                });
+                if (this.options.min_interval || this.options.max_interval){
+                    //TODO
+
+                }
+
+
+            }
+
+//HER TODO: CHECK HVILKE, DER KAN SLETTES
             this.options.total = this.options.max - this.options.min;
-            this.options.oneP  = this.toFixed(100 / this.options.total);
+            this.options.oneP  = toFixed(100 / this.options.total);
             this.options.stepP = this.options.step*this.options.oneP;
 
             var factor = 100/this.options.total;
@@ -310,35 +539,32 @@
             this.coords.true_max = this.coords.true_min;
             while (this.coords.true_max + this.options.step <= this.options.max)
                 this.coords.true_max += this.options.step;
-            this.coords.p_min = (this.coords.true_min - this.options.min) * this.options.oneP;
-            this.coords.p_max = (this.coords.true_max - this.options.min) * this.options.oneP;
+//HER            this.coords.p_min = (this.coords.true_min - this.options.min) * this.options.oneP;
+//HER            this.coords.p_max = (this.coords.true_max - this.options.min) * this.options.oneP;
 
 
-            this.options.from = this.adjustValue( this.options.from );
-            this.options.to   = this.adjustValue( this.options.to );
-            this.result.from  = this.options.from;
-            this.result.to    = this.options.to;
+//HER            this.options.from = this.adjustValue( this.options.from );
+//HER            this.options.to   = this.adjustValue( this.options.to );
+//HER            this.result.from  = this.options.from;
+//HER            this.result.to    = this.options.to;
 
             this.target = "base";
 
+            this.updateResult();
+
             this.toggleInput();
             this.append();
-            this.setMinMax();
-            if (is_update) {
-                this.force_redraw = true;
-                this.calc(true);
-                this.onUpdate();
-
-            } else {
-                this.force_redraw = true;
-                this.calc(true);
-                this.onStart();
-            }
+            this.setMinMaxMarkers();
+            this.force_redraw = true;
+            this.calc(true);
             this.drawHandles();
         },
 
-        //append
+        /*******************************************************************
+        append
+        *******************************************************************/
         append: function () {
+            //**************************************
             function $span( className, $parent ){
                 var result = $('<span/>');
                 if (className)
@@ -347,16 +573,16 @@
                   result.appendTo( $parent );
                 return result;
             }
+            //**************************************
 
-            //this.cache.$container = $span( 'base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
-            this.cache.$container = $('<div/>');
-            this.cache.$container.addClass('base-slider-container ' + this.options.slider + ' js-base-slider-' + this.plugin_count );
+            this.cache.$container =
+                $('<div/>')
+                    .addClass('base-slider-container ' + this.options.handle + ' js-base-slider-' + this.plugin_count );
 
             this.cache.$input.before(this.cache.$container);
             this.cache.$input.prop("readonly", true);
 
 
-            this.result.slider = this.cache.$container; //For backward compatibility
             this.result.$slider = this.cache.$container;
 
             //Put inside outer-container if options.fixed_handle
@@ -368,99 +594,125 @@
                 //Sets the width of the container with full width
                 var width = this.options.width || this.options.value_distances*(this.options.max - this.options.min);
 
-                this.cache.$fullWidthContainer.width( Math.ceil(this.pxToRem(width))+'rem' );
+                this.cache.$fullWidthContainer.width( Math.ceil(pxToRem(width))+'rem' );
 
 
                 this.cache.$fullWidthContainer.wrap('<div/>');
                 this.cache.$outerContainer = this.cache.$fullWidthContainer.parent();
                 this.cache.$outerContainer.addClass('base-slider-container-outer');
 
-                //Update the slider when $outerContainer is resized
-                var _this = this;
-                this.cache.$outerContainer.resize( function(){
-                    _this.force_redraw = true;
-                    _this.drawHandles();
-                });
-
             }
 
-            /* Create structure
-            <span class="bs">
-                <span class="line" tabindex="-1">
-                    <span class="line-left"></span>
-                </span>
-                <span class="marker-min">0</span>
-                <span class="marker-max">1</span>
-                <span class="marker-from">0</span>
-                <span class="marker-to">0</span>
-                <span class="marker-single">0</span>
-            </span>
-            <span class="grid"></span>
-            <span class="bar"></span>
-            */
 
-            this.cache.$bs = $span('bs', this.cache.$container);
-            this.cache.$line = $span('line', this.cache.$bs).prop('tabindex', -1);
+            /****************************************************
+            Append handles
+            ****************************************************/
+            if (this.options.isSingle)
+                //Add single-handle
+                this.handles.$single = $span('handle single', this.cache.$container);
+            else {
+                //Add from- and to-handle
+                this.handles.$from = $span('handle from', this.cache.$container);
+                this.handles.$to   = $span('handle to', this.cache.$container);
+            }
 
-            if (this.options.isInterval)
-                this.cache.$lineLeft = $span('line-left', this.cache.$line);
+            /****************************************************
+            Append markers = small boxes over handler and at the ends
+            ****************************************************/
+            var _this = this,
+                extraClassName = this.options.marker_frame ? 'frame' : '';
+
+            //**************************************
+            function createMarker( className, extraClassName ){
+                var result = {};
+                //Outer div
+                result.$outer = $('<div/>')
+                                    .addClass('marker-outer')
+                                    .addClass(className)
+                                    .appendTo(_this.cache.$container);
+                //Inner div
+                var $inner =
+                        $('<div/>')
+                            .addClass('marker')
+                            .addClass(extraClassName)
+                            .appendTo(result.$outer);
+                result.$text =
+                        $('<span/>')
+                            .addClass('marker-text')
+                            .addClass(className)
+                            .addClass(extraClassName)
+                            .appendTo($inner);
+
+                return result;
+            }
+            //**************************************
 
             if (this.options.show_from_to) {
-                this.cache.$single = $span('marker-single', this.cache.$bs);
+                this.markers.single = createMarker( 'single-from-to', extraClassName );
                 if (this.options.isInterval){
-                    this.cache.$from   = $span('marker-from',   this.cache.$bs);
-                    this.cache.$to     = $span('marker-to',     this.cache.$bs);
+                    this.markers.from = createMarker( 'single-from-to', extraClassName );
+                    this.markers.to   = createMarker( 'single-from-to', extraClassName );
                 }
             }
 
-            this.cache.$min = $span('marker-min', this.cache.$bs);
-            this.cache.$max = $span('marker-max', this.cache.$bs);
+            if (this.options.show_min_max) {
+                this.markers.handleMin = createMarker( 'min-max' );
+                this.markers.handleMax = createMarker( 'min-max' );
+            }
 
+            /****************************************************
+            Create the line and optional colors (XXLineColor)
+            ****************************************************/
+            this.cache.$bs = $span('bs', this.cache.$container);
+            this.cache.$line = $span('line', this.cache.$bs).prop('tabindex', -1);
+            if (this.options.lineBackgroundColor)
+                this.cache.$line.css('background-color', this.options.lineBackgroundColor);
+
+            //Create up to tree span with different colors of the line:
+            //this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine
+            var _this = this;
+            function appendLineColor( left, center, right ){
+                var result;
+                if (left)   result = _this.cache.$leftLineColor   = $span('line-color', _this.cache.$line);
+                if (center) result = _this.cache.$centerLineColor = $span('line-color', _this.cache.$line);
+                if (right)  result = _this.cache.$rightLineColor  = $span('line-color', _this.cache.$line);
+                return result; //Only last added
+            }
+
+            //1. double-handle with impact- or reverse-impact-colors
+            if (this.options.isInterval && this.options.showImpactLineColor){
+                appendLineColor( true, true, true );
+                this.setImpactLineColors();
+            }
+            else
+                //2. Add static colors given by options.lineColors
+                if (this.options.lineColors){
+//TODO HER MANGLER
+                }
+                else
+                    //3. Normal line-color to the left of handle (single) or between handles (double)
+                    if (this.options.showLineColor)
+                        appendLineColor( this.options.isSingle, this.options.isInterval, false )
+                            .css('background-color', this.options.lineColor);
+
+
+            /****************************************************
+            Append grid with ticks and optional text-labels
+            ****************************************************/
             if (this.options.grid)
                 this.cache.$grid = $span('grid', this.cache.$container);
-
-            this.cache.$bar = $span('bar', this.cache.$container);
-
-            if (this.options.isSingle){
-                this.cache.$s_single = $span('slider single', this.cache.$container);
-            }
-            else {
-                //Add from and to slider
-                this.cache.$s_from = $span('slider from', this.cache.$container);
-                this.cache.$s_to   = $span('slider to', this.cache.$container);
-
-                //Add classs if it is a (reverse) impact-line
-                if (this.options.impact_line)
-                    this.cache.$container.addClass("impact-line");
-
-                if (this.options.impact_line_reverse)
-                    this.cache.$container.addClass("impact-line-reverse");
-            }
 
 
             if (this.options.has_pin)
                 this.cache.$s_pin = $span('pin fa', this.cache.$container);
 
-            //Add class to set bar color same as line
-            if (!this.options.show_bar_color)
-                this.cache.$bar.addClass('hide-bar-color');
-
-            //Set alternative bar color
-            if (this.options.bar_color)
-                this.cache.$bar.css('background-color', this.options.bar_color);
-
-            //Add class to set border and stick on to- from and current-label
-            if (this.options.marker_frame)
-                this.cache.$container.addClass('marker-frame');
-
             //Adjust top-position if no marker is displayed
             if (!this.options.show_min_max && !this.options.show_from_to)
                 this.cache.$container.addClass("no-marker");
 
-            //Adjust top-position of first grid if tick must be on the slider
+            //Adjust top-position of first grid if tick must be on the handle
             if (this.options.ticks_on_line)
                 this.cache.$container.addClass("ticks-on-line");
-
 
             //Speciel case: Adjust top-position of line etc. if it is a range-slider with no marker and with a pin!
             if (this.options.has_pin)
@@ -501,30 +753,31 @@
                 this.cache.$container.addClass("not-clickable");
         },
 
-        //_offEvents
-        _offEvents: function( $elem, eventNames ){
-            if (!$elem) return;
-            var count = this.plugin_count;
-            $.each( eventNames.split(' '), function( index, eventName ){
-                $elem.off( eventName + ".irs_" + count );
-            });
-        },
-
-        //remove
+        /*******************************************************************
+        remove
+        *******************************************************************/
         remove: function () {
+            var _this = this;
+            //************************************************
+            function offEvents( $elem, eventNames ){
+                if (!$elem) return;
+                $.each( eventNames.split(' '), function( index, eventName ){
+                    $elem.off( eventName + ".irs_" + _this.plugin_count );
+                });
+            }
+            //************************************************
+
             if (this.cache.$outerContainer){
-              this.cache.$outerContainer.remove();
-              this.cache.$outerContainer = null;
+                this.cache.$outerContainer.remove();
+                this.cache.$outerContainer = null;
             }
             else {
                 this.cache.$container.remove();
                 this.cache.$container = null;
             }
 
-            this._offEvents( this.cache.$line, "keydown" );
-            this._offEvents( this.cache.$body, "touchmove mousemove" );
-
-            this._offEvents( this.cache.$win, "touchend mouseup" );
+            offEvents( this.cache.$body, "touchmove mousemove" );
+            offEvents( this.cache.$win,   "touchend mouseup"   );
 
             //Unbind click on buttons
             var id, i, attrName, $btn;
@@ -532,49 +785,55 @@
                 for (i=0; i<this.options.buttons_attr.length; i++ ){
                     attrName = this.options.buttons_attr[i];
                     $btn = this.cache.buttons[id][attrName];
-                    this._offEvents( $btn, 'mousedown mouseup mouseleave click' );
+                    offEvents( $btn, 'mousedown mouseup mouseleave click' );
                 }
         },
 
-        //_onEvents
-        _onEvents: function( $elem, eventNames, func, param ){
-            if (!$elem) return;
-            var count = this.plugin_count,
-                f = param ? $.proxy( func, this, param) : $.proxy( func, this );
 
-            $.each( eventNames.split(' '), function( index, eventName ){
-                $elem.on( eventName + ".irs_" + count,  f );
-            });
-        },
-
-        //bindEvents
+        /*******************************************************************
+        bindEvents
+        *******************************************************************/
         bindEvents: function () {
-            this._onEvents( this.cache.$body, "touchmove mousemove",  this.pointerMove );
+            var _this = this;
+            //*******************************************************************
+            function addEvents( $elem, eventNames, func, param ){
+                if (!$elem) return;
+                var func = param ? $.proxy( func, _this, param) : $.proxy( func, _this );
 
-            this._onEvents( this.cache.$win,  "touchend mouseup",     this.pointerUp );
+                $.each( eventNames.split(' '), function( index, eventName ){
+                    $elem.on( eventName + ".irs_" + _this.plugin_count,  func );
+                });
+            }
+            //*******************************************************************
+            addEvents( this.cache.$body, "touchmove mousemove",  this.handleOnMouseMove );
+            addEvents( this.cache.$win,  "touchend mouseup",     this.handleOnMouseUp   );
 
             if (this.options.clickable && !this.options.fixed_handle){
-                this._onEvents( this.cache.$line, "touchstart mousedown", this.pointerClick, "click" );
-                this._onEvents( this.cache.$bar,  "touchstart mousedown", this.pointerClick, "click" );
+                var $elementList = [ this.cache.$line, this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine, this.cache.$grid ],
+                    _this = this;
+                $.each( $elementList, function( index, $element ){
+                    addEvents( $element, "touchstart mousedown", _this.sliderOnClick, "click" );
+                });
             }
 
+            //Add event to the handles
             if (this.options.fixed_handle)
-                this._onEvents( this.cache.$fullWidthContainer, "touchstart mousedown", this.pointerDown, "single" );
+                addEvents( this.cache.$fullWidthContainer, "touchstart mousedown", this.handleOnMouseDown, "single" );
             else
-                this._onEvents( this.cache.$s_single, "touchstart mousedown", this.pointerDown, "single" );
+                addEvents( this.handles.$single, "touchstart mousedown", this.handleOnMouseDown, "single" );
+            addEvents( this.handles.$from, "touchstart mousedown", this.handleOnMouseDown, "from" );
+            addEvents( this.handles.$to,   "touchstart mousedown", this.handleOnMouseDown, "to" );
 
             if (this.options.mousewheel){
                 //Add horizontal sliding with mousewheel
                 if (this.options.fixed_handle)
-                    this._onEvents( this.cache.$outerContainer, 'mousewheel', this.mousewheel );
+                    addEvents( this.cache.$outerContainer, 'mousewheel', this.mousewheel );
                 else
-                    this._onEvents( this.cache.$container.parent(), 'mousewheel', this.mousewheel );
+                    addEvents( this.cache.$container.parent(), 'mousewheel', this.mousewheel );
             }
 
-            this._onEvents( this.cache.$s_from,   "touchstart mousedown", this.pointerDown, "from" );
-            this._onEvents( this.cache.$s_to,     "touchstart mousedown", this.pointerDown, "to" );
-
-            this._onEvents( this.cache.$line, "keydown", this.key, "keyboard" );
+            //Add keyboard events to theline
+            addEvents( this.cache.$line, "keydown", this.key, "keyboard" );
 
             //Bind click on buttons
             var id, i, attrName, delta, $btn;
@@ -584,10 +843,10 @@
                     delta = this.options.buttons_delta[i];
 
                     $btn = this.cache.buttons[id][attrName];
-                    this._onEvents( $btn, 'mousedown',  this.startRepeatingClick );
-                    this._onEvents( $btn, 'mouseup',    this.endRepeatingClick );
-                    this._onEvents( $btn, 'mouseleave', this.endRepeatingClick, true );
-                    this._onEvents( $btn, 'click',      this.buttonClick,       {id:id, delta:delta} );
+                    addEvents( $btn, 'mousedown',  this.startRepeatingClick                      );
+                    addEvents( $btn, 'mouseup',    this.endRepeatingClick                        );
+                    addEvents( $btn, 'mouseleave', this.endRepeatingClick,  true                 );
+                    addEvents( $btn, 'click',      this.buttonClick,        {id:id, delta:delta} );
 
                     if ( $btn && $btn.autoclickWhilePressed && (Math.abs(delta) == 1) && (!$btn.data('auto-click-when-pressed-added')) ){
                         $btn.data('auto-click-when-pressed-added', true);
@@ -596,22 +855,213 @@
                 }
         },
 
-        //adjustResult - adjust this.resut before onStart,..,callback is called
+        /*******************************************************************
+        setImpactLineColors
+        Sets the color of the line when line colors are impact (green-yellow-red)
+        *******************************************************************/
+        setImpactLineColors: function(){
+            this.cache.$leftLineColor.css  ( 'background-color', this.options.impactLineColors[ this.options.reverseImpactLineColor ? 'red' : 'green' ] );
+            this.cache.$centerLineColor.css( 'background-color', this.options.impactLineColors.yellow );
+            this.cache.$rightLineColor.css ( 'background-color', this.options.impactLineColors[ this.options.reverseImpactLineColor ? 'green' : 'red' ] );
+        },
+
+        /*******************************************************************
+        setMarkerText
+        Sets the text for markers{id] with value from values[id] or text
+        *******************************************************************/
+        setMarkerText: function ( id, text ){
+            var value = this.values[id] ? this.values[id].value : 0;
+            text = text || this.decorate(this._prettify(value))
+            if (this.markers[id])
+                this.markers[id].$text.html( text );
+        },
+
+        /*******************************************************************
+        setMarkerLeft
+        *******************************************************************/
+        setMarkerLeft: function ( id, leftPercent ){
+            leftPercent =   $.isNumeric(leftPercent) ?
+                            leftPercent :
+                            this.values[id] ?
+                            this.values[id].getPercent() :
+                            0;
+
+            if (this.markers[id])
+                this.markers[id].$outer.css('left', leftPercent+'%');
+        },
+
+        /*******************************************************************
+        setMarkerTextAndLeft
+        *******************************************************************/
+        setMarkerTextAndLeft: function ( id ){
+            this.setMarkerText( id );
+            this.setMarkerLeft( id );
+        },
+
+        /*******************************************************************
+        markersOverlapping
+        *******************************************************************/
+        markersOverlapping: function ( markerId1, markerId2 ){
+            return  this.markers[markerId1] &&
+                    this.markers[markerId2] &&
+                    elementsOverlapping( this.markers[markerId1].$text, this.markers[markerId2].$text );
+        },
+
+        /*******************************************************************
+        setMarkerHidden
+        *******************************************************************/
+        setMarkerHidden: function ( markerId, hidden ){
+            if (this.markers[markerId])
+                this.markers[markerId].$outer.css( 'visibility', !!hidden ? 'hidden' : 'visible' );
+        },
+
+        /*******************************************************************
+        setMinMaxMarkers
+        *******************************************************************/
+        setMinMaxMarkers: function () {
+            if (this.options && this.options.show_min_max){
+                this.setMarkerTextAndLeft( 'handleMin' );
+                this.setMarkerTextAndLeft( 'handleMax' );
+            }
+        },
+
+
+        /*******************************************************************
+        ********************************************************************
+        SET VALUES (TO, FROM, PIN ETC.)
+        ********************************************************************
+        *******************************************************************/
+
+        /*******************************************************************
+        setAnyValue
+        *******************************************************************/
+        setAnyValue: function( id, value ){
+            if (this.values[id]){
+                this.values[id].setValue( value );
+
+                this.target = "base";//HER eller = id;
+                this.is_key = true;
+                this.calc();
+                this.force_redraw = true; //HER Nødvendig?
+                this.drawHandles();
+                this.onCallback();
+            }
+        },
+
+        /*******************************************************************
+        adjustValue
+        Adjust value with respect to min, max, step, and step-offset
+        *******************************************************************/
+        adjustValue: function( value ){
+            //Adjust with respect to min value and max value
+            value = adjustToMinMax( value , this.coords.true_min, this.coords.true_max );
+
+            //Adjust with respect to step and step_offset
+            value = this.coords.true_min + this.options.step*Math.round( (value - this.coords.true_min)/this.options.step );
+
+            return value;
+        },
+
+        /*******************************************************************
+        setValue, setFromValue, setToValue
+        *******************************************************************/
+        setValue    : function( value ) { this.setAnyValue( 'single', value ); },
+        setFromValue: function( value ) { this.setAnyValue( 'from',   value ); },
+        setToValue  : function( value ) { this.setAnyValue( 'to',     value ); },
+
+        /*******************************************************************
+        setPin
+        *******************************************************************/
+        setPin: function( value, color, icon ) {
+            if (!this.options.has_pin) return;
+/* HER MANGLER
+            if (value !== null)
+                this.options.pin_value = adjustToMinMax(value, this.options.min, this.options.max );
+
+            this.options.pin_color = color || this.options.pin_color || 'black';
+
+            var oldIcon = this.options.pin_icon || '';
+            this.options.pin_icon = icon || this.options.pin_icon || 'fa-map-marker';
+
+            this.target = "base";
+            this.calc(true);
+
+            this.cache.$s_pin
+                .css({
+                    left : toFixed(this.coords.p_pin_value) + "%",
+                    color: this.options.pin_color
+                })
+                .removeClass( oldIcon )
+                .addClass( this.options.pin_icon );
+*/
+        },
+
+
+        /*******************************************************************
+        ********************************************************************
+        CALLBACK
+        ********************************************************************
+        *******************************************************************/
+
+        /*******************************************************************
+        updateResult
+        *******************************************************************/
+        updateResult: function (id) {
+            //idList = list of ids to update
+            var idList = id ? [id] : 'min from single to max'.split(' '),
+                _this = this;
+
+            $.each( idList, function( index, id ){
+                var resultId = id == 'single' ? 'value' : id; //Using result.value for single-slider
+                if (_this.values[id]){
+                    _this.result[resultId]           = _this.values[id].value;
+                    _this.result[resultId+'Percent'] = _this.values[id].percent;
+                }
+            });
+        },
+
+
+        /*******************************************************************
+        setResult - Set the value and percentValue from this.values[id] in the result-record
+        *******************************************************************/
+        setResult: function(id){
+            if (this.values){
+
+            }
+        },
+
+        /*******************************************************************
+        adjustResult - adjust this.result before onStart, onChange,.. is called
+        *******************************************************************/
         adjustResult: function(){
             //Nothing here but desencing class can overwrite it
         },
 
-        //onFunc
-        onFunc: function(func){
+        /*******************************************************************
+        onFunc
+        *******************************************************************/
+        onFunc: function( func ){
             this.adjustResult();
-            if (func && typeof func === "function")
+            if ($.isFunction(func))
                 func.call(this, this.result);
         },
 
-        //onCallback
+        /*******************************************************************
+        onCallback
+        *******************************************************************/
         onCallback: function(){
             this.lastResult = this.lastResult  || {};
-            if ( this.options.callback && typeof this.options.callback === "function" && ( this.result.min != this.lastResult.min || this.result.max != this.lastResult.max || this.result.from != this.lastResult.from || this.result.to != this.lastResult.to ) ) {
+            if (
+                    this.options.callback &&
+                    (typeof this.options.callback === "function") &&
+                    (
+                        (this.result.min   !== this.lastResult.min  ) ||
+                        (this.result.max   !== this.lastResult.max  ) ||
+                        (this.result.from  !== this.lastResult.from ) ||
+                        (this.result.to    !== this.lastResult.to   ) ||
+                        (this.result.value !== this.lastResult.value)
+                    )
+                ) {
                 this.adjustResult();
                 if (this.preCallback)
                     this.preCallback( this.result );
@@ -623,23 +1073,28 @@
             }
         },
 
-        //onStart
+        /*******************************************************************
+        onStart
+        *******************************************************************/
         onStart: function(){
             this.onCallback();
             this.onFunc(this.options.onStart);
         },
 
-        //onChange
+        /*******************************************************************
+        onChange
+        *******************************************************************/
         onChange: function(){
-            //If it is dragging and no callback_on_dragging => set timeout to call callback after XX ms if the slider hasn't moved
+            //If it is dragging and no callback_on_dragging => set timeout to call callback after XX ms if the handle hasn't moved
             if (this.dragging && !this.options.callback_on_dragging && this.options.callback_delay){
                 if (this.delayTimeout)
                     window.clearTimeout(this.delayTimeout);
                 var _this = this;
-                this.delayTimeout = window.setTimeout(
-                                        function () { _this.onCallback(); },
-                                        this.options.callback_delay
-                                    );
+                this.delayTimeout =
+                    window.setTimeout(
+                        function () { _this.onCallback(); },
+                        this.options.callback_delay
+                    );
             }
 
             if ( this.options.callback_on_dragging || (!this.is_repeating_click && !this.dragging) )
@@ -647,7 +1102,9 @@
             this.onFunc(this.options.onChange);
         },
 
-        //onFinish
+        /*******************************************************************
+        onFinish
+        *******************************************************************/
         onFinish: function(){
             if (this.delayTimeout)
                 window.clearTimeout(this.delayTimeout);
@@ -657,13 +1114,38 @@
             this.onFunc(this.options.onFinish);
         },
 
-        //onUpdate
+        /*******************************************************************
+        onUpdate
+        *******************************************************************/
         onUpdate: function(){
             this.onFunc(this.options.onUpdate);
         },
 
-        //buttonClick
+
+        /*******************************************************************
+        ********************************************************************
+        EVENTS
+        ********************************************************************
+        *******************************************************************/
+
+        /*******************************************************************
+        onFontSizeChange
+        Called when the font-size of the browser is changed
+        *******************************************************************/
+        onFontSizeChange: function( event, fontSize ){
+            onFontSizeChange( event, fontSize );
+            if (this.htmlFontSize != htmlFontSize){
+                this.htmlFontSize = htmlFontSize;
+                this.update('onFontSizeChange');
+            }
+
+        },
+
+        /*******************************************************************
+        buttonClick MANGLER: skal bruge this.values[id].value
+        *******************************************************************/
         buttonClick: function (options){
+/* HER MANGLER
             var newValue = options.id == 'from' ? this.result.from : this.result.to;
             switch (options.delta){
               case     0: newValue = 0; break;
@@ -676,156 +1158,60 @@
                 this.setFromValue( newValue );
             else
                 this.setToValue( newValue );
+*/
         },
 
-        //startRepeatingClick
+        /*******************************************************************
+        startRepeatingClick
+        *******************************************************************/
         startRepeatingClick: function () {
             this.is_repeating_click = true;
         },
 
-        //endRepeatingClick
+        /*******************************************************************
+        endRepeatingClick
+        *******************************************************************/
         endRepeatingClick: function (callback) {
             this.is_repeating_click = false;
             if (callback)
                 this.onCallback();
         },
 
-        //textClick - click on label
+        /*******************************************************************
+        textClick - click on text-label MANGLER: skal bruge this.values[id]
+        *******************************************************************/
         textClick: function( e ){
-            var value = parseFloat( e.target.getAttribute('data-base-slider-value') );
-            if (!this.options.isInterval){
-                this.setValue( value );
-                return;
+/* HER MANGLER
+            var value = NaN,
+                elem = e.target.parentNode;
+            while (window.isNaN(value) && !!elem){
+                value = parseFloat( elem.getAttribute('data-base-slider-value') );
+                elem = elem.parentNode;
             }
 
-            if (this.result.from >= value)
-              this.setFromValue (value );
-            else
-                if (this.result.to <= value)
-                  this.setToValue (value );
+            if (!window.isNaN(value)){
+                if (!this.options.isInterval)
+                    this.setValue( value );
                 else
-                    if (Math.abs( this.result.from - value ) >= Math.abs( this.result.to - value ))
-                        this.setToValue( value );
+                    if (this.result.from >= value)
+                        this.setFromValue (value );
                     else
-                        this.setFromValue( value );
-        },
-
-        //mousewheel
-        mousewheel: function( e, delta ){
-            return this._moveByKeyboardOrMouseWheel({
-                event         : e,
-                delta         : 1,
-                shiftDelta    : 2,
-                ctrlShiftDelta: 3,
-                sign          : delta
-
-            });
-        },
-
-        //pointerMove
-        pointerMove: function (e) {
-            if (!this.dragging) return;
-
-            var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
-
-            if (this.options.fixed_handle)
-                //Convert direction of mouse moving
-                x = this.coords.x_start - (x - this.coords.x_start);
-
-            this.coords.x_pointer = this.pxToRem(x) - this.coords.x_gap;
-
-            this.calc();
-
-            this.drawHandles();
-        },
-
-        //pointerUp
-        pointerUp: function (e) {
-            if (this.current_plugin !== this.plugin_count) return;
-
-            if (this.is_active)
-                this.is_active = false;
-            else
-                return;
-
-            if ($.contains(this.cache.$container[0], e.target) || this.dragging)
-                this.onFinish();
-
-            this.cache.$container.find(".state_hover").removeClass("state_hover");
-
-            this.force_redraw = true;
-            this.dragging = false;
-        },
-
-        //pointerDown
-        pointerDown: function (target, e) {
-            e.preventDefault();
-            var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
-            if (e.button === 2) return;
-
-            this.current_plugin = this.plugin_count;
-            this.target = target;
-            this.is_active = true;
-            this.dragging = true;
-            this.coords.x_gap = this.pxToRem(this.cache.$bs.offset().left);
-            this.coords.x_pointer = this.pxToRem(x) - this.coords.x_gap;
-            this.calcPointer();
-
-
-            switch (target) {
-                case "single":
-                    this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_single);
-
-                    if (this.options.fixed_handle)
-                        //Save initial mouse position to calc reverse mouse movment
-                        this.coords.x_start = x;
-                    break;
-
-                case "from":
-                    this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_from);
-                    this.cache.$s_from.addClass("state_hover");
-                    this.cache.$s_from.addClass("type_last");
-                    this.cache.$s_to.removeClass("type_last");
-                    break;
-
-                case "to":
-                    this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_to);
-                    this.cache.$s_to.addClass("state_hover");
-                    this.cache.$s_to.addClass("type_last");
-                    this.cache.$s_from.removeClass("type_last");
-                    break;
-
-                case "both":
-                    this.coords.p_gap_left = this.toFixed(this.coords.p_pointer - this.coords.p_from);
-                    this.coords.p_gap_right = this.toFixed(this.coords.p_to - this.coords.p_pointer);
-                    this.cache.$s_to.removeClass("type_last");
-                    this.cache.$s_from.removeClass("type_last");
-                    break;
+                        if (this.result.to <= value)
+                            this.setToValue (value );
+                        else
+                            if (Math.abs( this.result.from - value ) >= Math.abs( this.result.to - value ))
+                                this.setToValue( value );
+                            else
+                                this.setFromValue( value );
             }
-
-            this.cache.$line.trigger("focus");
+            e.stopPropagation();
+*/
         },
 
-        //pointerClick
-        pointerClick: function (target, e) {
-            e.preventDefault();
-            var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
-            if (e.button === 2) return;
-
-            this.current_plugin = this.plugin_count;
-            this.target = target;
-            this.is_click = true;
-            this.coords.x_gap = this.pxToRem(this.cache.$bs.offset().left);
-            this.coords.x_pointer = +(this.pxToRem(x) - this.coords.x_gap).toFixed();
-
-            this.force_redraw = true;
-            this.calc(true);
-            this.drawHandles();
-
-            this.cache.$line.trigger("focus");
-        },
-
-        //key - event keydown
+        /*******************************************************************
+        key
+        Event keydown
+        *******************************************************************/
         key: function (target, e) {
             if (this.current_plugin !== this.plugin_count || e.altKey || e.metaKey) return;
 
@@ -866,8 +1252,24 @@
                 return this._moveByKeyboardOrMouseWheel( options );
         },
 
+        /*******************************************************************
+        mousewheel
+        *******************************************************************/
+        mousewheel: function( e, delta ){
+            return this._moveByKeyboardOrMouseWheel({
+                event         : e,
+                delta         : 1,
+                shiftDelta    : 2,
+                ctrlShiftDelta: 3,
+                sign          : delta
 
-        //_moveByKeyboardOrMouseWheel options = { sign, delta, shiftDelta, ctrlShiftDelta, event }
+            });
+        },
+
+        /*******************************************************************
+        _moveByKeyboardOrMouseWheel
+        options = { sign, delta, shiftDelta, ctrlShiftDelta, event }
+        *******************************************************************/
         _moveByKeyboardOrMouseWheel: function( options ){
             /*
             Setting delta:
@@ -888,6 +1290,8 @@
 
             delta = options.sign*delta;
 
+console.log('HER', delta);
+//HER MANGLER: Skal ikke bruge this.options eller this.result, men this.values
             //If the slider has two handle (this.options.isInterval == true) both handles are moved euqal distance to keep the distance between them constant
 
             //oldValue = original value depending on type and direction
@@ -925,525 +1329,406 @@
             return true;
         },
 
-        //setMinMax
-        setMinMax: function () {
-            if (!this.options) return;
 
-            if (!this.options.show_min_max) {
-                this.cache.$min.hide();
-                this.cache.$max.hide();
-                return;
-            }
-            this.cache.$min.html(this.decorate(this._prettify(this.options.min), this.options.min));
-            this.cache.$max.html(this.decorate(this._prettify(this.options.max), this.options.max));
+        /*******************************************************************
+        handleOnMouseDown
+        When any of the handle is 'touch'
+        Is equal to 'start-dragging'
+        *******************************************************************/
+        handleOnMouseDown: function (target, e) {
+//console.log('handleOnMouseDown');
+            e.preventDefault();
+            if (e.button === 2) return;
 
-            this.labels.w_min = this.getOuterWidth(this.cache.$min);
-            this.labels.w_max = this.getOuterWidth(this.cache.$max);
-        },
+            this.current_plugin = this.plugin_count;
+            this.target = target;
+            this.is_active = true;
+            this.dragging = true;
 
+            var x = getEventLeft(e);
 
-        // =============================================================================================================
-        // Calculations
-
-        //adjustValue
-        adjustValue: function( value ){
-            //Adjust with respect to min value
-            value = Math.max( this.coords.true_min, value );
-
-            //Adjust with respect to max value
-            value = Math.min( this.coords.true_max, value );
-
-            //Adjust with respect to step and step_offset
-            value = this.coords.true_min + this.options.step*Math.round( (value - this.coords.true_min)/this.options.step );
-
-
-            return value;
-        },
-
-        //setValue
-        setValue: function( value ) { this.setFromValue( value ); },
-
-        //setFromValue
-        setFromValue: function( value ) {
-            value = this.adjustValue( value );
-
-            if (this.options.isInterval)
-              value = Math.min( value, this.result.to );
-
-            this.old_from = this.result.from;
-            this.result.from = value;
-            if (this.old_from != value){
-                this.target = "base";
-                this.is_key = true;
-                this.calc();
-                this.force_redraw = true;
-                this.drawHandles();
-            }
-            this.onCallback();
-        },
-
-        //setToValue
-        setToValue: function( value ) {
-            value = Math.max( value, this.result.from );
-            value = this.adjustValue( value );
-
-            this.old_to = this.result.to;
-            this.result.to = value;
-            if (this.old_to != value){
-                this.target = "base";
-                this.is_key = true;
-                this.calc();
-                this.force_redraw = true;
-                this.drawHandles();
-            }
-            this.onCallback();
-        },
-
-        setPin: function( value, color, icon ) {
-            if (!this.options.has_pin) return;
-
-            if (value !== null){
-                value = Math.min( this.options.max, value );
-                value = Math.max( this.options.min, value );
-                this.options.pin_value = value;
-            }
-
-            this.options.pin_color = color || this.options.pin_color || 'black';
-
-            var oldIcon = this.options.pin_icon || '';
-            this.options.pin_icon = icon || this.options.pin_icon || 'fa-map-marker';
-
-            this.target = "base";
-            this.calc(true);
-
-            this.cache.$s_pin
-                .css({
-                    left : this.coords.p_pin_value + "%",
-                    color: this.options.pin_color
-                })
-                .removeClass( oldIcon )
-                .addClass( this.options.pin_icon );
-        },
-
-
-        //pxToRem
-        pxToRem: function( valuePx, inclUnit ){
-            return valuePx / this.options.fontSize + (inclUnit ? 'rem' : 0);
-        },
-
-        //getInnerWidth
-        getInnerWidth: function( $element, inclUnit, factor ){
-            return this.pxToRem( (factor ? factor : 1)*($element ? $element.innerWidth() : 0), inclUnit );
-        },
-
-        //getOuterWidth
-        getOuterWidth: function( $element, inclUnit, factor ){
-            return this.pxToRem( (factor ? factor : 1)*$element.outerWidth(false), inclUnit );
-        },
-
-        //getCoords_w_rs
-        getCoords_w_rs: function(){
-            var result = this.getInnerWidth( this.cache.$fullWidthContainer ? this.cache.$fullWidthContainer : this.cache.$container);
-            this.coords.w_rs = result ? result : this.coords.w_rs;
-        },
-
-        //calc
-        calc: function (update) {
-            if (!this.options) return;
-
-            if (update) {
-                this.getCoords_w_rs();
-
-                this.calcHandleWidth();
-
-                this.coords.w_container = this.getInnerWidth(this.cache.$container);
-                this.coords.w_outerContainer = this.getInnerWidth(this.cache.$outerContainer);
-
-            }
-            if (!this.coords.w_rs) return;
-
+            this.coords.x_gap = pxToRem(this.cache.$bs.offset().left);
+            this.coords.x_pointer = pxToRem(x) - this.coords.x_gap;
             this.calcPointer();
 
-            this.coords.p_handle = this.toFixed(this.coords.w_handle / this.coords.w_rs * 100);
-            var real_width = 100 - this.coords.p_handle,
-                real_x     = this.toFixed(this.coords.p_pointer     - this.coords.p_gap),
-                real_x_raw = this.toFixed(this.coords.p_pointer_raw - this.coords.p_gap);
 
-            if (this.target === "click") {
-                real_x = this.toFixed(this.coords.p_pointer - (this.coords.p_handle / 2));
-                this.target = this.chooseHandle(real_x);
+
+            //Save the initial different between the handle left-position and the mouse-position
+            this.coords.mouseOffsetP = this.coords.p_pointer - this.values[target].percent;
+
+            switch (target) {
+                case "single":
+                    if (this.options.fixed_handle)
+                        //Save initial mouse position to calc reverse mouse movment
+                        this.coords.x_start = x;
+                    break;
+
+                case "from":
+                    this.handles.$from.addClass("state_hover type_last");
+                    this.handles.$to.removeClass("type_last");
+                    break;
+
+                case "to":
+                    this.handles.$to.addClass("state_hover type_last");
+                    this.handles.$from.removeClass("type_last");
+                    break;
             }
 
-            if (real_x < 0)
-                real_x = 0;
-            else
-                if (real_x > real_width)
-                    real_x = real_width;
+            this.cache.$line.trigger("focus");
+        },
+
+        /*******************************************************************
+        handleOnMouseUp
+        *******************************************************************/
+        handleOnMouseUp: function (e) {
+//console.log('handleOnMouseUp');
+            if (!this.is_active || (this.current_plugin !== this.plugin_count))
+                return;
+
+            this.is_active = false;
+
+            if ($.contains(this.cache.$container[0], e.target) || this.dragging)
+                this.onFinish();
+
+            this.cache.$container.find(".state_hover").removeClass("state_hover");
+            this.force_redraw = true;
+            this.dragging = false;
+        },
+
+        /*******************************************************************
+        handleOnMouseMove
+        Called when a handle is moved/dragged
+        *******************************************************************/
+        handleOnMouseMove: function (e) {
+//console.log('handleOnMouseMove');
+            if (!this.dragging) return;
+
+            var x = getEventLeft(e);
+
+            if (this.options.fixed_handle)
+                //Convert direction of mouse moving
+                x = this.coords.x_start - (x - this.coords.x_start);
+
+            this.coords.x_pointer = pxToRem(x) - this.coords.x_gap;
+
+            this.calc();
+
+            this.drawHandles();
+        },
+
+
+        /*******************************************************************
+        sliderOnClick
+        Called when click/mouse-down on the slider (line and grid)
+        *******************************************************************/
+        sliderOnClick: function (target, e) {
+//console.log('sliderOnClick');
+            e.preventDefault();
+            if (e.button === 2) return;
+
+            this.current_plugin = this.plugin_count;
+            this.target = target;
+            this.is_click = true;
+            this.coords.x_gap = pxToRem(this.cache.$bs.offset().left);
+            this.coords.x_pointer = pxToRem( getEventLeft(e) ) - this.coords.x_gap;
+
+            this.force_redraw = true;
+            this.calc(true);
+            this.drawHandles();
+            this.cache.$line.trigger("focus");
+        },
+
+
+        /*******************************************************************
+        ********************************************************************
+        CALCULATIONS
+        ********************************************************************
+        *******************************************************************/
+
+        /*******************************************************************
+        getContainerWidthRem
+        *******************************************************************/
+        getContainerWidthRem: function(){
+            var result = innerWidthRem( this.cache.$container );
+            this.coords.containerWidthRem = result ? result : this.coords.containerWidthRem;
+        },
+
+        /*******************************************************************
+        calc
+        *******************************************************************/
+        calc: function (update) {
+            if (!this.options) return;
+            if (update) {
+                this.getContainerWidthRem();
+                if (this.options.fixed_handle)
+                    this.coords.outerContainerWidthRem = innerWidthRem(this.cache.$outerContainer);
+            }
+
+            if (!this.coords.containerWidthRem) return;
+
+            this.calcPointer();
+            var real_x = toFixed(this.coords.p_pointer - this.coords.mouseOffsetP);
+
+            if (this.target === "click") {
+                real_x = this.coords.p_pointer;
+                this.target = this.getNearestHandle(real_x);
+            }
+
+            real_x = adjustToMinMax( real_x, 0, 100 );
 
             switch (this.target) {
                 case "base":
-                    var w = (this.options.max - this.options.min) / 100,
-                    f = (this.result.from - this.options.min) / w,
-                    t = (this.result.to - this.options.min) / w;
-
-                    this.coords.p_single_real = this.toFixed(f);
-                    this.coords.p_from_real = this.toFixed(f);
-                    this.coords.p_to_real = this.toFixed(t);
-
-                    this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
-
-                    this.coords.p_single = this.toFixed(f - (this.coords.p_handle / 100 * f));
-                    this.coords.p_from = this.toFixed(f - (this.coords.p_handle / 100 * f));
-                    this.coords.p_to = this.toFixed(t - (this.coords.p_handle / 100 * t));
-
-                    if (this.options.has_pin){
-                        var r = (this.options.pin_value - this.options.min) / w,
-                            p_pin_value_real = this.checkDiapason(this.toFixed(r), this.options.from_min, this.options.from_max);
-                        this.coords.p_pin_value = this.toFixed(p_pin_value_real / 100 * real_width);
-                    }
+/*HER MANGLER
+                    if (this.options.has_pin)
+                        this.coords.p_pin_value =
+                            this.checkDiapason((this.options.pin_value - this.options.min) / w, this.options.min, this.options.max);
+*/
                     this.target = null;
 
                     break;
 
                 case "single":
-                    if (this.options.from_fixed) break;
-
-                    this.coords.p_single_real = this.calcWithStep((this.options.fixed_handle ? real_x_raw : real_x) / real_width * 100);
-                    //this.coords.p_single_real = this.checkDiapason(this.coords.p_single_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_single = this.toFixed(this.coords.p_single_real / 100 * real_width);
-
+                        this.values.single.setPercent( real_x );
                     break;
 
                 case "from":
-                    if (this.options.from_fixed)
-                        break;
-
-                    this.coords.p_from_real = this.calcWithStep(real_x / real_width * 100);
-                    if (this.coords.p_from_real > this.coords.p_to_real) {
-                        this.coords.p_from_real = this.coords.p_to_real;
-                    }
-                    this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_from_real = this.checkMinInterval(this.coords.p_from_real, this.coords.p_to_real, "from");
-                    this.coords.p_from_real = this.checkMaxInterval(this.coords.p_from_real, this.coords.p_to_real, "from");
-                    this.coords.p_from = this.toFixed(this.coords.p_from_real / 100 * real_width);
-
+                    this.values.from.setPercent( real_x );
                     break;
 
                 case "to":
-                    if (this.options.to_fixed)
-                        break;
-
-                    this.coords.p_to_real = this.calcWithStep(real_x / real_width * 100);
-                    if (this.coords.p_to_real < this.coords.p_from_real) {
-                        this.coords.p_to_real = this.coords.p_from_real;
-                    }
-                    this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
-                    this.coords.p_to_real = this.checkMinInterval(this.coords.p_to_real, this.coords.p_from_real, "to");
-                    this.coords.p_to_real = this.checkMaxInterval(this.coords.p_to_real, this.coords.p_from_real, "to");
-                    this.coords.p_to = this.toFixed(this.coords.p_to_real / 100 * real_width);
-                    break;
-
-                case "both":
-                    if (this.options.from_fixed || this.options.to_fixed) {
-                        break;
-                    }
-                    real_x = this.toFixed(real_x + (this.coords.p_handle * 0.1));
-
-                    this.coords.p_from_real = this.calcWithStep((real_x - this.coords.p_gap_left) / real_width * 100);
-                    this.coords.p_from_real = this.checkDiapason(this.coords.p_from_real, this.options.from_min, this.options.from_max);
-                    this.coords.p_from_real = this.checkMinInterval(this.coords.p_from_real, this.coords.p_to_real, "from");
-                    this.coords.p_from = this.toFixed(this.coords.p_from_real / 100 * real_width);
-
-                    this.coords.p_to_real = this.calcWithStep((real_x + this.coords.p_gap_right) / real_width * 100);
-                    this.coords.p_to_real = this.checkDiapason(this.coords.p_to_real, this.options.to_min, this.options.to_max);
-                    this.coords.p_to_real = this.checkMinInterval(this.coords.p_to_real, this.coords.p_from_real, "to");
-                    this.coords.p_to = this.toFixed(this.coords.p_to_real / 100 * real_width);
-
+                    this.values.to.setPercent( real_x );
                     break;
             }
 
             if (this.options.isSingle) {
-                this.coords.p_bar_x = 0;
-                this.coords.p_bar_w = this.coords.p_single + (this.coords.p_handle / 2);
+//HER                this.result.from_percent = this.coords.p_single;
+//HER                this.result.from = this.calcReal(this.coords.p_single);
 
-                this.result.from_percent = this.coords.p_single_real;
-                this.result.from = this.calcReal(this.coords.p_single_real);
-            } else {
-                this.coords.p_bar_x = this.toFixed(this.coords.p_from + (this.coords.p_handle / 2));
-                this.coords.p_bar_w = this.toFixed(this.coords.p_to - this.coords.p_from);
-
-                this.result.from_percent = this.coords.p_from_real;
-                this.result.from = this.calcReal(this.coords.p_from_real);
-                this.result.to_percent = this.coords.p_to_real;
-                this.result.to = this.calcReal(this.coords.p_to_real);
+/* HER TEST
+                this.result.value        = this.values.single.value;
+                this.result.valuePercent = this.values.single.percent;
+*/
             }
 
-            this.calcMinMax();
-            this.calcLabels();
+            else {
+//HER                this.result.from_percent = this.coords.p_from;
+//HER                this.result.from = this.calcReal(this.coords.p_from);
+//HER                this.result.to_percent = this.coords.p_to;
+//HER                this.result.to = this.calcReal(this.coords.p_to);
+//HER                this.result.from        = this.values.from.value;
+//HER                this.result.fromPercent = this.values.from.percent;
+//HER                this.result.to          = this.values.to.value;
+//HER                this.result.toPercent   = this.values.to.percent;
+            }
+            this.updateResult();// this.target );
 
         }, //end of calc()
 
-        //calcPointer
+        /*******************************************************************
+        calcPointer
+        *******************************************************************/
         calcPointer: function () {
-            if (!this.coords.w_rs) {
+            if (!this.coords.containerWidthRem) {
                 this.coords.p_pointer = 0;
                 return;
             }
-            var x_pointer_raw = isNaN(this.coords.x_pointer) ? 0 : this.coords.x_pointer;
-
-            if (this.coords.x_pointer < 0 || isNaN(this.coords.x_pointer)  )
-                this.coords.x_pointer = 0;
-            else
-                if (this.coords.x_pointer > this.coords.w_rs)
-                    this.coords.x_pointer = this.coords.w_rs;
-
-            this.coords.p_pointer     = this.toFixed(this.coords.x_pointer / this.coords.w_rs * 100);
-            this.coords.p_pointer_raw = this.toFixed(x_pointer_raw         / this.coords.w_rs * 100);
+            this.coords.x_pointer = adjustToMinMax(this.coords.x_pointer, 0, this.coords.containerWidthRem);
+            this.coords.p_pointer = toFixed(this.coords.x_pointer / this.coords.containerWidthRem * 100);
         },
 
-        //chooseHandle
-        chooseHandle: function (real_x) {
-            if (this.options.isSingle) {
+        /*******************************************************************
+        getNearestHandle
+        Return the name of the nearest handler given the position valueP
+        *******************************************************************/
+        getNearestHandle: function (percent) {
+            if (this.options.isSingle)
                 return "single";
-            } else {
-                var m_point = this.coords.p_from_real + ((this.coords.p_to_real - this.coords.p_from_real) / 2);
-                if (real_x >= m_point) {
-                    return "to";
-                } else {
-                    return "from";
-                }
-            }
+
+            //Return the handle nearest to the center between from- and to-handler
+            return percent >= 0.5*(this.values.from.percent + this.values.to.percent) ? "to" : "from";
         },
 
-        //calcMinMax
-        calcMinMax: function () {
-            if (!this.coords.w_rs) return;
 
-            this.labels.p_min = this.labels.w_min / this.coords.w_rs * 100;
-            this.labels.p_max = this.labels.w_max / this.coords.w_rs * 100;
-        },
+        /*******************************************************************
+        ********************************************************************
+        DRAWINGS
+        ********************************************************************
+        *******************************************************************/
 
-        //calcLabels
-        calcLabels: function () {
-            if (!this.coords.w_rs || !this.options.show_from_to) return;
-
-            if (this.options.isSingle) {
-                this.labels.w_single = this.getOuterWidth(this.cache.$single);
-                this.labels.p_single = this.labels.w_single / this.coords.w_rs * 100;
-                this.labels.p_single_left = this.coords.p_single + (this.coords.p_handle / 2) - (this.labels.p_single / 2);
-                if (!this.options.fixed_handle)
-                    this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
-
-            }
-            else {
-                this.labels.w_from = this.getOuterWidth(this.cache.$from);
-                this.labels.p_from = this.labels.w_from / this.coords.w_rs * 100;
-                this.labels.p_from_left = this.coords.p_from + (this.coords.p_handle / 2) - (this.labels.p_from / 2);
-                this.labels.p_from_left = this.toFixed(this.labels.p_from_left);
-                this.labels.p_from_left = this.checkEdges(this.labels.p_from_left, this.labels.p_from);
-
-                this.labels.w_to = this.getOuterWidth(this.cache.$to);
-                this.labels.p_to = this.labels.w_to / this.coords.w_rs * 100;
-                this.labels.p_to_left = this.coords.p_to + (this.coords.p_handle / 2) - (this.labels.p_to / 2);
-                this.labels.p_to_left = this.toFixed(this.labels.p_to_left);
-                this.labels.p_to_left = this.checkEdges(this.labels.p_to_left, this.labels.p_to);
-
-                this.labels.w_single = this.getOuterWidth(this.cache.$single);
-                this.labels.p_single = this.labels.w_single / this.coords.w_rs * 100;
-                this.labels.p_single_left = ((this.labels.p_from_left + this.labels.p_to_left + this.labels.p_to) / 2) - (this.labels.p_single / 2);
-                this.labels.p_single_left = this.toFixed(this.labels.p_single_left);
-                this.labels.p_single_left = this.checkEdges(this.labels.p_single_left, this.labels.p_single);
-
-            }
-        },
-
-        // =============================================================================================================
-        // Drawings
-
-
-        //drawHandles
+        /*******************************************************************
+        drawHandles
+        *******************************************************************/
         drawHandles: function () {
-
+            //***********************************************
             function setLeftAndWidth( $elem, left, width ){
                 if (!$elem) return;
                 var css = {};
                 if (left !== null)
-                    css.left = left + (left ? '%' : '');
-                if (width !== null)
-                    css.width = width + (width ? '%' : '');
+                    css.left = toFixed(left) + (left ? '%' : '');
+                if (width)// !== null)
+                    css.width = toFixed(width) + (width ? '%' : '');
                 $elem.css( css );
             }
+            //***********************************************
+//HER console.log('drawHandles', this.force_redraw );
 
-            this.getCoords_w_rs();
+            this.getContainerWidthRem();
+            if (!this.coords.containerWidthRem) return;
 
-            if (!this.coords.w_rs) return;
-
-            if (this.coords.w_rs !== this.coords.w_rs_old) {
+            if (this.coords.containerWidthRem !== this.coords.old_containerWidthRem) {
                 this.target = "base";
                 this.is_resize = true;
             }
 
-            if (this.coords.w_rs !== this.coords.w_rs_old || this.force_redraw) {
-                this.setMinMax();
+            if (this.coords.containerWidthRem !== this.coords.old_containerWidthRem || this.force_redraw) {
+                this.setMinMaxMarkers();
                 this.calc(true);
-                this.drawLabels();
-                if (this.options.grid)
-                    this.calcGridMargin();
                 this.force_redraw = true;
-                this.coords.w_rs_old = this.coords.w_rs;
+                this.coords.old_containerWidthRem = this.coords.containerWidthRem;
             }
 
-            if (!this.coords.w_rs) return;
+            if (!this.coords.containerWidthRem) return;
 
             if (!this.dragging && !this.force_redraw && !this.is_key) return;
 
-            if (this.old_from !== this.result.from || this.old_to !== this.result.to || this.force_redraw || this.is_key) {
-                this.drawLabels();
-                setLeftAndWidth( this.cache.$bar, this.coords.p_bar_x, this.coords.p_bar_w );
 
-                if (this.options.has_pin)
-                    this.cache.$s_pin
-                        .css({
-                            "left" : this.coords.p_pin_value + "%",
-                            "color": this.options.pin_color
-                        })
-                        .addClass( this.options.pin_icon );
 
-                if (this.options.isSingle) {
-                    setLeftAndWidth( this.cache.$s_single, this.coords.p_single );
-                    setLeftAndWidth( this.cache.$single, this.labels.p_single_left );
-
-                    if (this.options.fixed_handle)
-                        //Keep the handle centered in in container
-                        this.cache.$container.css('left', - this.coords.w_container*this.coords.p_single/100
-                                                          + 0.5*this.coords.w_outerContainer + 'rem' );
-                }
-                else {
-                    setLeftAndWidth( this.cache.$s_from, this.coords.p_from );
-                    setLeftAndWidth( this.cache.$s_to, this.coords.p_to );
-                    setLeftAndWidth( this.cache.$lineLeft, 0, this.coords.p_bar_x );
-                    if (this.old_from !== this.result.from || this.force_redraw)
-                        setLeftAndWidth( this.cache.$from, this.labels.p_from_left );
-                    if (this.old_to !== this.result.to || this.force_redraw)
-                        setLeftAndWidth( this.cache.$to, this.labels.p_to_left );
-                    setLeftAndWidth( this.cache.$single, this.labels.p_single_left );
-                }
-
-                if ((this.old_from !== this.result.from || this.old_to !== this.result.to) && !this.is_start)
-                    this.cache.$input.trigger("change");
-
-                this.old_from = this.result.from;
-                this.old_to = this.result.to;
-
-                if (!this.is_resize && !this.is_update && !this.is_start)
-                    this.onChange();
-
-                if (this.is_key || this.is_click)
-                    this.onFinish();
-
-                this.is_update = false;
-                this.is_resize = false;
+            /*****************************************************
+            Adjust left-position and width of all lineColor-elements (if any)
+            *****************************************************/
+            if (this.options.isSingle) {
+                var singlePercent = this.values.single.getPercent();
+                setLeftAndWidth( this.cache.$leftLineColor,  null, singlePercent );
+                setLeftAndWidth( this.cache.$rightLineColor, singlePercent, 100 - singlePercent );
+            }
+            else {
+                var fromPercent = this.values.from.getPercent(),
+                    toPercent   = this.values.to.getPercent();
+                setLeftAndWidth( this.cache.$leftLineColor,   null,        fromPercent             );
+                setLeftAndWidth( this.cache.$centerLineColor, fromPercent, toPercent - fromPercent );
+                setLeftAndWidth( this.cache.$rightLineColor,  toPercent,   100 - toPercent         );
             }
 
+            /*****************************************************
+            Set position, color and class of pin (if any)
+            *****************************************************/
+/* HER MANGLER
+            if (this.options.has_pin)
+                this.cache.$s_pin
+                    .css({
+                        "left" : toFixed(this.coords.p_pin_value) + "%",
+                        "color": this.options.pin_color
+                    })
+                    .addClass( this.options.pin_icon );
+*/
+            /*****************************************************
+            Set position of handles
+            *****************************************************/
+            if (this.options.isSingle) {
+                setLeftAndWidth( this.handles.$single, this.values.single.getPercent() );
+                if (this.options.fixed_handle){
+                    //Keep the handle centered in container
+                    var containerLeft =
+                        -1.0 * this.coords.containerWidthRem * this.values.single.percent/100 +
+                         0.5 * this.coords.outerContainerWidthRem;
+                    this.cache.$container.css('left', toFixed(containerLeft) + 'rem');
+                }
+            }
+            else {
+                setLeftAndWidth( this.handles.$from, this.values.from.getPercent() );
+                setLeftAndWidth( this.handles.$to,   this.values.to.getPercent()   );
+            }
+            /*****************************************************
+            Update contents and position of markers
+            *****************************************************/
+            if (this.options.isSingle) {
+                //Update content and position of single-marker
+                this.setMarkerTextAndLeft( 'single' );
+
+                if (this.options.show_min_max){
+                    //Hide min- and/or max-marker if they are overlapped by single-marker
+                    this.setMarkerHidden( 'handleMin', this.markersOverlapping('handleMin', 'single') );
+                    this.setMarkerHidden( 'handleMax', this.markersOverlapping('handleMax', 'single') );
+                }
+            }
+            else {
+                //Update content and posiiton of single-marker.
+                //options.decorate_both set if both from-value and to-value is decorated individual
+                var fromValue = this.values.from.value,
+                    toValue   = this.values.to.value;
+                if (fromValue == toValue)
+                    this.setMarkerText( 'single' ); //HER, this.decorate(this._prettify(this.result.from)) );
+                else
+                    this.setMarkerText( 'single',
+                        this.options.decorate_both
+                            ? this.decorate(this._prettify(fromValue)) + this.options.values_separator + this.decorate(this._prettify(toValue))
+                            : this.decorate( this._prettify(fromValue) + this.options.values_separator + this._prettify(toValue) )
+                    )
+
+                this.setMarkerLeft('single', ( this.values.from.getPercent() + this.values.to.getPercent() )/2 );
+
+                //Update content of from- and to-marker
+                this.setMarkerTextAndLeft('from' );
+                this.setMarkerTextAndLeft('to' );
+
+                //If from- and to-marker is overlapping => show single-marker instead
+                var fromAndToOverlapping = this.markersOverlapping('from', 'to');
+                this.setMarkerHidden( 'from',    fromAndToOverlapping );
+                this.setMarkerHidden( 'to',      fromAndToOverlapping );
+                this.setMarkerHidden( 'single', !fromAndToOverlapping );
+
+                if (this.options.show_min_max){
+                    //Hide min- and/or max-marker if they are overlapped by the visible marker(s)
+                    this.setMarkerHidden( 'handleMin', this.markersOverlapping('handleMin', fromAndToOverlapping ? 'single' : 'from') );
+                    this.setMarkerHidden( 'handleMax', this.markersOverlapping('handleMax', fromAndToOverlapping ? 'single' : 'to'  ) );
+                }
+            }
+
+            /*****************************************************
+            Callback and reset
+            *****************************************************/
+            if (!this.is_resize && !this.is_update && !this.is_start)
+                this.onChange();
+
+            if (this.is_key || this.is_click)
+                this.onFinish();
+
+            this.is_update = false;
+            this.is_resize = false;
             this.is_start = false;
             this.is_key = false;
             this.is_click = false;
             this.force_redraw = false;
         },
 
-        //drawLabels
-        drawLabels: function () {
-            if (!this.options || this.options.s_from_to) return;
 
-            var text_single, text_from, text_to;
+        /*******************************************************************
+        ********************************************************************
+        SERVICE METHODS
+        ********************************************************************
+        *******************************************************************/
 
-            if (this.options.isSingle) {
-
-                text_single = this.decorate(this._prettify(this.result.from), this.result.from);
-                this.cache.$single.html(text_single);
-
-                this.calcLabels();
-
-                if (this.options.show_min_max){
-                    this.cache.$min.toggle( this.labels.p_single_left >= this.labels.p_min + 1 );
-                    this.cache.$max.toggle( this.labels.p_single_left + this.labels.p_single <= 100 - this.labels.p_max - 1 );
-                }
-
-            }
-            else {
-
-                if (this.options.decorate_both) {
-                    text_single = this.decorate(this._prettify(this.result.from));
-                    text_single += this.options.values_separator;
-                    text_single += this.decorate(this._prettify(this.result.to));
-                } else {
-                    text_single = this.decorate(this._prettify(this.result.from) + this.options.values_separator + this._prettify(this.result.to), this.result.from);
-                }
-                text_from = this.decorate(this._prettify(this.result.from), this.result.from);
-                text_to = this.decorate(this._prettify(this.result.to), this.result.to);
-
-                this.cache.$single.html(text_single);
-                this.cache.$from.html(text_from);
-                this.cache.$to.html(text_to);
-
-                this.calcLabels();
-
-                var min = Math.min(this.labels.p_single_left, this.labels.p_from_left),
-                single_left = this.labels.p_single_left + this.labels.p_single,
-                to_left = this.labels.p_to_left + this.labels.p_to,
-                max = Math.max(single_left, to_left);
-
-                if (this.labels.p_from_left + this.labels.p_from >= this.labels.p_to_left) {
-                    this.cache.$from.css('visibility', 'hidden');
-                    this.cache.$to.css('visibility', 'hidden');
-                    this.cache.$single.css('visibility', 'visible');
-
-                    if (this.result.from === this.result.to) {
-                        this.cache.$from.css('visibility', 'visible');
-                        this.cache.$single.css('visibility', 'hidden');
-                        max = to_left;
-                    } else {
-                        this.cache.$from.css('visibility', 'hidden');
-                        this.cache.$single.css('visibility', 'visible');
-                        max = Math.max(single_left, to_left);
-                    }
-                } else {
-                    this.cache.$from.css('visibility', 'visible');
-                    this.cache.$to.css('visibility', 'visible');
-                    this.cache.$single.css('visibility', 'hidden');
-                }
-
-                if (this.options.show_min_max){
-                    this.cache.$min.toggle( min >= this.labels.p_min + 1 );
-                    this.cache.$max.toggle( max <= 100 - this.labels.p_max - 1 );
-                }
-            }
-        }, //end of drawLabels
-
-
-        // =============================================================================================================
-        // Service methods
-
-        //toggleInput
+        /*******************************************************************
+        toggleInput
+        *******************************************************************/
         toggleInput: function () {
             this.cache.$input.toggleClass("hidden-input");
         },
 
-        //calcPercent
+        /*******************************************************************
+        calcPercent
+        *******************************************************************/
         calcPercent: function (num) {
-            var w = (this.options.max - this.options.min) / 100,
-            percent = (num - this.options.min) / w;
-
-            return this.toFixed(percent);
+            return toFixed( 100 * (num - this.options.min) / (this.options.max - this.options.min) );
         },
 
-        //calcReal
+        /*******************************************************************
+        calcReal
+        *******************************************************************/
         calcReal: function (percent) {
             var min = this.options.min,
-            max = this.options.max,
-            abs = 0;
+                max = this.options.max,
+                abs = 0;
 
             if (min < 0) {
                 abs = Math.abs(min);
@@ -1474,211 +1759,49 @@
             if (string)
                 return +number.toFixed(string.length);
             else
-                return this.toFixed(number);
+                return toFixed(number);
         },
 
-        //calcWithStep
-        calcWithStep: function (percent) {
-            var rounded = Math.round((percent - this.coords.p_step_offset) / this.coords.p_step) * this.coords.p_step + this.coords.p_step_offset;
 
-            if (rounded < this.coords.p_min) rounded = this.coords.p_min;
-            if (rounded > 100)               rounded = 100;
-            if (percent === 100)             rounded = 100;
-            if (rounded > this.coords.p_max) rounded = this.coords.p_max;
-            return this.toFixed(rounded);
-        },
-
-        //checkMinInterval
-        checkMinInterval: function (p_current, p_next, type) {
-            var o = this.options,
-            current,
-            next;
-
-            if (!o.min_interval)
-                return p_current;
-
-            current = this.calcReal(p_current);
-            next = this.calcReal(p_next);
-
-            if (type === "from") {
-                if (next - current < o.min_interval)
-                    current = next - o.min_interval;
-            }
-            else
-                if (current - next < o.min_interval)
-                    current = next + o.min_interval;
-
-            return this.calcPercent(current);
-        },
-
-        //checkMaxInterval
-        checkMaxInterval: function (p_current, p_next, type) {
-            var o = this.options,
-            current,
-            next;
-
-            if (!o.max_interval)
-                return p_current;
-
-            current = this.calcReal(p_current);
-            next = this.calcReal(p_next);
-
-            if (type === "from") {
-                if (next - current > o.max_interval)
-                    current = next - o.max_interval;
-            }
-            else
-                if (current - next > o.max_interval)
-                    current = next + o.max_interval;
-
-            return this.calcPercent(current);
-        },
-
-        //checkDiapason
-        checkDiapason: function (p_num, min, max) {
-            var num = this.calcReal(p_num),
-            o = this.options;
-
-            if (!min || typeof min !== "number") { min = o.min; }
-            if (!max || typeof max !== "number") { max = o.max; }
-            if (num < min) { num = min; }
-            if (num > max) { num = max; }
-
-            return this.calcPercent(num);
-        },
-
-        //toFixed
-        toFixed: function (num) {
-            num = num.toFixed(5);
-            return +num;
-        },
-
-        //_prettify
+        /*******************************************************************
+        _prettify
+        *******************************************************************/
         _prettify: function (num) {
-            return (this.options.prettify && typeof this.options.prettify === "function") ? this.options.prettify(num) : num;
+            return $.isFunction(this.options.prettify) ? this.options.prettify(num) : num;
         },
 
-        //_prettify_text
-        _prettify_text: function (num) {
-            return (this.options.prettify_text && typeof this.options.prettify_text === "function") ? this.options.prettify_text(num) : num;
+        /*******************************************************************
+        _prettify_text
+        *******************************************************************/
+        _prettify_text: function (text) {
+            return $.isFunction(this.options.prettify_text) ? this.options.prettify_text(text) : text;
         },
 
-        //checkEdges
-        checkEdges: function (left, width) {
-            if (left < 0)
-                left = 0;
-            else
-                if (left > 100 - width)
-                    left = 100 - width;
-            return this.toFixed(left);
-        },
-
-        //validate
-        validate: function () {
-            var o = this.options,
-            r = this.result;
-
-            if (typeof o.min === "string") o.min = +o.min;
-            if (typeof o.max === "string") o.max = +o.max;
-            if (typeof o.from === "string") o.from = +o.from;
-            if (typeof o.to === "string") o.to = +o.to;
-            if (typeof o.step === "string") o.step = +o.step;
-
-            if (typeof o.from_min === "string") o.from_min = +o.from_min;
-            if (typeof o.from_max === "string") o.from_max = +o.from_max;
-            if (typeof o.to_min === "string") o.to_min = +o.to_min;
-            if (typeof o.to_max === "string") o.to_max = +o.to_max;
-
-            if (o.max <= o.min) {
-                if (o.min)
-                    o.max = o.min * 2;
-                else
-                    o.max = o.min + 1;
-                o.step = 1;
-            }
-
-            if (typeof o.from !== "number" || isNaN(o.from)) { o.from = o.min; }
-            if (typeof o.to !== "number" || isNaN(o.from)) { o.to = o.max; }
-            if (o.from < o.min || o.from > o.max) { o.from = o.min; }
-            if (o.to > o.max || o.to < o.min) { o.to = o.max; }
-            if (o.type === "double" && o.from > o.to) { o.from = o.to; }
-            if (typeof o.step !== "number" || isNaN(o.step) || !o.step || o.step < 0) { o.step = 1; }
-            if (o.from_min && o.from < o.from_min) { o.from = o.from_min; }
-            if (o.from_max && o.from > o.from_max) { o.from = o.from_max; }
-            if (o.to_min && o.to < o.to_min) { o.to = o.to_min; }
-            if (o.to_max && o.from > o.to_max) { o.to = o.to_max; }
-            if (r) {
-                if (r.min !== o.min) r.min = o.min;
-                if (r.max !== o.max) r.max = o.max;
-                if (r.from < r.min || r.from > r.max) r.from = o.from;
-                if (r.to < r.min || r.to > r.max) r.to = o.to;
-            }
-            if (typeof o.min_interval !== "number" || isNaN(o.min_interval) || !o.min_interval || o.min_interval < 0) o.min_interval = 0;
-            if (typeof o.max_interval !== "number" || isNaN(o.max_interval) || !o.max_interval || o.max_interval < 0) o.max_interval = 0;
-            if (o.min_interval && o.min_interval > o.max - o.min) o.min_interval = o.max - o.min;
-            if (o.max_interval && o.max_interval > o.max - o.min) o.max_interval = o.max - o.min;
-
-        }, //end of validate
-
-
-        //decorate
-        decorate: function (num, original) {
-            var decorated = "",
-            o = this.options;
-
-            if (o.prefix) {
-                decorated += o.prefix;
-            }
-
-            decorated += num;
-
-            if (o.max_postfix) {
-                if (original === o.max) {
-                    decorated += o.max_postfix;
-                    if (o.postfix) {
-                        decorated += " ";
-                    }
-                }
-            }
-
-            if (o.postfix) {
-                decorated += o.postfix;
-            }
-
-            return decorated;
-        },
-
-        //updateFrom
-        updateFrom: function () {
-            this.result.from = this.options.from;
-            this.result.from_percent = this.calcPercent(this.result.from);
-        },
-
-        //updateTo
-        updateTo: function () {
-            this.result.to = this.options.to;
-            this.result.to_percent = this.calcPercent(this.result.to);
-        },
-
-        //updateResult
-        updateResult: function () {
-            this.result.min = this.options.min;
-            this.result.max = this.options.max;
-            this.updateFrom();
-            this.updateTo();
+        /*******************************************************************
+        decorate
+        *******************************************************************/
+        decorate: function ( content ) {
+            return this.options.prefix + content + this.options.postfix;
         },
 
 
-        // =============================================================================================================
-        // Grid - use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
+        /*******************************************************************
+        ********************************************************************
+        GRID
+        Use appendGridContainer to create new grids. Use addGridText(text, left[, value]) to add a grid-text
+        ********************************************************************
+        *******************************************************************/
 
+        /*******************************************************************
+        appendGridContainer
+        *******************************************************************/
         appendGridContainer: function(){
-            this.getCoords_w_rs();
+            this.getContainerWidthRem();
             if (this.$currentGridContainer){
                 this.totalGridContainerTop += this.$currentGridContainer.height();
                 this.$currentGridContainer =
                     $('<span class="grid"></span>').insertAfter( this.$currentGridContainer );
-                this.$currentGridContainer.css('top', this.pxToRem( this.totalGridContainerTop, true) );
+                this.$currentGridContainer.css('top', pxToRem( this.totalGridContainerTop, true) );
             }
             else {
                 this.$currentGridContainer = this.cache.$grid;
@@ -1689,14 +1812,17 @@
         },
 
 
-        //appendTick
+        /*******************************************************************
+        appendTick
+        *******************************************************************/
         appendTick: function( left, options ){
             if (!this.$currentGridContainer) return;
 
             options = $.extend( {minor: false, color: ''}, options );
 
             var result = document.createElement("span");
-            result.className = "grid-pol" + (options.minor ? ' minor' : '');
+//            result.className = "grid-pol" + (options.minor ? ' minor' : '');
+            result.className = "grid-pol" + (options.minor ? '' : ' major');
             result.style.left = left + '%';
 
             if (options.color)
@@ -1707,28 +1833,31 @@
 
         },
 
-        //_valueToText
+        /*******************************************************************
+        _valueToText
+        *******************************************************************/
         _valueToText: function( value ){
             var result = this._prettify_text( value );
-            if (this.options.decorate_text)
-              result = (this.options.prefix ? this.options.prefix : '') +
-                       result +
-                       (this.options.postfix ? this.options.postfix : '');
-            return result;
+            return this.options.decorate_text ? this.decorate(result) : result;
         },
 
-        //appendText
+        /*******************************************************************
+        appendText
+        *******************************************************************/
         appendText: function( left, value, options ){
             if (!this.$currentGridContainer) return;
 
             options = $.extend( {color: ''}, options );
 
             var text = this._valueToText( value ),
-                result = document.createElement("span"),
+                outer = document.createElement("div"),
+                result = document.createElement("div"),
                 className = 'grid-text';
 
-            result.textContent = text;
-            result.style.left  = 'calc('+left+'% - ' + this.getDecorateTextWidth( text, options, .5, true ) + 'rem)'; //Center the label
+            outer.className = 'grid-text-outer';
+            outer.style.width = this.options.majorTickDistanceRem +'rem';
+            outer.style.left  = left+'%';
+            outer.appendChild(result);
 
             if (options.minor)
                 className += ' minor';
@@ -1737,16 +1866,27 @@
             if (options.color)
                 result.style.color = options.color;
 
+            //Create inner-span with the text
+            var inner = document.createElement("span"),
+                innerClassName = 'grid-text-inner';
+            inner.textContent = text;
+
             if (this.options.textColorRec[value]){
                 var textOptions = this.options.textColorRec[value];
-                className += ' frame';
+
+                innerClassName += ' frame';
                 if (textOptions.className)
-                    className += ' '+textOptions.className;
+                    innerClassName += ' '+textOptions.className;
                 if (textOptions.color)
-                    result.style.color = textOptions.color;
+                    inner.style.color = textOptions.color;
                 if (textOptions.backgroundColor)
-                    result.style.backgroundColor = textOptions.backgroundColor;
+                    inner.style.backgroundColor = textOptions.backgroundColor;
             }
+
+            inner.className = innerClassName;
+            result.appendChild(inner);
+
+
 
 
             if (options.clickable){
@@ -1759,18 +1899,21 @@
             if (options.clickable && !this.options.disable && !this.options.read_only){
                 value = options.click_value !== undefined ? options.click_value : value;
 
-                result.setAttribute('data-base-slider-value', value);
+                outer.setAttribute('data-base-slider-value', value);
                 result.addEventListener('click', $.proxy( this.textClick, this ));
                 className += ' clickable';
             }
 
             result.className = className;
-            this.currentGridContainer.appendChild( result );
+            this.currentGridContainer.appendChild( outer );
             return result;
         },
 
 
-        //getTextWidth - get width of value as text OR max width of all values in array of value
+        /*******************************************************************
+        getTextWidth
+        Get width of value as text OR max width of all values in array of value
+        *******************************************************************/
         getTextWidth: function( value, options ){
             var _this = this;
             if ($.isArray( value )){
@@ -1784,6 +1927,9 @@
                 return this.getDecorateTextWidth( this._valueToText( value ) , options );
         },
 
+        /*******************************************************************
+        getDecorateTextWidth
+        *******************************************************************/
         getDecorateTextWidth: function( html, options, factor, floor ){
             var newClassName = 'grid-text';
             if (options){
@@ -1802,29 +1948,33 @@
             if (floor)
                 result = Math.floor(result);
 
-            return this.pxToRem( result );
+            return pxToRem( result );
         },
 
 
-        //appendGrid
+        /*******************************************************************
+        appendGrid
+        *******************************************************************/
         appendGrid: function () {
             if (!this.options.grid) return;
             this.appendStandardGrid();
         },
 
-        //appendStandardGrid - simple call _appendStandardGrid. Can be overwriten in decending classes
+        /*******************************************************************
+        appendStandardGrid
+        Simple call _appendStandardGrid. Can be overwriten in decending classes
+        *******************************************************************/
         appendStandardGrid: function ( textOptions ) {
             this._appendStandardGrid( textOptions );
         },
 
 
-        //preAppendGrid and postAppendGrid - must be called as first and last when creating a grid - used if a new appendStandardGrid is used
-
+        /*******************************************************************
+        preAppendGrid and postAppendGrid
+        must be called as first and last when creating a grid - used if a new appendStandardGrid is used
+        *******************************************************************/
         preAppendGrid: function(){
             this.appendGridContainer();
-
-            this.calcGridMargin();
-
             //The DOM-version of this.$currentGridContainer
             this.currentGridContainer = this.$currentGridContainer.get(0);
 
@@ -1843,12 +1993,14 @@
             this.$currentGridContainerMarker.remove();
         },
 
-        //_appendStandardGrid
+        /*******************************************************************
+        _appendStandardGrid
+        *******************************************************************/
         _appendStandardGrid: function ( textOptions, tickOptions ) {
             this.preAppendGrid();
 
             var o = this.options,
-                gridContainerWidth = this.getOuterWidth(this.cache.$grid),
+                gridContainerWidth = outerWidthRem(this.cache.$grid),
                 gridDistanceIndex = 0,
                 value = o.min,
                 maxTextWidth = 0,
@@ -1863,7 +2015,7 @@
 
 
             //Increse grid-distance until the space between two ticks are more than 4px
-            while ( (o.stepRem*o.gridDistanceStep) <= this.pxToRem(4)){
+            while ( (o.stepRem*o.gridDistanceStep) <= pxToRem(4)){
                 gridDistanceIndex++;
                 if (gridDistanceIndex < o.gridDistances.length)
                   o.gridDistanceStep = o.gridDistances[gridDistanceIndex];
@@ -1873,22 +2025,21 @@
             o.tickDistanceNum = o.gridDistanceStep*o.step;    //The numerical distance between each ticks
             o.tickDistanceRem = o.gridDistanceStep*o.stepRem; //The rem distance between each ticks
 
+            //Find widest text/label
+            value = o.min;
+            var valueList = [];
+            while (value <= o.max){
+                //if value corrected by o.major_ticks_offset and o.major_ticks_factor is a DIV of the tick distance => calculate the width of the tick
+                if ((value - o.major_ticks_offset)*o.major_ticks_factor % o.tickDistanceNum === 0)
+                    valueList.push( value );
+                value += 1;
+            }
+            maxTextWidth = this.getTextWidth( valueList ) + pxToRem(6); //Adding min space between text/labels
+
 
             var _major_ticks = o.major_ticks;
             if (!_major_ticks){
-              //Calculate automatic distances between major ticks
-
-                //Find widest text/label
-                value = o.min;
-                var valueList = [];
-                while (value <= o.max){
-                    //if value corrected by o.major_ticks_offset and o.major_ticks_factor is a DIV of the tick distance => calculate the width of the tick
-                    if ((value - o.major_ticks_offset)*o.major_ticks_factor % o.tickDistanceNum === 0)
-                        valueList.push( value );
-                    value += 1;
-                }
-                maxTextWidth = this.getTextWidth( valueList ) + this.pxToRem(6); //Adding min space between text/labels
-
+                //Calculate automatic distances between major ticks
                 //Find ticks between each major tick
                 gridDistanceIndex = 0;
                 _major_ticks = o.gridDistances[gridDistanceIndex];
@@ -1902,6 +2053,7 @@
             }
 
             o.majorTickDistanceNum = o.tickDistanceNum*_major_ticks;
+            o.majorTickDistanceRem = o.tickDistanceRem*_major_ticks;
 
             //Add all the minor and major ticks
             value = o.min;
@@ -1928,7 +2080,9 @@
             this.postAppendGrid();
         },
 
-        //addGridColor
+        /*******************************************************************
+        addGridColor
+        *******************************************************************/
         appendGridColors: function( gridColors ){
             var fromValue,
                 toValue  = this.options.min,
@@ -1937,16 +2091,12 @@
                 percentFactor = 100 / (this.options.max - this.options.min);
 
 
-
-
             for (i=0; i<gridColors.length; i++ ){
                 gridColor = gridColors[i];
                 if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) ){
                     //add triangle to the left or right
                     var $span = $('<span/>')
-                                    .addClass( 'grid-color _fa')
-                                    //.addClass( gridColor.value > this.options.max ? 'fa-caret-right gt_max' : '_fa-caret-left lt_min')
-//                                    .css('color', gridColor.color)
+                                    .addClass( 'grid-color')
                                     .appendTo( this.$currentGridContainer );
                     if (gridColor.value > this.options.max)
                         $span
@@ -1973,64 +2123,49 @@
             }
         },
 
-        //calcHandleWidth - Get the width of the drawing handle but round down to even number to ensure correct placement of the handle
-        calcHandleWidth: function(){
-            var $handle  = this.options.isSingle ? this.cache.$s_single : this.cache.$s_from,
-                widthPx  = $handle.outerWidth(false),
-                widthRem = this.pxToRem( 2*Math.floor(widthPx/2) ); //Round down the width to even number to assure that width/2 is a hole number
 
-            if (this.options.isSingle)
-                this.coords.w_handle = widthRem;
-            else
-                this.coords.w_handle = widthRem;
-        },
+        /*******************************************************************
+        ********************************************************************
+        PUBLIC METHODS
+        ********************************************************************
+        *******************************************************************/
 
-        //calcGridMargin
-        calcGridMargin: function () {
-            this.getCoords_w_rs();
-            if (!this.coords.w_rs) return;
-
-            this.calcHandleWidth();
-
-            this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
-
-            this.cache.$grid.css({
-                'width': this.toFixed(100 - this.coords.p_handle) + "%",
-                'left' : this.toFixed(this.coords.w_handle / 2 ) + "rem"
-            });
-        },
-
-
-        // =============================================================================================================
-        // Public methods
-
-        //update
+        /*******************************************************************
+        update
+        *******************************************************************/
         update: function (options) {
+
             if (!this.input) return;
 
             this.is_update = true;
 
-            this.options.from = this.result.from;
-            this.options.to = this.result.to;
+            //Save result in options
+            this.updateResult();
+            this.options.value = this.result.value;
+            this.options.from  = this.result.from;
+            this.options.to    = this.result.to;
+
 
             this.options = $.extend(this.options, options);
-            this.validate();
-            this.updateResult();
 
             this.toggleInput();
             this.remove();
-            this.init(true);
+            this.init();
+
+            this.onUpdate();
         },
 
-        //reset
+        /*******************************************************************
+        reset
+        *******************************************************************/
         reset: function () {
             if (!this.input) return;
-
-            this.updateResult();
             this.update();
         },
 
-        //destroy
+        /*******************************************************************
+        destroy
+        *******************************************************************/
         destroy: function () {
             if (!this.input) return;
 

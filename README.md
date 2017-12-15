@@ -22,7 +22,7 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `fixed_handle` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.value_distances` must be provided | 
 | `clickable` | `true` | `boolean` | Allows click on lables and line. Default = `true` except for `fixed_handle:true` where default = `false` | 
-| `mousewheel` | `false` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
+| `mousewheel` | `true` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
 
 
 ### Dimensions (only for `options.fixed_handle: true`)
@@ -66,8 +66,13 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 ### Slide-line
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `impact_line` | `false` | `boolean` | The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red | 
-| `impact_line_reverse` | `false` | `boolean` | The line on a double slider is colored as<br>red-[slider]-yellow-[slider]-green | 
+| `lineColor` | `#428BCA` | `string` or `hex`  | The color of the line left of the slider (single) or between the two sliders (double) |
+| `lineBackgroundColor` | `#d1d6e0` | `string` or `hex`  | The background color of the line | 
+| `showImpactLineColor` | `false` | `boolean` | The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red | 
+| `impactLineColors` | `{green: "green", yellow: "yellow", red: "red"}` | `{green,yellow,red}` | The line colors used when `showImpactLineColor: true` | 
+| `reverseImpactLineColor` | `false` | `boolean` | The line on a double slider is coloured as<br>red-[slider]-yellow-[slider]-green | 
+
+
 | `bar_color` | `null` | `string` | The color of the bar |
 | `show_bar_color` | `true` | `boolean` | The bar gets same color as the line | 
 
@@ -86,11 +91,11 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 
 
 
-### Labels above slider 
+### Markers above slider 
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `show_min_max` | `false` | `boolean` | Show min and max labels | 
-| `show_from_to` | `true` | `boolean` | Show from and to labels | 
+| `show_min_max` | `false` | `boolean` | Show min and max markers | 
+| `show_from_to` | `true` | `boolean` | Show from and to markers | 
 | `marker_frame` | `false` | `boolean` | Frame the from- and to-marker | 
 
 
@@ -101,7 +106,6 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | `prettify_text` | `null` | `function` | As `prettify` but for the text/labels in the grid. | 
 | `prefix` | `-` | `string` | Set prefix for values. Will be set up right before the number: $100 | 
 | `postfix` | `-` | `string` | Set postfix for values. Will be set up right after the number: 100k | 
-| `max_postfix` | `-` | `string` | Special postfix, used only for maximum value. Will be showed after handle will reach maximum right position. For example 0 - 100+ | 
 | `decorate_both` | `true` | `boolean` | Used for "double" type and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k | 
 | `decorate_text` | `false` | `boolean` | The text/labels in the grid also gets `prefix` and/or `postfix` | 
 | `values_separator` | `" - "` | `string` | Text between min and max value when labels are combined. values_separator:" to " => "12 to 24" |
@@ -110,9 +114,13 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 ### Callback
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `callback` | `null` | `function` | Is called when the `from` or `to` value are changed. | 
-| `callback_on_dragging` | `true` | `boolean` | If false the callback-function is only called when dragging the sliding is finish. | 
-| `callback_delay` | `500` | `number` | If `callback_on_dragging` is false the `callback` is called when the slider has been on the same tick for `callback_delay` milliseconds. Set to zero to avoid any callback before mouseup-event | 
+| `onStart` | `null` | `function` | Callback. Is called on slider start. | 
+| `onChange` | `null` | `function` | Callback. IS called on each values change. | 
+| `onFinish` | `null` | `function` | Callback. Is called when the user releases handle. | 
+| `onUpdate` | `null` | `function` | Callback. Is called than slider is modified by external methods `update` or `reset`. | 
+| `callback` | `null` | `function` | Callback. Is called when the value, from, or to  value are changed. | 
+| `callback_on_dragging` | `true` | `boolean` | If `false` `callback`-function is only called when dragging the sliding is finish. | 
+| `callback_delay` | `500` | `number` | If `callback_on_dragging` is false the ``callback`-function` is called when the slider has been on the same tick for `callback_delay` milliseconds. Set to zero to avoid any callback before mouseup-event | 
 
 
 ### Buttons
@@ -120,13 +128,6 @@ The demo shows the different effects of options `step`, `step_offset`, and `majo
 | :--: | :--: | :--: | :-- |
 | `buttons` | `null` | `JSON` | JSON-record with id or buttons for first, previous, (now,) next, and last value<br>`{from: {buttonList}, to: {buttonList}}<br>{buttonList}=<br>{<br>  firstBtn: element or string,<br>previousBtn: element or string,<br>nowBtn: element or string,<br>nextBtn: element or string,<br>lastBtn: element or string<br>}` | 
 
-### Methods
-| Option | Defaults | Type | Description |
-| :--: | :--: | :--: | :-- |
-| `onStart` | `null` | `function` | Callback. Is called on slider start. | 
-| `onChange` | `null` | `function` | Callback. IS called on each values change. | 
-| `onFinish` | `null` | `function` | Callback. Is called than user releases handle. | 
-| `onUpdate` | `null` | `function` | Callback. Is called than slider is modified by external methods `update` or `reset`. | 
 
 
 ## Methods
