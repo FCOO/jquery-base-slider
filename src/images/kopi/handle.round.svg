@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="70.75"
-   height="44"
+   width="70"
+   height="70"
    id="svg4136"
    version="1.1"
    inkscape:version="0.91 r13725"
-   viewBox="0 0 70.75 44"
-   sodipodi:docname="slider.left.hover.svg">
+   viewBox="0 0 70 70"
+   sodipodi:docname="slider.round.svg">
   <defs
      id="defs4138" />
   <sodipodi:namedview
@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.9497475"
-     inkscape:cx="-66.572029"
-     inkscape:cy="20.911938"
+     inkscape:cx="44.121148"
+     inkscape:cy="29.831261"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -59,8 +59,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid4686"
-       originx="155.125"
-       originy="-35.624997" />
+       originx="265.81817"
+       originy="-26.705673" />
   </sodipodi:namedview>
   <metadata
      id="metadata4141">
@@ -70,7 +70,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -78,33 +78,20 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     transform="translate(155.125,31.625)"
+     transform="translate(265.81818,48.705672)"
      style="display:inline">
-    <g
-       id="g4137"
-       transform="matrix(0,1,1,0,-109.875,110.375)">
-      <path
-         sodipodi:nodetypes="ccczcc"
-         inkscape:connector-curvature="0"
-         id="path5843-7-0-2-7"
-         d="m -140,12.250001 c 0,0 0,-30 0,-35 0,-5 20,-20 20,-20 0,0 20,15 20,20 0,5 0,35 0,35 0,15 -40,15 -40,0 z"
-         style="display:inline;fill:#e9ecef;fill-opacity:1;fill-rule:evenodd;stroke:#007bff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         transform="scale(1,-1)"
-         y="-7.2500057"
-         x="-115"
-         height="29.999998"
-         width="5"
-         id="rect5845-5-9-9-8"
-         style="display:inline;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#040404;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         transform="scale(1,-1)"
-         y="-7.2500057"
-         x="-130"
-         height="29.999998"
-         width="5"
-         id="rect5845-8-8-1-6-0"
-         style="display:inline;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#040404;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
+    <circle
+       style="fill:#f8f9fa;fill-opacity:1;stroke:#343a40;stroke-width:4.13978481;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4137"
+       cx="-230.81818"
+       cy="-13.705672"
+       r="32.930107" />
+    <ellipse
+       style="fill:#040404;fill-opacity:1;stroke:#040404;stroke-width:6.3788352;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4139"
+       cx="-230.81818"
+       cy="-13.705672"
+       rx="13.810577"
+       ry="13.810582" />
   </g>
 </svg>

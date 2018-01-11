@@ -14,11 +14,16 @@
     <style>
         .slider-container {
             width  : 25rem;
-            height : 12rem;
+            height : 10rem;
             border : 0.12rem solid red;
-            padding:.25rem;
-            margin-left: 2rem;
+            padding: .25rem;
+            margin-left: 10%; //2rem;
+            margin-bottom: 1rem;
         }
+        .slider-container.resizable {
+            width  : 80%;
+        }
+
         .date-box {
             display : inline-block;
             border  : 0.12rem solid green;
@@ -26,11 +31,13 @@
             width   : 7.5rem;
         }
         .slider-container .code-container {
+            height          : 3rem;
             width           : 100%;
             padding         : 0.125rem;
             font-family     : monospace;
             font-size       : 0.667rem;
             background-color: #DDDDDD;
+            overflow-y      : scroll;
         }
 
         code {
@@ -67,21 +74,17 @@
 
     <br><br>
 
-    <div style="position: relative; width:100%;">
+    <div style="position: relative; width:100%; _display:none">
 
 
-        <div class="slider-container" style="_width:calc(100% - 4rem)">
-            <div class="code-container" id="options_00"></div><hr>
-            <input type="text" id="example_00"/>
+        <div class="slider-container resizable">
+            <div class="code-container" id="options_01"></div><hr>
+            <input type="text" id="example_01"/>
 
             <!-- <div class="center-line"></div> -->
         </div>
 
-        <div class="slider-container">
-            <div class="code-container" id="options_01"></div><hr>
-            <input type="text" id="example_01"/>
-        </div>
-        <div class="slider-container">
+        <div class="slider-container resizable">
             <div class="code-container" id="options_02"></div><hr>
             <input type="text" id="example_02"/>
         </div>
@@ -101,15 +104,21 @@
             <div class="code-container" id="options_06"></div><hr>
             <input type="text" id="example_06"/>
         </div>
-        <div class="slider-container"  style="height:10rem">
+        <div class="slider-container">
             <div class="code-container" id="options_07"></div><hr>
             <input type="text" id="example_07"/>
+        </div>
+        <div class="slider-container">
+            <div class="code-container" id="options_08"></div><hr>
+            <input type="text" id="example_08"/>
             <br>
             <br>
             <br>
-            <button id="btnPrevFrom">Previous</button>
-            <button id="btnNowFrom">"Zero"</button>
-            <button id="btnNextFrom">Next</button>
+            <button id="btnFirst">First</button>
+            <button id="btnPrev">Previous</button>
+            <button id="btnNow">"Zero"</button>
+            <button id="btnNext">Next</button>
+            <button id="btnLast">Last</button>
         </div>
 
     </div>
@@ -124,11 +133,26 @@
             last = now;
         }
 
+
+        function createDemoSlider( no, header, options ){
+            var result = $('#example_'+no).baseSlider( options ).data('baseSlider')
+                text = '{';
+            $.each( options, function( id, value ){
+                if (id.charAt(0) != '_')
+                    text += ' ' + id + ':' + JSON.stringify(value)
+            });
+            text += ' }';
+
+            $("#options_" + no).html('<strong>#'+no+': ' + header +'</strong><br>'+ text );
+            return result;
+        }
     </script>
 
 
     <script src="bower_components.js"></script>
     <script src="../src/jquery-base-slider.js"></script>
+    <script src="../src/jquery-base-slider-handle.js"></script>
+    <script src="../src/jquery-base-slider-value.js"></script>
 
     <script>
         $('.scaleRadio').on( 'change', function(event) {
@@ -141,31 +165,21 @@
 
 //Debug:
 test('START');
-
-        $("#example_00")
-            .baseSlider(   {fixed_handle: true, handle:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:-1650, grid:true, showLineColor:false, marker_frame:true, textColors:[{value:0, backgroundColor:'green', color:'white'}]})
-
-        $("#options_00")
-            .html(
-                '<strong>#0: Fixed handler</strong><br>'+
-                'options={fixed_handle: true, handle:"fixed", mousewheel: true, width: 3*4000, min:-4000, max:4000, from:50, grid:true, showLineColor:false, marker_frame:true, textColors:[{value:0, backgroundColor:"green", color:"white"}]}}'
-            );
-
-        //Ex #1
-        var slider1 =
-                $("#example_01")
-                    .baseSlider({
-                        handle:'down', _ticks_on_line: true, min:0, max:100000, value: 20000, major_ticks_offset:0, step:1200, step_offset:500, grid:true, showLineColor:false, mousewheel: true, pin_value: 40000, show_min_max: true, marker_frame:true, _callback: function( result ){ console.log(result.value, result ); }
-                    }).data('baseSlider');
-slider1.setPin(50000);
-
-        $("#options_01").html('<strong>#1: Normal</strong><br>'+
-                              'options={min:0, max:100000, from:20000, major_ticks_offset:0, step:1000, step_offset:0, grid:true, showLineColor:false, mousewheel: true, pin_value: 40000, show_min_max: true}');
-
-
+//*
+        //Fixed slider
+        createDemoSlider( '01', 'Fixed handler', {
+            handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, marker_frame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            onChange: function( result ){ console.log('onChange', result.value); }
+        });
+//*/
 
         //Ex #2
-        var vind_grid_colors = [
+        createDemoSlider( '02', 'Normal', {
+            handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, markerFrame:true, _callback: function( result ){ console.log(result.value, result ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
+        })
+//*
+        //Ex #3
+        var vindGridColors = [
             {value: -99, color: "#003569"},
             {value: -15, color: "#0069A2"},
             {value: -10, color: "#00A6DF"},
@@ -180,41 +194,43 @@ slider1.setPin(50000);
             {value:  35, color: "#800D00"},
             {value: 999, color: "#4D0000"}
         ];
-var slider2 =
-        $("#example_02").baseSlider(   {showImpactLineColor:true, postfix:'&deg;C', type:"double", handle: 'horizontal',  min:-20, max:35, from: 2, to: 14, major_ticks_offset:0, step:2, step_offset:0, grid:true, _min_interval: 4, show_min_max: true, marker_frame:true, _from_min: -4, _from_max: -4, _pin_value: -12, _from_fixed: true,
-        grid_colors:vind_grid_colors }).data('baseSlider');
-        $("#options_02").html('<strong>#2: Double with grid colors</strong><br>'+
-                              'options={type:"double", min:-20, max:35, from:2, to:14, major_ticks_offset:0, step:2, step_offset:0, grid:true}');
+        createDemoSlider( '03', 'Double with grid colors left <= 0 right >= 5', {
+            showImpactLineColor:true, postfix:'&deg;C', type:"double", handle: 'horizontal', min:-20, max:35, from: +3, to: 14, decorate_label: true, grid:true, showMinMax: true, marker_frame:true,
+            _fromMin: -4, fromMax: 0, toMin: 5, _intervalMax: 4,
 
-        $("#example_03").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true});
-        $("#options_03").html('<strong>#3: Step=5</strong><br>'+
-                              'options={min:0, max:100, from:20, major_ticks_offset:0, step:5, step_offset:0, grid:true}');
+            gridColors: vindGridColors
+        });
 
-        $("#example_04").baseSlider(   {min:0, max:100, from:20, major_ticks_offset:2, step:1, step_offset:0, grid:true});
-        $("#options_04").html('<strong>#4: Major ticks offset=2</strong><br>'+
-                              'options={min:0, max:100, from:20, major_ticks_offset:2, step:1, step_offset:0, grid:true}');
 
-        $("#example_05").baseSlider(   {min:0, max:100, from:23, major_ticks_offset:0, step:5, step_offset:3, grid:true, show_min_max: true});
-        $("#options_05").html('<strong>#5: Step=5, Step offset=3</strong><br>'+
-                              'options={min:0, max:100, from:23, major_ticks_offset:0, step:5, step_offset:3, grid:true}');
+        createDemoSlider( '04', 'Step=5', {
+            min:0, max:100, value:20, majorTicksOffset:0, step:5, stepOffset:0, grid:true
+        });
 
-        $("#example_06").baseSlider(   {min:0, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true});
-        $("#options_06").html('<strong>#6: Step=5, tick offset=2, step offset=3</strong><br>'+
-                              'options={min:0, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
+        createDemoSlider( '05', 'Major ticks-offset=2', {
+            min:0, max:100, value:20, majorTicks_offset:2, step:1, stepOffset:0, grid:true
+        });
 
-        $("#example_07").baseSlider({
-            handle:'round', min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true,
+        createDemoSlider( '06', 'Step=5, Step-offset=3', {
+            min:0, max:100, value:23, majorTicks_offset:0, step:5, stepOffset:3, grid:true, showMinMax: true
+        });
+
+        createDemoSlider( '07', 'Step=5, tick-offset=2, step-offset=3', {
+            min:0, max:120, value:20, majorTicks_offset:2, step:5, stepOffset:3, grid:true, showMinMax: true
+        });
+
+        createDemoSlider( '08', 'Step=5, tick-offset=2, step-offset=3 and buttons', {
+            handle:'round', min:-99, max:120, value:20, majorTicks_offset:2, step:5, stepOffset:3, grid:true,
             buttons: {
                 from: {
-                    previousBtn: 'btnPrevFrom',
-                    nowBtn     : 'btnNowFrom',
-                    nextBtn    : 'btnNextFrom'
+                    firstBtn   : 'btnFirst',
+                    previousBtn: 'btnPrev',
+                    nowBtn     : 'btnNow',
+                    nextBtn    : 'btnNext',
+                    lastBtn    : 'btnLast'
                 }
             }
-        });
-        $("#options_07").html('<strong>#7: Step=5, tick offset=2, step offset=3 and buttons</strong><br>'+
-                              'options={min:-99, max:120, from:20, major_ticks_offset:2, step:5, step_offset:3, grid:true}');
-
+        }).update({ min:0, grid: false});
+//*/
 //Debug:
 test('END');
 

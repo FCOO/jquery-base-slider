@@ -14,8 +14,8 @@ The type is set by adding the same class-name to the outer <span> eq. <span clas
 The scss is divided in two parts: First the common part equal for all types and then a specified part for the different types
 
 ************************************************/
-//BOURBON - http://bourbon.io/
-@import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
+//BOURBON - http://bourbon.io version 5
+@import "../bower_components/bourbon/core/bourbon";
 
 @function myRem($pxval) {
   $base: 16;
@@ -64,27 +64,27 @@ $range-line-top-no-marker: myRem(0px);
 
 //Special: Pin marking a value
 $pin-height    : 48 / 28 * $line-height;  //The height of the pin used to mark the range-value. Calculated to fit with width=$line-height
-$pin-margin-top: -0.8 * $pin-height; 
+$pin-margin-top: -0.8 * $pin-height;
 
 $range-value-line-top: $marker-height;
 
 
 //Ticks and text on grids
-$tick-width       : myRem(1px); 
+$tick-width       : myRem(1px);
 $tick-height-minor: $line-height;
 $tick-height      : 1.5 * $tick-height-minor;
 $label-font-size  : myRem(9px);
-$margin           : myRem(2px); 
+$margin           : myRem(2px);
 
 $text-padding    : $line-border-radius;
-$text-height     : $margin + $border-width + $text-padding + $label-font-size + $text-padding + $border-width + $margin;
+$label-height    : $margin + $border-width + $text-padding + $label-font-size + $text-padding + $border-width + $margin;
 
 
 $box-shadow: 1px 1px 1px 0px rgba(255,255,255,0.75), -1px 1px 1px 0px rgba(255,255,255,0.75);
 
 .base-slider-container-outer {
     left      : 0;
-    width     : 100%; 
+    width     : 100%;
     height    : 100%;
     overflow-x: hidden;
 
@@ -99,17 +99,17 @@ $box-shadow: 1px 1px 1px 0px rgba(255,255,255,0.75), -1px 1px 1px 0px rgba(255,2
 COMMON STYLE
 ***************************************************************/
 .base-slider-container {
-    position   : relative; 
+    position   : relative;
     display    : block;
     user-select: none;
     box-sizing : border-box;
 
 
 
-    //width and margin of .base-slider-container is set after the widest handle is found 
+    //width and margin of .base-slider-container is set after the widest handle is found
 
     .line {
-        position: relative; 
+        position: relative;
         display : block;
         width   : 100%;
         height  : $line-height - 2*$border-width; //Outer-width = $line-height;
@@ -124,33 +124,32 @@ COMMON STYLE
         border: $border;
         @include border-left-radius($line-border-radius);
         @include border-right-radius($line-border-radius);
-//        box-shadow: inset 0px myRem(1px) myRem(1px) 0 $shadow-color; 
+//        box-shadow: inset 0px myRem(1px) myRem(1px) 0 $shadow-color;
 
         .line-color {
-            position  : absolute; 
+            position  : absolute;
             display: block;
             height : 100%;
-            width  : 30%;
 
-            &:first-child { 
-                @include border-left-radius($line-border-radius); 
+            &:first-child {
+                @include border-left-radius($line-border-radius);
             }
             &:last-child:not(:first-child) {
                 @include border-right-radius($line-border-radius);
             }
         }
-    }        
-   
+    }
+
     //Adjust cursor when slider is disabled or read-only
     &.not-clickable .line,
     &.disabled .line,
     &.read-only .line {
         cursor: default;
-    } 
+    }
 
     //The handle
     .handle {
-        position: absolute; 
+        position: absolute;
         display : block;
         cursor  : default;
         z-index : 10;
@@ -159,15 +158,15 @@ COMMON STYLE
         background-size: 100% 100%;
         background-repeat: no-repeat;
 
-        &.type_last { z-index: 12; }
+        &.type-last { z-index: 12; }
 
     } //end of .handle
 
     &.active .handle { cursor: pointer; }
 
     //Special version when a pin is added: using font-icons instead of background-image
-    .pin {
-        position: absolute; 
+    .handle.pin {
+        position: absolute;
         cursor  : default !important;
         z-index : 100;
 
@@ -175,22 +174,24 @@ COMMON STYLE
         margin-top : $pin-margin-top;
         width      : 1rem;
         margin-left: -0.5rem; //To center
-        
+
         font-size : $pin-height;
         text-align: center;
+
+        background-image: none !important;
     }
 
 
     //Marker: single, from, to, min, and max-marker
     .marker-outer {
         position: absolute;
-        top     : $marker-top;  
+        top     : $marker-top;
         z-index : 2;
 
         cursor  : default;
 
-        font-family: Arial, sans-serif; 
-        font-size  : $marker-font-size; 
+        font-family: Arial, sans-serif;
+        font-size  : $marker-font-size;
 
         .marker {
             box-sizing : border-box;
@@ -198,52 +199,51 @@ COMMON STYLE
             height     : 100%;
             margin-left: -50%;
             padding    : 0;
+        }
 
-            //Black arrow below if the matker is framed
-            &.frame:after {
-                position   : absolute; 
-                display    : block; 
-                top        : 100%;
-                left       : 0;
-                width      : 0; 
-                height     : 0;
-                margin-left: -1*$marker-stick-height;
+        //Black arrow below if the moving marker is framed
+        &.frame .marker:after {
+            position   : absolute;
+            display    : block;
+            top        : 100%;
+            left       : 0;
+            width      : 0;
+            height     : 0;
+            margin-left: -1*$marker-stick-height;
 
-                content : "";
-                overflow: hidden;
+            content : "";
+            overflow: hidden;
 
-                border          : $marker-stick-height solid transparent;
-                border-top-color: black;
-            }
+            border          : $marker-stick-height solid transparent;
+            border-top-color: black;
+        }
 
-            .marker-text {
-                display      : inline-block;
-                box-sizing   : border-box;
-                line-height  : $marker-line-height;; 
-                padding      : $marker-padding; 
-                border       : $border-width solid transparent; 
-                border-radius: $marker-border-radius;
+        .marker-text {
+            display      : inline-block;
+            box-sizing   : border-box;
+            line-height  : $marker-line-height;;
+            padding      : $marker-padding;
+            border       : $border-width solid transparent;
+            border-radius: $marker-border-radius;
 
-                white-space: nowrap;
-                text-shadow: none;
+            white-space: nowrap;
+            text-shadow: none;
+        }
 
-                &.min-max {
-                    color           : #555;
-                    background-color: $background-color;
-                    border          : $border;
-                    border-radius   : $marker-border-radius;
-                }
+        &.min-max .marker-text {
+            color           : #555;
+            background-color: $background-color;
+            border          : $border;
+            border-radius   : $marker-border-radius;
+        }
 
-                &.single-from-to {
-                    color      : #111;
-
-                    &.frame {
-                        background   : white;
-                        border       : $border-black;
-                    }
-                }
-            }
-        }    
+        &.single-from-to .marker-text {
+            color      : #111;
+        }
+        &.single-from-to.frame .marker-text {
+            background   : white;
+            border       : $border-black;
+        }
     } //end of .marker-outer
 } //end of .base-slider-container
 
@@ -251,42 +251,42 @@ COMMON STYLE
 
 
 .grid {
-    position: absolute; 
-    bottom  : 0; 
+    position: absolute;
+    bottom  : 0;
     left    : 0;
     z-index : 2;
-    width   : 100%; 
-    height  : $tick-height + $text-height; 
+    width   : 100%;
+    height  : $tick-height + $label-height;
 
-    &.text-between-ticks { 
-        height: $margin + max($tick-height, $text-height); 
-        .grid-text-outer { 
-            top: 0; 
-        }; 
+    &.label-between-ticks {
+        height: $margin + max($tick-height, $label-height);
+        .grid-label-outer {
+            top: 0;
+        };
     }
-    
+
     .grid-pol {
         position  : absolute;
         z-index   : 2;
-        top       : 0; 
+        top       : 0;
         left      : 0;
-        width     : $tick-width; 
-        height    : $tick-height-minor; 
-        background: #555555; 
+        width     : $tick-width;
+        height    : $tick-height-minor;
+        background: #555555;
         box-shadow: $box-shadow;
         &.major {
             height    : $tick-height;
-            background: black; 
+            background: black;
         }
     }
 
-    .grid-text-outer {
+    .grid-label-outer {
         position: absolute;
         z-index : 2;
         top     : $tick-height;
-        height  : $text-height;
+        height  : $label-height;
 
-        .grid-text {
+        .grid-label {
             box-sizing : border-box;
             width      : 100%;
             height     : 100%;
@@ -294,42 +294,44 @@ COMMON STYLE
             padding    : 0;
             padding-top: $margin;
 
-            .grid-text-inner {
+            .grid-label-text {
                 display      : inline-block;
                 box-sizing   : border-box;
-                line-height  : 1; 
+                line-height  : 1;
                 padding      : $text-padding;
-                border       : $border-width solid transparent; 
+                border       : $border-width solid transparent;
                 border-radius: $marker-border-radius;
                 &.frame {
                     border-color: $border-color;
                 }
             }
 
+/* Moved outside
             &.clickable:hover {
-                .grid-text-inner {
+                .grid-label-text {
                     border-color: #007bff;
-                }    
-            }    
-        }    
+                }
+            }
+*/
+        }
     }
 
-    //Text-style for grid-text outside .grid-text-outer to allow used with textElement in BaseSlider
-    .grid-text {
+    //Text-style for grid-label outside .grid-label-outer to allow used with textElement in BaseSlider
+    .grid-label {
         background-color: transparent;
         left       : 0;
         white-space: nowrap;
         text-align : center;
-        font-family: Arial, sans-serif; 
+        font-family: Arial, sans-serif;
 
-        font-size  : $label-font-size; 
-        line-height: 1; 
+        font-size  : $label-font-size;
+        line-height: 1;
         font-weight: bold;
         &.minor  { font-weight: normal; color: #555555;}
         &.italic { font-style: italic; }
 
         color : #000;
-        cursor: default; 
+        cursor: default;
         &.clickable { cursor: pointer; }
 
     }
@@ -337,7 +339,7 @@ COMMON STYLE
     .grid-color {
         position: absolute;
         z-index : 1;
-        top     : 0; 
+        top     : 0;
         height  : $tick-height;
 
         font-size: 2*$tick-height;
@@ -346,7 +348,7 @@ COMMON STYLE
         line-height: $tick-height;
         overflow: hidden;
 
-        &.gt_max {
+        &.gt-max {
             left: 100%;
             //Create triangle pointing to the right
             width: 0;
@@ -356,8 +358,8 @@ COMMON STYLE
             border-top-width: $tick-height / 2;
             border-left: $tick-height solid black;
         }
-        &.lt_min { 
-            left: -1*$tick-height; 
+        &.lt-min {
+            left: -1*$tick-height;
             //Create triangle pointing to the left
             width: 0;
             height: 0;
@@ -368,6 +370,12 @@ COMMON STYLE
         }
     }
 } //end of .grid
+
+
+//Special style for grid-label-text:hover when not dragging any handle
+.base-slider-container:not(.dragging) .grid-label.clickable:hover .grid-label-text {
+    border-color: #007bff;
+}
 
 
 .disabled {
@@ -404,15 +412,15 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     $handle-dim   : 22px;
     $img-width    : null;
     $img-height   : null;
-    $handle-width : null; 
+    $handle-width : null;
     $handle-height: null;
     $line-top-relative-to-handle: null;
     $grid-top                   : null;
 
     $handle-back-ground-image         : null;
-    $handle-back-ground-image_hover   : null;
-    $handle-back-ground-image_to      : null;
-    $handle-back-ground-image_to_hover: null;
+    $handle-back-ground-image-hover   : null;
+    $handle-back-ground-image-to      : null;
+    $handle-back-ground-image-to-hover: null;
 
 
 
@@ -420,38 +428,38 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         $img-width : 44px;
         $img-height: 71.5px;
         $handle-back-ground-image      : 'handle.horizontal.svg';
-        $handle-back-ground-image_hover: 'handle.horizontal.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.horizontal.hover.svg';;
     }
     @if $handle-type == vertical {
         $img-width : 71.5px;
         $img-height: 44px;
         $handle-back-ground-image      : 'handle.vertical.svg';
-        $handle-back-ground-image_hover: 'handle.vertical.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.vertical.hover.svg';;
     }
 
     @if $handle-type == down {
         $img-width : 44px;
         $img-height: 70.75px;
         $handle-back-ground-image      : 'handle.down.svg';
-        $handle-back-ground-image_hover: 'handle.down.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.down.hover.svg';;
     }
     @if $handle-type == up {
         $img-width : 44px;
         $img-height: 70.75px;
         $handle-back-ground-image      : 'handle.up.svg';
-        $handle-back-ground-image_hover: 'handle.up.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.up.hover.svg';;
     }
     @if $handle-type == right {
         $img-width : 70.75px;
         $img-height: 44px;
         $handle-back-ground-image      : 'handle.right.svg';
-        $handle-back-ground-image_hover: 'handle.right.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.right.hover.svg';;
     }
     @if $handle-type == left {
         $img-width : 70.75px;
         $img-height: 44px;
         $handle-back-ground-image      : 'handle.left.svg';
-        $handle-back-ground-image_hover: 'handle.left.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.left.hover.svg';;
     }
 
     @if $handle-type == round {
@@ -460,7 +468,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         $handle-dim: 18px;
 
         $handle-back-ground-image      : 'handle.round.svg';
-        $handle-back-ground-image_hover: 'handle.round.hover.svg';;
+        $handle-back-ground-image-hover: 'handle.round.hover.svg';;
     }
 
     @if $handle-type == fixed {
@@ -471,7 +479,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         $handle-back-ground-image: 'handle.fixed.svg';
 
         $line-top-relative-to-handle: $margin;
-        $grid-top   : $handle-top + $line-top-relative-to-handle + $line-height; 
+        $grid-top   : $handle-top + $line-top-relative-to-handle + $line-height;
     }
 
     @if $handle-type == range {
@@ -480,11 +488,11 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         $handle-dim: $line-height-px;
 
         $handle-back-ground-image   : 'handle.range.from.svg';
-        $handle-back-ground-image_to: 'handle.range.to.svg';
+        $handle-back-ground-image-to: 'handle.range.to.svg';
 
-        $line-top-relative-to-handle: 0; 
+        $line-top-relative-to-handle: 0;
     }
-    
+
 
     $factor: 0;
     @if $img-height > $img-width {
@@ -495,7 +503,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
     $handle-width : myRem($img-width * $factor);
     $max-handle-width: max( $max-handle-width, $handle-width );
-    $handle-height: myRem($img-height * $factor); 
+    $handle-height: myRem($img-height * $factor);
 
     @if $line-top-relative-to-handle == null {
         $line-top-relative-to-handle: $handle-height/2 - $line-height/2;
@@ -509,21 +517,21 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     $lineTopNoMarker: $handle-top-no-marker + $line-top-relative-to-handle;
 
     $handle-back-ground-image: url("images/#{$handle-back-ground-image}");
-    @if $handle-back-ground-image_hover != null {
-        $handle-back-ground-image_hover: url("images/#{$handle-back-ground-image_hover}");
+    @if $handle-back-ground-image-hover != null {
+        $handle-back-ground-image-hover: url("images/#{$handle-back-ground-image-hover}");
     }
 
-    @if $handle-back-ground-image_to != null {
-        $handle-back-ground-image_to: url("images/#{$handle-back-ground-image_to}");
+    @if $handle-back-ground-image-to != null {
+        $handle-back-ground-image-to: url("images/#{$handle-back-ground-image-to}");
     }
-    @if $handle-back-ground-image_to_hover != null {
-        $handle-back-ground-image_to_hover: url("images/#{$handle-back-ground-image_to_hover}");
+    @if $handle-back-ground-image-to-hover != null {
+        $handle-back-ground-image-to-hover: url("images/#{$handle-back-ground-image-to-hover}");
     }
 
     //The style for different handle-type
     .base-slider-container.#{$handle-type} {
-       
-        //width, height and postion    
+
+        //width, height and postion
         .line {
             top: $lineTop;
         }
@@ -531,41 +539,41 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         //Handle
         .handle {
             box-sizing: border-box;
-            width : $handle-width; 
+            width : $handle-width;
             height: $handle-height;
             margin-left: -0.5*$handle-width;
 
             //If there are different bg-image for from and to-handle => create style for each ELSE common style
-            @if $handle-back-ground-image_to == null {
+            @if $handle-back-ground-image-to == null {
                 background-image: $handle-back-ground-image;
             }
             @else {
-                &.from {               
+                &.from {
                     background-image: $handle-back-ground-image;
                 }
-                &.to {               
-                    background-image: $handle-back-ground-image_to;
+                &.to {
+                    background-image: $handle-back-ground-image-to;
                 }
             }
         }
-        
-        @if $handle-back-ground-image_hover != null {
+
+        @if $handle-back-ground-image-hover != null {
             //hover on handle but only if it is active (not read-only)
             &.active .handle {
-                &.state_hover, &:hover { 
+                &.hover, &:hover {
                     //If there are different bg-image for from and to-handle => create style for each ELSE common style
-                    @if $handle-back-ground-image_to_hover == null {
-                        background-image: $handle-back-ground-image_hover;
+                    @if $handle-back-ground-image-to-hover == null {
+                        background-image: $handle-back-ground-image-hover;
                     }
                     @else {
-                        &.from {               
-                            background-image: $handle-back-ground-image_hover;
+                        &.from {
+                            background-image: $handle-back-ground-image-hover;
                         }
-                        &.to {               
-                            background-image: $handle-back-ground-image_to_hover;
+                        &.to {
+                            background-image: $handle-back-ground-image-to-hover;
                         }
                     }
-                } 
+                }
             }
         }
 
@@ -576,7 +584,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         .grid { top: $grid-top; }
 
 
-        //Adjust grid position if ticks are on the line (ticks_on_line = true)
+        //Adjust grid position if ticks are on the line (ticksOnLine = true)
         &.ticks-on-line {
             .grid             { top: $lineTop;         }
             &.no-marker .grid { top: $lineTopNoMarker; }
@@ -584,21 +592,21 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
         //Adjust all top-position if there are no marker
         &.no-marker {
-            .line, 
+            .line,
             .pin    { top: $lineTopNoMarker !important;        }
             .handle { top: $handle-top-no-marker;                 }
             .grid   { top: $handle-top-no-marker + $handle-height; }
         }
 
         /****************************************************
-        Special case for no marker and pin: 
+        Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/
         &.no-marker.has-pin {
             margin-top: max(0, - $pin-margin-top - $lineTopNoMarker);
         }
     } //end of .base-slider-container.#{$handle-type}
-} //end of @each $handle-type in $handle-type-list 
+} //end of @each $handle-type in $handle-type-list
 
 
 //Adding style depending on $max-handle-width
@@ -606,10 +614,4 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     width       : calc(100% - #{$max-handle-width});
     margin-left : $max-handle-width/2;
     margin-right: $max-handle-width/2;
-
-
-
-
-
-//background-color: rgba(255,0,0,.5); height:200px;
 }

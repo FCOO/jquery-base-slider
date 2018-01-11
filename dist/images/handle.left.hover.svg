@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="44"
-   height="71.5"
+   width="70.75"
+   height="44"
    id="svg4136"
    version="1.1"
    inkscape:version="0.91 r13725"
-   viewBox="0 0 44 71.499998"
-   sodipodi:docname="slider.horizontal.svg">
+   viewBox="0 0 70.75 44"
+   sodipodi:docname="handle.left.hover.svg">
   <defs
      id="defs4138" />
   <sodipodi:namedview
@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.9497475"
-     inkscape:cx="55.397766"
-     inkscape:cy="32.502126"
+     inkscape:cx="26.893727"
+     inkscape:cy="18.536938"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
@@ -55,14 +55,12 @@
      inkscape:snap-to-guides="false"
      inkscape:snap-others="false"
      inkscape:object-nodes="true"
-     showguides="false"
-     units="px"
-     gridtolerance="10000">
+     showguides="false">
     <inkscape:grid
        type="xygrid"
        id="grid4686"
-       originx="-8"
-       originy="-1.7499967" />
+       originx="267.5"
+       originy="-37.999997" />
   </sodipodi:namedview>
   <metadata
      id="metadata4141">
@@ -72,7 +70,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -80,27 +78,34 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     transform="translate(44,12)"
+     transform="translate(267.5,34)"
      style="display:inline">
-    <path
-       style="display:inline;fill:#f8f9fa;fill-opacity:1;fill-rule:evenodd;stroke:#343a40;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M -42,1.2499999 -42,46.25 c 0,15 40,15 40,0 L -2,1.2499999 C -2,-13.75 -42,-13.75 -42,1.2499999 Z"
-       id="path5843-7-0"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccc" />
-    <rect
-       style="display:inline;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#040404;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect5845-5-9"
-       width="5"
-       height="35"
-       x="-17"
-       y="6.25" />
-    <rect
-       style="display:inline;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#040404;stroke-width:4;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect5845-8-8-1"
-       width="5"
-       height="35"
-       x="-32"
-       y="6.25" />
+    <g
+       id="g4143">
+      <path
+         sodipodi:nodetypes="ccczcc"
+         inkscape:connector-curvature="0"
+         id="path5843-7-0-2-7-2"
+         d="m -210,-32 c 0,0 -30,0 -35,0 -5,0 -20,20 -20,20 0,0 15,20 20,20 5,0 35,0 35,0 15,0 15,-40 0,-40 z"
+         style="display:inline;fill:#e9ecef;fill-opacity:1;fill-rule:evenodd;stroke:#007bff;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0"
+         id="path4155"
+         d="m -215,-22 -25,0 0,0"
+         style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0"
+         id="path4155-8"
+         d="m -215,-12 -25,0 0,0"
+         style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccc"
+         inkscape:connector-curvature="0"
+         id="path4155-0"
+         d="m -215,-2 -25,0 0,0"
+         style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
   </g>
 </svg>
