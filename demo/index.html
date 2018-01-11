@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html id="theHTML" lang="da" style="font-size: 100%">
+<html id="theHTML" lang="da" style="font-size: 200%">
 <head>
     <title>fcoo.dk - jquery-base-slider - Example</title>
     <meta charset="iso-8859-1" />
@@ -149,6 +149,7 @@
     </script>
 
 
+    <script src="modernizr-custom.js"></script>
     <script src="bower_components.js"></script>
     <script src="../src/jquery-base-slider.js"></script>
     <script src="../src/jquery-base-slider-handle.js"></script>
@@ -169,7 +170,7 @@ test('START');
         //Fixed slider
         createDemoSlider( '01', 'Fixed handler', {
             handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, marker_frame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
-            onChange: function( result ){ console.log('onChange', result.value); }
+            _onChange: function( result ){ console.log('onChange', result.value); }
         });
 //*/
 

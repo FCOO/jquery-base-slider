@@ -521,7 +521,10 @@
     Return the left (= x) position of an event
     *******************************************************************/
     function getEventLeft( event ){
-        return event.pageX || event.originalEvent.touches && event.originalEvent.touches[0].pageX;
+        return  event.pageX ? event.pageX :
+                event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length ? event.originalEvent.touches[0].pageX :
+                event.touches && event.touches.length ? event.touches[0].pageX :
+                0;
     }
 
     /*******************************************************************
@@ -1202,7 +1205,7 @@
                         return;
 
                     $element.on( 'mousedown touchstart', _this.events.onMousedownFunc );
-                    $element.on( 'click',                _this.events.onClickFunc     );
+                    $element.on( 'click touchend',       _this.events.onClickFunc     );
 
                 });
             }
@@ -1661,7 +1664,6 @@
         Called when click/mouse-down on the slider (line and grid)
         *******************************************************************/
         onMousedownOnGrid: function(event) {
-
             event.preventDefault();
             if (event.button === 2) return;
 
@@ -1683,14 +1685,16 @@
         Prevent onClick-event to be fired if the slider was dragged between
         mouse-down and mouse-up
         *******************************************************************/
-        onMousedownOnGrid_fixed: function( /*event*/ ){
+        onMousedownOnGrid_fixed: function( event ){
             this.events.mousedown = true;
             this.events.dragged   = false;
+            this.events.mouseLeft = getEventLeft( event );
         },
-        onMousedownOnLabel_fixed: function( /*event*/ ){
+        onMousedownOnLabel_fixed: function( event ){
             this.events.mousedown        = true;
             this.events.dragged          = false;
             this.events.mousedownOnLabel = true;
+            this.events.mouseLeft = getEventLeft( event );
         },
 
 
@@ -1703,12 +1707,16 @@
         onClick_fixed: function( event ){
             event.stopPropagation();
 
-            var abandon = this.events.dragged && this.events.mousedown,
-                onLabel = this.events.mousedownOnLabel;
+            var abandon   = this.events.dragged && this.events.mousedown,
+                onLabel   = this.events.mousedownOnLabel,
+                mouseLeft = getEventLeft( event ) || this.events.mouseLeft;
+//            event.pageX = getEventLeft( event ) || this.events.mouseLeft;
 
             this.events.dragged          = false;
             this.events.mousedown        = false;
             this.events.mousedownOnLabel = false;
+            this.events.mouseLeft        = 0;
+
             if (abandon)
                 return false;
 
@@ -1717,7 +1725,7 @@
                 this.onMousedownOnLabel( event );
             else {
                 //Fire normal onMousedown-event on grid to move to the clicked point
-                var mouseLeft = getEventLeft( event ) - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
+                mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
                 this.findAndSetNearestHandle( 100 * mouseLeft / this.dimentions.containerWidth, event );
             }
         },

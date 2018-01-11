@@ -373,7 +373,7 @@ COMMON STYLE
 
 
 //Special style for grid-label-text:hover when not dragging any handle
-.base-slider-container:not(.dragging) .grid-label.clickable:hover .grid-label-text {
+html.no-touchevents .base-slider-container:not(.dragging) .grid-label.clickable:hover .grid-label-text {
     border-color: #007bff;
 }
 
@@ -559,7 +559,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
         @if $handle-back-ground-image-hover != null {
             //hover on handle but only if it is active (not read-only)
-            &.active .handle {
+            html.no-touchevents &.active .handle {
                 &.hover, &:hover {
                     //If there are different bg-image for from and to-handle => create style for each ELSE common style
                     @if $handle-back-ground-image-to-hover == null {

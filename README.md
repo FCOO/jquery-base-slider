@@ -158,6 +158,8 @@ JSON-record with id or buttons for first, previous, (now,) next, and last value
 	.setToValue: function( value )	
 	.setPin( value, color )
 
+## Modernizr
+To have correct `hover` effect on the slider it is necessary to include [modernizr](https://modernizr.com/) test *Touch Events* setting `<html>` class `"touchevents"` or `"no-touchevents"`
 
 ## Copyright and License
 This plugin is licensed under the [MIT license](https://github.com/NielsHolt/jquery-base-slider/LICENSE).
