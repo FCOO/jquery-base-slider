@@ -643,13 +643,12 @@
         }
 
         //Create event-function to be called on resize of the window and the container (added in init)
-        if (this.options.resizable){
+        if (this.options.resizable)
             //Add resize-event to window
             $(window).on('resize', this.events.containerOnResize );
 
-            //Update slider when browser font-size is changed
-            $.onFontSizeChanged( this.onFontSizeChange, this );
-        }
+        //Update slider when browser font-size is changed
+        $.onFontSizeChanged( this.onFontSizeChange, this );
 
         /*******************************************************************
         this.result = record with the current result from the slider
@@ -1309,7 +1308,6 @@
             this.dimentions = this.getDimentions();
 
             if (!this.initializing && this.isBuild){
-
                 //Update the slider if the width has changed
                 if (this.dimentions.containerWidthRem && objectsAreDifferent( this.dimentions, this.dimentions_old))
                     updateSlider = true;
@@ -1384,7 +1382,10 @@
             onFontSizeChange( event, fontSize );
             if (this.htmlFontSize != htmlFontSize){
                 this.htmlFontSize = htmlFontSize;
-                this.update();
+                if (this.options.resizable)
+                    this.update();
+                else
+                    this.dimentions = this.getDimentions();
             }
         },
 
