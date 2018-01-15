@@ -607,50 +607,11 @@
 
         /*******************************************************************
         this.events contains event-functions and options
-
         this.events.containerOnResize = called when the sizse of the container is changed
-
-        this.events.on[EVENT](OnLabel)Func = event-functions for the grid or label
-        Depending on whether the slider is normal or with fixed handle the
-        event for 'press' and/or 'pressup/tap' are different
-        The difference is necessary to prevent dragging a label in fixed-mode
-        resulting in a click-on-label event
         *******************************************************************/
         this.events = {
-            containerOnResize: $.proxy( this.containerOnResize, this ),
-//HER            mousedown: false,
-//HER            dragged  : false,
-
-            onPress_grid  : null,
-            onPressup_grid: null,
-            onTap_grid    : null,
-
-            onPress_label  : null,
-//HER            onPressupOnLabelFunc: null
-            onPressup_label: null,
-            onTap_label: null
-
+            containerOnResize: $.proxy( this.containerOnResize, this )
         };
-
-        //Mousedown/touchstart/click on labels in the grid
-        if (this.options.isFixed){
-            //Pressup or tap on grid => move slider to value
-            this.events.onPressup_grid = $.proxy( this.onClick_fixed, this );
-            this.events.onTap_grid     = this.events.onPressup_grid;
-
-//HER            this.events.onPress_label = $.proxy( this.onPressOnLabel_fixed,  this );
-            this.events.onPressup_label = this.events.onPressup_grid;
-        }
-        else {
-            //press and tap on grid => move handle to position
-            this.events.onPress_grid = $.proxy( this.onPressOnGrid, this );
-            this.events.onTap_grid   = this.events.onPress_grid;
-
-
-            this.events.onPress_label = $.proxy( this.onPressOnLabel, this );
-            this.events.onTap_label = this.events.onPress_label;
-
-        }
 
         //Create event-function to be called on resize of the window and the container (added in init)
         if (this.options.resizable)
@@ -1208,21 +1169,24 @@
             }
             //*******************************************************************
 
-            //Add press-event to all relevant elements
-            if (this.options.clickable)
-                $.each( [ this.cache.$line, this.cache.$lineBackground, this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine, this.cache.$grid ], function( index, $element ){
-                    if (!$element)
-                        return;
-                    if (_this.events.onPress_grid){
-                        $element.on( 'press',  _this.events.onPress_grid );
-                        $element.data('hammer').get('press').set({time: 1});
-                    }
-                    if (_this.events.onPressup_grid)
-                        $element.on( 'pressup', _this.events.onPressup_grid );
+            /*
+            Add tap/press-events to the container
+            Depending on whether the slider is normal or with fixed handle the
+            event for 'press' and/or 'pressup/tap' are different
+            The difference is necessary to prevent dragging a label in fixed-mode
+            resulting in a click-on-label event
+            */
+            if (this.options.clickable){
+                var onTapFunc = $.proxy( this.onTap, this );
+                this.cache.$container.on( 'tap', onTapFunc );
 
-                    if (_this.events.onTap_grid)
-                        $element.on( 'tap', _this.events.onTap_grid );
-                });
+                if (this.options.isFixed)
+                    this.cache.$container.on( 'pressup', onTapFunc );
+                else
+                    this.cache.$container
+                        .on( 'press',  onTapFunc )
+                        .data('hammer').get('press').set({time: 1});
+           };
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1657,30 +1621,13 @@
         },
 
         /*******************************************************************
-        onPressOnLabel
-        press/mousedown on a label when slider is normal
-        Move the nearest handle to the point where the mouse-down happen
+        onTap
+        Called when tap and press/pressup on the slider (line and grid)
         *******************************************************************/
-        onPressOnLabel: function( event ){
-            event.stopPropagation();
-
-            var percent = NaN,
-                elem = event.target.parentNode;
-
-            while (window.isNaN(percent) && !!elem && elem.getAttribute){
-                percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
-                elem = elem.parentNode;
-            }
-            if (!window.isNaN(percent))
-                this.findAndSetNearestHandle( percent, event );
-        },
-
-        /*******************************************************************
-        onPressOnGrid
-        Called when press/mouse-down on the slider (line and grid)
-        *******************************************************************/
-        onPressOnGrid: function(event) {
+        onTap: function(event) {
             event.preventDefault();
+            event.stopImmediatePropagation();
+
             if (event.button === 2) return;
 
             //First test if the event was on a label
@@ -1691,85 +1638,23 @@
                 percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
                 elem = elem.parentNode;
             }
-            if (!window.isNaN(percent)){
-                this.findAndSetNearestHandle( percent, event );
-                return
-            };
 
-
-
-
-
-
-
-            this.currentPlugin = this.pluginCount;
-
-            var mouseLeft = getEventLeft(event);
-
-            this.updateMouse( mouseLeft );
+            //If not on a label: Set value according to mouse-position
+            if (window.isNaN(percent)){
+                if (this.options.isFixed){
+                    var mouseLeft = getEventLeft( event ) - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
+                    percent = 100 * mouseLeft / this.dimentions.containerWidth;
+                }
+                else {
+                    this.updateMouse( getEventLeft(event) );
+                    percent = this.mouse.percent;
+                }
+            }
 
             //Find the handle to move to the mouse-position
-            this.findAndSetNearestHandle( this.mouse.percent, event );
+            this.findAndSetNearestHandle( percent, event );
 
             this.cache.$line.trigger("focus");
-        },
-
-        /*******************************************************************
-        onPressOnGrid_fixed and onPressOnLabel_fixed
-        press/mousedown on a label or grid when slider is fixed
-        Prevent onClick-event to be fired if the slider was dragged between
-        mouse-down and mouse-up
-        *******************************************************************/
-//HER        onPressOnGrid_fixed: function( event ){
-//this.events.mousedownOnLabel = false;
-//HER            this.events.mousedown = true;
-//HER            this.events.dragged   = false;
-//HER            this.events.mouseLeft = getEventLeft( event );
-//HER        },
-//HER        onPressOnLabel_fixed: function( event ){
-//HER            this.events.mousedownOnLabel = true;
-
-//HER            this.events.mousedown        = true;
-//HER            this.events.dragged          = false;
-//HER            this.events.mousedownOnLabel = true;
-//HER            this.events.mouseLeft = getEventLeft( event );
-//HER        },
-
-
-        /*******************************************************************
-        onClick_fixed
-        click or mouseup on a label or grid when slider is fixed
-        Will only move slider to label or grid-position if there are no dragging
-        between mouse-down and mouse-up
-        *******************************************************************/
-        onClick_fixed: function( event ){
-            event.stopPropagation();
-/*
-            var abandon   = this.events.dragged && this.events.mousedown,
-                onLabel   = this.events.mousedownOnLabel,
-                mouseLeft = getEventLeft( event ) || this.events.mouseLeft;
-//            event.pageX = getEventLeft( event ) || this.events.mouseLeft;
-
-            this.events.dragged          = false;
-            this.events.mousedown        = false;
-            this.events.mousedownOnLabel = false;
-            this.events.mouseLeft        = 0;
-
-            if (abandon)
-                return false;
-*/
-//HER            if (onLabel)
-            if (this.events.mousedownOnLabel){
-                //Fire normal onPress-event on label to move to the clicked label
-                this.events.mousedownOnLabel = false;
-                this.onPressOnLabel( event );
-            }
-            else {
-                //Fire normal onMousedown-event on grid to move to the clicked point
-//HER                mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
-                var mouseLeft = getEventLeft( event ) - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
-                this.findAndSetNearestHandle( 100 * mouseLeft / this.dimentions.containerWidth, event );
-            }
         },
 
 
@@ -1888,8 +1773,6 @@
                 .addClass( this.options.pinIcon );
 
             this.updateHandlesAndLines();
-            //HER this.onChange();
-
         },
 
 
@@ -2119,24 +2002,8 @@
             }
 
             if (options.clickable && !this.options.disable && !this.options.readOnly){
-
                 //Can be used later: outer.setAttribute('data-base-slider-value', value);
                 outer.setAttribute('data-base-slider-percent', outer.style.left);
-
-                //Add mousedown/touchstart and click events
-//HER MANGLER                result.addEventListener( 'mousedown',  this.events.onMousedownOnLabelFunc );
-//HER                result.addEventListener( 'touchstart', this.events.onMousedownOnLabelFunc );
-//HER                result.addEventListener( 'click',      this.events.onPressup_label );
-/*
-$(result)
-    .on('press',   this.events.onPress_label   )
-    .on('pressup', this.events.onPressup_label )
-    .on('tap', this.events.onTap_label )
-
-    .data('hammer').get('press').set({time: 10});
-*/
-
-
                 className += ' clickable';
             }
 

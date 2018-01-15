@@ -33,7 +33,6 @@ COMMON STYLE
   user-select: none;
   box-sizing: border-box; }
   .base-slider-container .line-background {
-    background-color: red;
     position: absolute;
     display: block;
     width: 100%;
