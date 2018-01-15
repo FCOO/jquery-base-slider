@@ -193,13 +193,13 @@ test('START');
             {value: 999, color: "#4D0000"}
         ];
         createDemoSlider( '03', 'Double with grid colors left <= 0 right >= 5', {
-            showImpactLineColor:true, postfix:'&deg;C', type:"double", handle: 'horizontal', min:-20, max:35, from: +3, to: 14, decorate_label: true, grid:true, showMinMax: true, marker_frame:true,
+            showImpactLineColor:true, postfix:'&deg;C', type:"double", _handle: 'horizontal', handle: 'vertical', min:-20, max:35, from: +3, to: 14, decorate_label: true, grid:true, showMinMax: true, marker_frame:true,
             _fromMin: -4, fromMax: 0, toMin: 5, _intervalMax: 4,
 
             gridColors: vindGridColors
         });
 
-/*
+
         createDemoSlider( '04', 'Step=5', {
             min:0, max:100, value:20, majorTicksOffset:0, step:5, stepOffset:0, grid:true
         });
@@ -217,7 +217,7 @@ test('START');
         });
 
         createDemoSlider( '08', 'Step=5, tick-offset=2, step-offset=3 and buttons', {
-            handle:'round', min:-99, max:120, value:20, majorTicks_offset:2, step:5, stepOffset:3, grid:true,
+            handle:'round', min:-99, max:120, value:20, majorTicksOffset:2, step:5, stepOffset:3, grid:true,
             buttons: {
                 from: {
                     firstBtn   : 'btnFirst',
@@ -227,7 +227,7 @@ test('START');
                     lastBtn    : 'btnLast'
                 }
             }
-        }).update({ min:0, grid: false});
+        });
 //*/
 //Debug:
 test('END');

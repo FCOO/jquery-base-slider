@@ -104,9 +104,14 @@ COMMON STYLE
     user-select: none;
     box-sizing : border-box;
 
-
-
     //width and margin of .base-slider-container is set after the widest handle is found
+    .line-background {
+background-color: red;
+        position: absolute;
+        display : block;
+        width   : 100%;
+        top     : 0;
+    }
 
     .line {
         position: relative;
@@ -119,12 +124,10 @@ COMMON STYLE
         outline   : none !important;
         box-sizing: content-box;        //Important as it makes the inner width = 100%
         background-color: transparent; //$background-color;
-        cursor          : pointer;
 
         border: $border;
         @include border-left-radius($line-border-radius);
         @include border-right-radius($line-border-radius);
-//        box-shadow: inset 0px myRem(1px) myRem(1px) 0 $shadow-color;
 
         .line-color {
             position  : absolute;
@@ -140,18 +143,10 @@ COMMON STYLE
         }
     }
 
-    //Adjust cursor when slider is disabled or read-only
-    &.not-clickable .line,
-    &.disabled .line,
-    &.read-only .line {
-        cursor: default;
-    }
-
     //The handle
     .handle {
         position: absolute;
         display : block;
-        cursor  : default;
         z-index : 10;
         top     : $handle-top;
 
@@ -162,12 +157,9 @@ COMMON STYLE
 
     } //end of .handle
 
-    &.active .handle { cursor: pointer; }
-
     //Special version when a pin is added: using font-icons instead of background-image
     .handle.pin {
         position: absolute;
-        cursor  : default !important;
         z-index : 100;
 
         height     : $pin-height !important;
@@ -187,8 +179,6 @@ COMMON STYLE
         position: absolute;
         top     : $marker-top;
         z-index : 2;
-
-        cursor  : default;
 
         font-family: Arial, sans-serif;
         font-size  : $marker-font-size;
@@ -331,9 +321,6 @@ COMMON STYLE
         &.italic { font-style: italic; }
 
         color : #000;
-        cursor: default;
-        &.clickable { cursor: pointer; }
-
     }
 
     .grid-color {
@@ -532,6 +519,10 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     .base-slider-container.#{$handle-type} {
 
         //width, height and postion
+        .line-background {
+            height: $handle-top + $handle-height;
+        }
+
         .line {
             top: $lineTop;
         }

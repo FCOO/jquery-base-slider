@@ -32,6 +32,12 @@ COMMON STYLE
   display: block;
   user-select: none;
   box-sizing: border-box; }
+  .base-slider-container .line-background {
+    background-color: red;
+    position: absolute;
+    display: block;
+    width: 100%;
+    top: 0; }
   .base-slider-container .line {
     position: relative;
     display: block;
@@ -42,7 +48,6 @@ COMMON STYLE
     outline: none !important;
     box-sizing: content-box;
     background-color: transparent;
-    cursor: pointer;
     border: 0.0625rem solid #afb3bb;
     border-bottom-left-radius: 0.125rem;
     border-top-left-radius: 0.125rem;
@@ -58,25 +63,17 @@ COMMON STYLE
       .base-slider-container .line .line-color:last-child:not(:first-child) {
         border-bottom-right-radius: 0.125rem;
         border-top-right-radius: 0.125rem; }
-  .base-slider-container.not-clickable .line,
-  .base-slider-container.disabled .line,
-  .base-slider-container.read-only .line {
-    cursor: default; }
   .base-slider-container .handle {
     position: absolute;
     display: block;
-    cursor: default;
     z-index: 10;
     top: 1.270625rem;
     background-size: 100% 100%;
     background-repeat: no-repeat; }
     .base-slider-container .handle.type-last {
       z-index: 12; }
-  .base-slider-container.active .handle {
-    cursor: pointer; }
   .base-slider-container .handle.pin {
     position: absolute;
-    cursor: default !important;
     z-index: 100;
     height: 0.6428571429rem !important;
     margin-top: -0.5142857143rem;
@@ -89,7 +86,6 @@ COMMON STYLE
     position: absolute;
     top: 0rem;
     z-index: 2;
-    cursor: default;
     font-family: Arial, sans-serif;
     font-size: 0.625rem; }
     .base-slider-container .marker-outer .marker {
@@ -190,15 +186,12 @@ COMMON STYLE
     font-size: 0.5625rem;
     line-height: 1;
     font-weight: bold;
-    color: #000;
-    cursor: default; }
+    color: #000; }
     .grid .grid-label.minor {
       font-weight: normal;
       color: #555555; }
     .grid .grid-label.italic {
       font-style: italic; }
-    .grid .grid-label.clickable {
-      cursor: pointer; }
   .grid .grid-color {
     position: absolute;
     z-index: 1;
@@ -256,6 +249,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.horizontal .line-background {
+    height: 2.645625rem; }
   .base-slider-container.horizontal .line {
     top: 1.770625rem; }
   .base-slider-container.horizontal .handle {
@@ -289,6 +284,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.vertical .line-background {
+    height: 2.1167788462rem; }
   .base-slider-container.vertical .line {
     top: 1.5062019231rem; }
   .base-slider-container.vertical .handle {
@@ -322,6 +319,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.down .line-background {
+    height: 2.645625rem; }
   .base-slider-container.down .line {
     top: 1.770625rem; }
   .base-slider-container.down .handle {
@@ -355,6 +354,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.up .line-background {
+    height: 2.645625rem; }
   .base-slider-container.up .line {
     top: 1.770625rem; }
   .base-slider-container.up .handle {
@@ -388,6 +389,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.right .line-background {
+    height: 2.1257486749rem; }
   .base-slider-container.right .line {
     top: 1.5106868375rem; }
   .base-slider-container.right .handle {
@@ -421,6 +424,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.left .line-background {
+    height: 2.1257486749rem; }
   .base-slider-container.left .line {
     top: 1.5106868375rem; }
   .base-slider-container.left .handle {
@@ -454,6 +459,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.round .line-background {
+    height: 2.395625rem; }
   .base-slider-container.round .line {
     top: 1.645625rem; }
   .base-slider-container.round .handle {
@@ -487,6 +494,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.fixed .line-background {
+    height: 2.395625rem; }
   .base-slider-container.fixed .line {
     top: 1.395625rem; }
   .base-slider-container.fixed .handle {
@@ -518,6 +527,8 @@ STYLE FOR SPECIFIC TYPE
         Special case for no marker and pin:
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/ }
+  .base-slider-container.range .line-background {
+    height: 1.645625rem; }
   .base-slider-container.range .line {
     top: 1.270625rem; }
   .base-slider-container.range .handle {

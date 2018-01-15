@@ -1,39 +1,40 @@
 {
-  "name": "jquery-base-slider",
-  "version": "4.0.2",
-  "homepage": "https://github.com/NielsHolt/jquery-base-slider",
-  "authors": [
-    "Niels Holt <niels@steenbuchholt.dk>"
-  ],
-  "description": "A plugin to create a slider",
-  "main": [
-    "dist/jquery-base-slider.js",
-    "dist/jquery-base-slider.css"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/NielsHolt/jquery-base-slider.git"
-  },
-  "dependencies": {
-    "jquery": "latest",
-    "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0",
-    "jquery-detect-element-resize": "fcoo/jquery-detect-element-resize#^1.0.0",
-    "jquery-mousewheel": "^3.1.13",
-    "font-awesome": "fontawesome#^4.7.0",
-    "jquery-font-size-event": "fcoo/jquery-font-size-event#^1.0.0"
-  },
-  "devDependencies": {
-    "bourbon": "*"
-  },
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "moduleType": [
-    "es6"
-  ]
+    "name": "jquery-base-slider",
+    "version": "4.0.2",
+    "homepage": "https://github.com/NielsHolt/jquery-base-slider",
+    "authors": [
+        "Niels Holt <niels@steenbuchholt.dk>"
+    ],
+    "description": "A plugin to create a slider",
+    "main": [
+        "dist/jquery-base-slider.js",
+        "dist/jquery-base-slider.css"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/NielsHolt/jquery-base-slider.git"
+    },
+    "dependencies": {
+        "jquery": "latest",
+        "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0",
+        "jquery-detect-element-resize": "fcoo/jquery-detect-element-resize#^1.0.0",
+        "jquery-mousewheel": "^3.1.13",
+        "font-awesome": "fontawesome#^4.7.0",
+        "jquery-font-size-event": "fcoo/jquery-font-size-event#^1.0.0",
+        "jquery-hammer.js": "fcoo/jquery-hammer.js#^0.1.2"
+    },
+    "devDependencies": {
+        "bourbon": "*"
+    },
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "moduleType": [
+        "es6"
+    ]
 }

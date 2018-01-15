@@ -185,7 +185,8 @@
     Return the left (= x) position of an event
     *******************************************************************/
     function getEventLeft( event ){
-        return  event.pageX ? event.pageX :
+        return  event.gesture && event.gesture.center ? event.gesture.center.x :
+                event.pageX ? event.pageX :
                 event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length ? event.originalEvent.touches[0].pageX :
                 event.touches && event.touches.length ? event.touches[0].pageX :
                 0;
@@ -275,34 +276,43 @@
 
         this.events.on[EVENT](OnLabel)Func = event-functions for the grid or label
         Depending on whether the slider is normal or with fixed handle the
-        event for 'mousedown touchstart' and/or 'click' are different
+        event for 'press' and/or 'pressup/tap' are different
         The difference is necessary to prevent dragging a label in fixed-mode
         resulting in a click-on-label event
         *******************************************************************/
         this.events = {
             containerOnResize: $.proxy( this.containerOnResize, this ),
-            mousedown: false,
-            dragged  : false,
+//HER            mousedown: false,
+//HER            dragged  : false,
 
-            onMousedownFunc       : null,
-            onMousedownOnLabelFunc: null,
+            onPress_grid  : null,
+            onPressup_grid: null,
+            onTap_grid    : null,
 
-            onClickFunc       : null,
-            onClickOnLabelFunc: null
+            onPress_label  : null,
+//HER            onPressupOnLabelFunc: null
+            onPressup_label: null,
+            onTap_label: null
 
         };
 
         //Mousedown/touchstart/click on labels in the grid
         if (this.options.isFixed){
-            this.events.onMousedownFunc        = $.proxy( this.onMousedownOnGrid_fixed,  this );
-            this.events.onMousedownOnLabelFunc = $.proxy( this.onMousedownOnLabel_fixed,  this );
+            //Pressup or tap on grid => move slider to value
+            this.events.onPressup_grid = $.proxy( this.onClick_fixed, this );
+            this.events.onTap_grid     = this.events.onPressup_grid;
 
-            this.events.onClickFunc            = $.proxy( this.onClick_fixed, this );
-            this.events.onClickOnLabelFunc     = this.events.onClickFunc;
+//HER            this.events.onPress_label = $.proxy( this.onPressOnLabel_fixed,  this );
+            this.events.onPressup_label = this.events.onPressup_grid;
         }
         else {
-            this.events.onMousedownFunc        = $.proxy( this.onMousedownOnGrid, this );
-            this.events.onMousedownOnLabelFunc = $.proxy( this.onMousedownOnLabel, this );
+            //press and tap on grid => move handle to position
+            this.events.onPress_grid = $.proxy( this.onPressOnGrid, this );
+            this.events.onTap_grid   = this.events.onPress_grid;
+
+
+            this.events.onPress_label = $.proxy( this.onPressOnLabel, this );
+            this.events.onTap_label = this.events.onPress_label;
 
         }
 
@@ -705,7 +715,9 @@
             /****************************************************
             Create the line and optional colors (XXLineColor)
             ****************************************************/
+            this.cache.$lineBackground = $span('line-background', this.cache.$innerContainer);
             this.cache.$line = $span('line', this.cache.$innerContainer).prop('tabindex', -1);
+
             if (this.options.lineBackgroundColor)
                 this.cache.$line.css('background-color', this.options.lineBackgroundColor);
 
@@ -832,8 +844,8 @@
 
             this.eachHandle('remove');
 
-            offEvents( this.cache.$body, "touchmove mousemove" );
-            offEvents( this.cache.$window,   "touchend mouseup"   );
+            offEvents( this.cache.$body,   "touchmove mousemove"          );
+            offEvents( this.cache.$window, "touchend mouseup touchcancel" );
 
             //Unbind click on buttons
             $.each( this.cache.buttons, function( toOrFrom, buttonRecord ){
@@ -860,18 +872,21 @@
             }
             //*******************************************************************
 
-            //Add 'click' event to all relevant elements
-            if (this.options.clickable){
-                var $elementList = [ this.cache.$line, this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine, this.cache.$grid ];
-                $.each( $elementList, function( index, $element ){
+            //Add press-event to all relevant elements
+            if (this.options.clickable)
+                $.each( [ this.cache.$line, this.cache.$lineBackground, this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine, this.cache.$grid ], function( index, $element ){
                     if (!$element)
                         return;
+                    if (_this.events.onPress_grid){
+                        $element.on( 'press',  _this.events.onPress_grid );
+                        $element.data('hammer').get('press').set({time: 1});
+                    }
+                    if (_this.events.onPressup_grid)
+                        $element.on( 'pressup', _this.events.onPressup_grid );
 
-                    $element.on( 'mousedown touchstart', _this.events.onMousedownFunc );
-                    $element.on( 'click touchend',       _this.events.onClickFunc     );
-
+                    if (_this.events.onTap_grid)
+                        $element.on( 'tap', _this.events.onTap_grid );
                 });
-            }
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -892,7 +907,7 @@
             addEvents( this.cache.$body, "touchmove mousemove",  this.onMousemove );
 
             //Add mouse-up-event to window
-            addEvents( this.cache.$window,  "touchend mouseup", this.onMouseup   );
+            addEvents( this.cache.$window,  "touchend mouseup touchcancel", this.onMouseup   );
 
             //Add horizontal sliding with mousewheel
             if (this.options.mousewheel)
@@ -1306,11 +1321,11 @@
         },
 
         /*******************************************************************
-        onMousedownOnLabel
-        mousedown on a label when slider is normal
+        onPressOnLabel
+        press/mousedown on a label when slider is normal
         Move the nearest handle to the point where the mouse-down happen
         *******************************************************************/
-        onMousedownOnLabel: function( event ){
+        onPressOnLabel: function( event ){
             event.stopPropagation();
 
             var percent = NaN,
@@ -1325,12 +1340,31 @@
         },
 
         /*******************************************************************
-        onMousedownOnGrid
-        Called when click/mouse-down on the slider (line and grid)
+        onPressOnGrid
+        Called when press/mouse-down on the slider (line and grid)
         *******************************************************************/
-        onMousedownOnGrid: function(event) {
+        onPressOnGrid: function(event) {
             event.preventDefault();
             if (event.button === 2) return;
+
+            //First test if the event was on a label
+            var percent = NaN,
+                elem = event.gesture.target;
+
+            while (window.isNaN(percent) && !!elem && elem.getAttribute){
+                percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
+                elem = elem.parentNode;
+            }
+            if (!window.isNaN(percent)){
+                this.findAndSetNearestHandle( percent, event );
+                return
+            };
+
+
+
+
+
+
 
             this.currentPlugin = this.pluginCount;
 
@@ -1345,22 +1379,25 @@
         },
 
         /*******************************************************************
-        onMousedownOnGrid_fixed and onMousedownOnLabel_fixed
-        mousedown on a label or grid when slider is fixed
+        onPressOnGrid_fixed and onPressOnLabel_fixed
+        press/mousedown on a label or grid when slider is fixed
         Prevent onClick-event to be fired if the slider was dragged between
         mouse-down and mouse-up
         *******************************************************************/
-        onMousedownOnGrid_fixed: function( event ){
-            this.events.mousedown = true;
-            this.events.dragged   = false;
-            this.events.mouseLeft = getEventLeft( event );
-        },
-        onMousedownOnLabel_fixed: function( event ){
-            this.events.mousedown        = true;
-            this.events.dragged          = false;
-            this.events.mousedownOnLabel = true;
-            this.events.mouseLeft = getEventLeft( event );
-        },
+//HER        onPressOnGrid_fixed: function( event ){
+//this.events.mousedownOnLabel = false;
+//HER            this.events.mousedown = true;
+//HER            this.events.dragged   = false;
+//HER            this.events.mouseLeft = getEventLeft( event );
+//HER        },
+//HER        onPressOnLabel_fixed: function( event ){
+//HER            this.events.mousedownOnLabel = true;
+
+//HER            this.events.mousedown        = true;
+//HER            this.events.dragged          = false;
+//HER            this.events.mousedownOnLabel = true;
+//HER            this.events.mouseLeft = getEventLeft( event );
+//HER        },
 
 
         /*******************************************************************
@@ -1371,7 +1408,7 @@
         *******************************************************************/
         onClick_fixed: function( event ){
             event.stopPropagation();
-
+/*
             var abandon   = this.events.dragged && this.events.mousedown,
                 onLabel   = this.events.mousedownOnLabel,
                 mouseLeft = getEventLeft( event ) || this.events.mouseLeft;
@@ -1384,13 +1421,17 @@
 
             if (abandon)
                 return false;
-
-            if (onLabel)
-                //Fire normal onMousedown-event on label to move to the clicked label
-                this.onMousedownOnLabel( event );
+*/
+//HER            if (onLabel)
+            if (this.events.mousedownOnLabel){
+                //Fire normal onPress-event on label to move to the clicked label
+                this.events.mousedownOnLabel = false;
+                this.onPressOnLabel( event );
+            }
             else {
                 //Fire normal onMousedown-event on grid to move to the clicked point
-                mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
+//HER                mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
+                var mouseLeft = getEventLeft( event ) - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
                 this.findAndSetNearestHandle( 100 * mouseLeft / this.dimentions.containerWidth, event );
             }
         },
@@ -1747,9 +1788,18 @@
                 outer.setAttribute('data-base-slider-percent', outer.style.left);
 
                 //Add mousedown/touchstart and click events
-                result.addEventListener( 'mousedown',  this.events.onMousedownOnLabelFunc );
-                result.addEventListener( 'touchstart', this.events.onMousedownOnLabelFunc );
-                result.addEventListener( 'click',      this.events.onClickOnLabelFunc );
+//HER MANGLER                result.addEventListener( 'mousedown',  this.events.onMousedownOnLabelFunc );
+//HER                result.addEventListener( 'touchstart', this.events.onMousedownOnLabelFunc );
+//HER                result.addEventListener( 'click',      this.events.onPressup_label );
+/*
+$(result)
+    .on('press',   this.events.onPress_label   )
+    .on('pressup', this.events.onPressup_label )
+    .on('tap', this.events.onTap_label )
+
+    .data('hammer').get('press').set({time: 10});
+*/
+
 
                 className += ' clickable';
             }
