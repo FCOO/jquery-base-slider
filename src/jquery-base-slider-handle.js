@@ -49,6 +49,9 @@
         this.$handle = !!options.$handle; //Set to boolean. Created in this.append
         this.handleClassName = options.handleClassName || '';
         this.handleCSS = options.handleCSS || {};
+
+        this.markerData = options.markerData || {};
+
         this.markerClassName = options.marker;
         this.marker  = !!this.markerClassName;
 
@@ -93,16 +96,16 @@
                         .addClass(this.markerClassName)
                         .appendTo($container);
                 //Inner div
-                var $inner =
+                this.marker.$inner =
                         $('<div/>')
                             .addClass('marker')
                             .appendTo(this.marker.$outer);
                 this.marker.$text =
                         $('<span/>')
                             .addClass('marker-text')
-                            .appendTo($inner);
+                            .attr( this.markerData )
+                            .appendTo(this.marker.$inner);
             }
-
             return this;
         },
 
@@ -148,14 +151,19 @@
             return this;
         },
 
-        //onDragStart - overwriten for individual handle-types
-        onDragStart: function(){
+        //onFocus - overwriten for individual handle-types
+        onFocus: function(){
             this.$handle.addClass('hover');
+            if (this.marker && this.marker.$outer)
+                this.marker.$outer.addClass('hover');
+
         },
 
-        //onDragEnd - overwriten for individual handle-types
-        onDragEnd: function(){
+        //onBlur - overwriten for individual handle-types
+        onBlur: function(){
             this.$handle.removeClass('hover');
+            if (this.marker && this.marker.$outer)
+                this.marker.$outer.removeClass('hover');
         },
 
         //getMarkerText

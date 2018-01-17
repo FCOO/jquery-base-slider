@@ -9,12 +9,14 @@
     <meta name='copyright' content='FCOO'>
     <meta name='owner' content='FCOO'>
 
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <link  href="../src/jquery-base-slider.css" rel="stylesheet">
     <link  href="font-awesome.css" rel="stylesheet">
     <style>
         .slider-container {
             width  : 25rem;
-            max-width: 80%;
+            _max-width: 80%;
             height : 10rem;
             border : 0.12rem solid red;
             padding: .25rem;
@@ -170,13 +172,13 @@ test('START');
             handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, marker_frame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
-//*/
+
 
         //Ex #2
         createDemoSlider( '02', 'Normal', {
-            handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, markerFrame:true, _callback: function( result ){ console.log(result.value, result ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
+            handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
         })
-//*
+
         //Ex #3
         var vindGridColors = [
             {value: -99, color: "#003569"},
@@ -210,7 +212,7 @@ test('START');
         });
 
         createDemoSlider( '06', 'Step=5, Step-offset=3', {
-            min:0, max:100, value:23, majorTicks_offset:0, step:5, stepOffset:3, grid:true, showMinMax: true
+            min:0, max:100, value:23, step:5, stepOffset:3, grid:true, showMinMax: true
         });
 
         createDemoSlider( '07', 'Step=5, tick-offset=2, step-offset=3', {
@@ -218,7 +220,7 @@ test('START');
         });
 
         createDemoSlider( '08', 'Step=5, tick-offset=2, step-offset=3 and buttons', {
-            handle:'round', min:-99, max:120, value:20, majorTicksOffset:2, step:5, stepOffset:3, grid:true,
+            handle:'round', min:-100, max:120, value:20, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
             buttons: {
                 from: {
                     firstBtn   : 'btnFirst',

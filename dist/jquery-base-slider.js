@@ -49,6 +49,9 @@
         this.$handle = !!options.$handle; //Set to boolean. Created in this.append
         this.handleClassName = options.handleClassName || '';
         this.handleCSS = options.handleCSS || {};
+
+        this.markerData = options.markerData || {};
+
         this.markerClassName = options.marker;
         this.marker  = !!this.markerClassName;
 
@@ -93,16 +96,16 @@
                         .addClass(this.markerClassName)
                         .appendTo($container);
                 //Inner div
-                var $inner =
+                this.marker.$inner =
                         $('<div/>')
                             .addClass('marker')
                             .appendTo(this.marker.$outer);
                 this.marker.$text =
                         $('<span/>')
                             .addClass('marker-text')
-                            .appendTo($inner);
+                            .attr( this.markerData )
+                            .appendTo(this.marker.$inner);
             }
-
             return this;
         },
 
@@ -148,14 +151,19 @@
             return this;
         },
 
-        //onDragStart - overwriten for individual handle-types
-        onDragStart: function(){
+        //onFocus - overwriten for individual handle-types
+        onFocus: function(){
             this.$handle.addClass('hover');
+            if (this.marker && this.marker.$outer)
+                this.marker.$outer.addClass('hover');
+
         },
 
-        //onDragEnd - overwriten for individual handle-types
-        onDragEnd: function(){
+        //onBlur - overwriten for individual handle-types
+        onBlur: function(){
             this.$handle.removeClass('hover');
+            if (this.marker && this.marker.$outer)
+                this.marker.$outer.removeClass('hover');
         },
 
         //getMarkerText
@@ -428,8 +436,8 @@
         labelColors       : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
 
         //Marker above handle
-        showMinMax: false,    // Show min and max markers
-        showFromTo: true,     // Show from and to markers
+        showMinMax : false,    // Show min and max markers
+        showFromTo : true,     // Show from and to markers
         markerFrame: false,    // Frame the from- and to-marker
 
         //Adjust labels and markers
@@ -533,13 +541,28 @@
     Return true if obj1 and obj2 are not equal
     *******************************************************************/
     function objectsAreDifferent( obj1, obj2 ){
-        var result = false;
+        var result = false,
+            props = Object.getOwnPropertyNames(obj1).concat( Object.getOwnPropertyNames(obj2) );
+
+        $.each( props, function( index, id ){
+            var type1 = $.type(obj1[id]),
+                type2 = $.type(obj2[id]);
+
+            result =
+                result ||
+                (   ((type1 == 'number') || (type2 == 'number')) && //One or both are number AND
+                    ((type1 != type2) || (obj1[id] != obj2[id]))    //type are different OR value are different
+                );
+        });
+
+/*
         $.each( obj1, function( id, value ){
             result = result || (obj2[id] !== value);
         });
         $.each( obj2, function( id, value ){
             result = result || (obj1[id] !== value);
         });
+*/
         return result;
     }
 
@@ -560,12 +583,11 @@
 
         this.input          = input;
         this.pluginCount   = pluginCount;
-        this.currentPlugin = 0;
 
         this.htmlFontSize = htmlFontSize;
 
         this.initializing     = true;
-        this.draggingHandle   = null;
+        this.currentHandle    = null;
         this.isRepeatingClick = false;
 
 
@@ -672,6 +694,11 @@
         ********************************************************************
         *******************************************************************/
 
+        valueToPercent: function( value ){
+            return (value - this.options.min) * 100 / (this.options.max - this.options.min);
+        },
+
+
         /*******************************************************************
         init
         *******************************************************************/
@@ -702,6 +729,10 @@
 
             this.options.hasPin = (this.options.pinValue !== null);
 
+            this.options.fromMin = this.options.fromMin === null ? this.options.min : this.options.fromMin;
+            this.options.fromMax = this.options.fromMax === null ? this.options.max : this.options.fromMax;
+            this.options.toMin = this.options.toMin === null ? this.options.min : this.options.toMin;
+            this.options.toMax = this.options.toMax === null ? this.options.max : this.options.toMax;
 
 
             /*******************************************************************
@@ -709,10 +740,9 @@
             this.dimentions_old is the last values
             *******************************************************************/
             this.dimentions = {
-                containerWidth          :  0, //Width of the container [px]
-                containerWidthRem       :  0, //Width of the container [rem]
-                outerContainerWidthRem  :  0, //Width of outer container [rem]
-                innerContainerOffsetLeft: -1, //Absolute left position of the slider
+                containerWidth          :  0,   //Width of the container [px]
+                containerWidthRem       :  0,   //Width of the container [rem]
+                outerContainerWidthRem  :  0    //Width of outer container [rem]
             };
 
             this.dimentions_old = $.extend({}, this.dimentions );
@@ -741,6 +771,10 @@
             *******************************************************************/
             function addSliderHandle( options ){
                 options.slider = _this;
+                if (options.inclDataPercent)
+                    options.markerData = {
+                        'data-base-slider-percent': _this.valueToPercent(options.value.value)
+                    };
                 _this.handles[options.id] = ns.sliderHandle(options);
             }
 
@@ -761,7 +795,8 @@
             addSliderHandle({
                 id    : 'handleMin',
                 value : { value:this.options.min + this.options.stepOffset },
-                marker: minMaxMarker
+                marker: minMaxMarker,
+                inclDataPercent: true,
             });
 
             //handleMax = Highest value for any handle
@@ -769,7 +804,9 @@
             addSliderHandle({
                 id    : 'handleMax',
                 value : { value:this.handles.handleMin.value.value + maxSteps*this.options.step },
-                marker: minMaxMarker
+                marker: minMaxMarker,
+                inclDataPercent: true,
+
             });
 
             var singleFromToMarker = this.options.showFromTo ? 'single-from-to' + (this.options.markerFrame ? ' frame' : '') : '';
@@ -815,20 +852,20 @@
                     marker : singleFromToMarker
                 });
 
-                //Set onDragStart for from- and to-handle
-                var onDragStart = function (onDragStart) {
+                //Set onFocus for from- and to-handle
+                var onFocus = function (onFocus) {
                     return function () {
                         //Original function/method
-                        onDragStart.apply(this, arguments);
+                        onFocus.apply(this, arguments);
 
                         //Extra
                         _this.cache.$container.find('.type-last').removeClass('type-last');
                         this.$handle.addClass('type-last');
                     };
-                } (ns.SliderHandle.prototype.onDragStart);
+                } (ns.SliderHandle.prototype.onFocus);
 
-                this.handles.from.onDragStart = onDragStart;
-                this.handles.to.onDragStart   = onDragStart;
+                this.handles.from.onFocus = onFocus;
+                this.handles.to.onFocus   = onFocus;
 
                 //Add min and max-value to from- and to-handle
                 this.handles.from.value.addMax( this.handles.to.value, this.options.intervalMin );
@@ -910,7 +947,7 @@
             this.mouse = a special version representing the position of
             the mouse/pointer relative to the slider: value 0-width of line, percent: 0-100
 
-            The offsets are set in this.onMousedown
+            The offsets are set in this.onPanstart
 
             this.mouse.valueOffset is allways set to the left-position of the slider
             this.mouse.valueRange is allways set to width of the slider
@@ -1104,14 +1141,12 @@
                     this.cache.$input.prop('disabled', true);
                 }
                 else {
-                    if (!this.options.handleFixed)
-                        this.cache.$container.addClass("active");
+                    this.cache.$container.addClass("active");
                     this.cache.$input.prop('disabled', false);
                     this.bindEvents();
                 }
             if (!this.options.clickable || this.options.handleFixed)
                 this.cache.$container.addClass("not-clickable");
-
 
             this.isBuild = true;
         }, //end of build
@@ -1166,6 +1201,7 @@
                 $.each( eventNames.split(' '), function( index, eventName ){
                     $elem.on( eventName + ".irs_" + _this.pluginCount,  func );
                 });
+                return $elem;
             }
             //*******************************************************************
 
@@ -1177,16 +1213,20 @@
             resulting in a click-on-label event
             */
             if (this.options.clickable){
-                var onTapFunc = $.proxy( this.onTap, this );
-                this.cache.$container.on( 'tap', onTapFunc );
-
                 if (this.options.isFixed)
-                    this.cache.$container.on( 'pressup', onTapFunc );
-                else
-                    this.cache.$container
-                        .on( 'press',  onTapFunc )
+                    addEvents( this.cache.$container, 'tap pressup', this.onTap );
+                else {
+                    addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
+                    addEvents( this.cache.$container, 'tap press', this.onTap )
                         .data('hammer').get('press').set({time: 1});
-           };
+                }
+
+                var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
+                addEvents( $panElement, 'panstart',         this.onPanstart );
+                addEvents( $panElement, 'pan',              this.onPan      );
+                addEvents( $panElement, 'panend pancancel', this.onPanend   )
+                    .data('hammer').get('pan').set({ threshold: 1 });
+           }
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1195,19 +1235,6 @@
                 else
                     this.cache.$container.resize( this.events.containerOnResize );
             }
-
-            //Add mousedown (=start dragging) to the handles
-            $.each( this.handles, function( id, handle ){
-                //Special verison for fixed: dragging the container
-                if (handle.$handle)
-                    addEvents( id == 'fixed' ? _this.cache.$fullWidthContainer : handle.$handle, "touchstart mousedown", _this.onMousedown, id );
-            });
-
-            //Add mouse-move-event to body
-            addEvents( this.cache.$body, "touchmove mousemove",  this.onMousemove );
-
-            //Add mouse-up-event to window
-            addEvents( this.cache.$window,  "touchend mouseup touchcancel", this.onMouseup   );
 
             //Add horizontal sliding with mousewheel
             if (this.options.mousewheel)
@@ -1267,9 +1294,8 @@
         *******************************************************************/
         getDimentions: function(){
             var result = {};
-            result.containerWidth           = this.cache.$container.innerWidth() || this.dimentions.containerWidth;
-            result.containerWidthRem        = pxToRem(result.containerWidth),
-            result.innerContainerOffsetLeft = this.cache.$innerContainer.offset().left;
+            result.containerWidth    = this.cache.$container.innerWidth() || this.dimentions.containerWidth;
+            result.containerWidthRem = pxToRem(result.containerWidth);
             if (this.options.isFixed)
                 result.outerContainerWidthRem = pxToRem( this.cache.$outerContainer.innerWidth() );
 
@@ -1296,7 +1322,7 @@
                         var _this = this,
                             rebuild = false,
                             newGridOptions = this.getGridOptions(),
-                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes HER
+                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
 
                         $.each( idList, function( index, id ){
                             rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
@@ -1332,28 +1358,6 @@
         },
 
         /*******************************************************************
-        findNearestHandle
-        Return the handle nearst to mousePosition
-        *******************************************************************/
-        findAndSetNearestHandle: function( newPercent, event ){
-            var nearestHandleId = '';
-            if (this.options.isFixed)
-                nearestHandleId = 'fixed';
-            else if (this.options.isSingle)
-                nearestHandleId = 'single';
-            else
-                nearestHandleId =
-                    newPercent >= 0.5*(this.handles.from.value.percent + this.handles.to.value.percent) ? 'to' : 'from';
-
-            this.handles[nearestHandleId].value.setPercent( newPercent );
-
-            if (event.type != 'click')
-                this.onMousedown( nearestHandleId, event );
-
-            this.updateHandlesAndLines();
-        },
-
-        /*******************************************************************
         onFontSizeChange
         Called when the font-size of the browser is changed
         *******************************************************************/
@@ -1368,6 +1372,9 @@
             }
         },
 
+        /*******************************************************************
+        KEY, WHEEL AND BUTTON EVENTS
+        *******************************************************************/
         /*******************************************************************
         startRepeatingClick
         *******************************************************************/
@@ -1389,7 +1396,7 @@
         Event keydown
         *******************************************************************/
         key: function(event) {
-            if (this.currentPlugin !== this.pluginCount || event.altKey || event.metaKey) return;
+            if (event.altKey || event.metaKey) return;
 
             var options;
 
@@ -1531,13 +1538,17 @@
             return true;
         },
 
+
+        /*******************************************************************
+        TAP AND PAN EVENTS
+        *******************************************************************/
         /*******************************************************************
         updateMouse
-        Reste this.mouse based on mouse-position from mouseLeft
+        Reset this.mouse based on mouse-position from mouseLeft
         *******************************************************************/
         updateMouse: function ( mouseLeft ) {
-            // this.mouse.valueOffset is set to the left-position of the slider
-            this.mouse.valueOffset = this.dimentions.innerContainerOffsetLeft;
+            // this.mouse.valueOffset is set to the left-position of the slider incl scrolling
+            this.mouse.valueOffset = this.cache.$innerContainer.get(0).getBoundingClientRect().x;
 
             //this.mouse.valueRange is set to width of the slider
             this.mouse.valueRange = this.dimentions.containerWidth;
@@ -1549,42 +1560,126 @@
         },
 
         /*******************************************************************
-        onMousedown
-        When the slider or any of the handle is 'touch'
+        onTap
+        Called when tap and press/pressup on the slider (line and grid)
         *******************************************************************/
-        onMousedown: function ( handleId, event ) {
+        onTap: function(event) {
+            var _this = this,
+                percent = NaN, // = the percent to set this.currentHandle
+                elem    = event.gesture.target;
+
             event.preventDefault();
-            if (event.button === 2) return;
+            event.stopImmediatePropagation();
 
-            this.currentPlugin = this.pluginCount;
-
-            this.draggingHandle = this.handles[handleId];
-            if (this.draggingHandle)
-                this.draggingHandle.onDragStart();
+            this.currentHandleBlur();
 
 
-            var mouseLeft = getEventLeft(event);
+            //First check if the tap was on a handle or the marker of a handler
+            if (!this.options.isFixed)
+                $.each( this.handles, function( id, handle ){
+                    if ( handle.$handle &&
+                         (  (handle.$handle.get(0) == elem) ||
+                            (handle.marker && handle.marker.$text && (handle.marker.$text.get(0) == elem))
+                         )
+                        ){
+                        _this.currentHandle = handle;
+                        percent = handle.value.percent;
+                        return true;
+                    }
+                });
 
-            //Save initial mouse position to calc reverse mouse movment
-            if (this.options.isFixed)
-                this.options.mouseLeftStart = mouseLeft;
+            //If not on a handle: Test if the tap was on a label
+            if (window.isNaN(percent))
+                while (window.isNaN(percent) && !!elem && elem.getAttribute){
+                    percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
+                    elem = elem.parentNode;
+                }
 
-            //Updates this.mouse
-            this.updateMouse( mouseLeft );
+            //If not on a handle and not on a label: Find percent according to mouse-position
+            if (window.isNaN(percent)){
+                var mouseLeft = getEventLeft( event );
+                if (this.options.isFixed){
+                    mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
+                    percent = 100 * mouseLeft / this.dimentions.containerWidth;
+                }
+                else {
+                    this.updateMouse( mouseLeft );
+                    percent = this.mouse.percent;
+                }
+            }
 
-            //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
-            //Now this.mouse.getPercent() => 'true' new percent-value for the handle
-            this.mouse.percentOffset = this.draggingHandle.value.percent - this.mouse.percent;
-            this.mouse.update();
+            //Find this.currentHandle = the handle to move by pan-events
+            if (!this.currentHandle){
+                if (this.options.isFixed)
+                    this.currentHandle = this.handles.fixed;
+                else if (this.options.isSingle)
+                    this.currentHandle = this.handles.single;
+                else {
+                    //Find the nearest of from- and to-handle
+                    this.currentHandle =
+                        percent >= 0.5*(this.handles.from.value.percent + this.handles.to.value.percent) ?
+                        this.handles.to :
+                        this.handles.from;
+
+                    //Check for special case:
+                    //If tap between from- and to-handle AND the nearest handle is at its max (from-hande) or min (to-handle) =>
+                    //Switch to the other handle if the other isn't at min/max
+                    var fromAtMax = this.handles.from.value.value == this.options.fromMax,
+                        toAtMin   = this.handles.to.value.value   == this.options.toMin;
+                    if ((percent > this.handles.from.value.percent) && (percent < this.handles.to.value.percent))
+                        if (
+                             ( (this.currentHandle.id == 'from') && fromAtMax && !toAtMin) ||
+                             ( (this.currentHandle.id == 'to')   && toAtMin && !fromAtMax  )
+                            )
+                            this.currentHandle = this.currentHandle.id == 'from' ? this.handles.to : this.handles.from;
+                }
+            }
+
+            //Update handle and marker with class=".. hover" if it is a press-event
+            if (event.type == 'press')
+                this.currentHandle.onFocus();
+
+            //Update the handle with the new percent
+            this.currentHandle.value.setPercent( percent );
+            this.updateHandlesAndLines();
             this.cache.$line.trigger("focus");
+
+
+
         },
 
         /*******************************************************************
-        onMousemove
-        Called when a handle is moved/dragged
+        onPanstart
+        When the slider or any of the handle is beeing panned
         *******************************************************************/
-        onMousemove: function ( event ) {
-            if (!this.draggingHandle) return;
+        onPanstart: function( event ){
+            if (this.options.isFixed)
+                this.currentHandle = this.handles.fixed;
+
+            if (this.currentHandle){
+                var mouseLeft = getEventLeft(event);
+
+                //Save initial mouse position to calc reverse mouse movment
+                if (this.options.isFixed)
+                    this.options.mouseLeftStart = mouseLeft;
+
+                //Updates this.mouse
+                this.updateMouse( mouseLeft );
+
+                //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
+                //Now this.mouse.getPercent() => 'true' new percent-value for the handle
+                this.mouse.percentOffset = this.currentHandle.value.percent - this.mouse.percent;
+                this.mouse.update();
+                this.cache.$line.trigger("focus");
+            }
+        },
+
+        /*******************************************************************
+        onPan
+        Called when a handle is moved/panned
+        *******************************************************************/
+        onPan: function( event ){
+            if (!this.currentHandle) return;
 
             var mouseLeft = getEventLeft( event );
 
@@ -1596,65 +1691,23 @@
             this.mouse.setValue( mouseLeft );
 
             //Set new position of handle being dragged
-            var oldPercent = this.draggingHandle.value.percent;
-            this.draggingHandle.value.setPercent( this.mouse.percent );
+            var oldPercent = this.currentHandle.value.percent;
+            this.currentHandle.value.setPercent( this.mouse.percent );
 
-            if (oldPercent != this.draggingHandle.value.percent){
+            if (oldPercent != this.currentHandle.value.percent){
                 this.cache.$container.addClass('dragging');
-                this.events.dragged = true;
                 this.updateHandlesAndLines();
             }
+
         },
 
-
         /*******************************************************************
-        onMouseup
+        onPanend
+        Called when a dragging of a handle is stopped
         *******************************************************************/
-        onMouseup: function (/*event*/) {
-            if (!this.draggingHandle || (this.currentPlugin !== this.pluginCount))
-                return;
-
-            if (this.draggingHandle)
-                this.draggingHandle.onDragEnd();
+        onPanend: function( /*event*/ ){
             this.cache.$container.removeClass('dragging');
-            this.draggingHandle = null;
-        },
-
-        /*******************************************************************
-        onTap
-        Called when tap and press/pressup on the slider (line and grid)
-        *******************************************************************/
-        onTap: function(event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-
-            if (event.button === 2) return;
-
-            //First test if the event was on a label
-            var percent = NaN,
-                elem = event.gesture.target;
-
-            while (window.isNaN(percent) && !!elem && elem.getAttribute){
-                percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
-                elem = elem.parentNode;
-            }
-
-            //If not on a label: Set value according to mouse-position
-            if (window.isNaN(percent)){
-                if (this.options.isFixed){
-                    var mouseLeft = getEventLeft( event ) - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
-                    percent = 100 * mouseLeft / this.dimentions.containerWidth;
-                }
-                else {
-                    this.updateMouse( getEventLeft(event) );
-                    percent = this.mouse.percent;
-                }
-            }
-
-            //Find the handle to move to the mouse-position
-            this.findAndSetNearestHandle( percent, event );
-
-            this.cache.$line.trigger("focus");
+            this.currentHandleBlur();
         },
 
 
@@ -1673,6 +1726,17 @@
             this.cache.$centerLineColor.css( 'background-color', this.options.impactLineColors.yellow );
             this.cache.$rightLineColor.css ( 'background-color', this.options.impactLineColors[ this.options.reverseImpactLineColor ? 'green' : 'red' ] );
         },
+
+        /*******************************************************************
+        currentHandleBlur
+        *******************************************************************/
+        currentHandleBlur: function () {
+            if (this.currentHandle)
+                this.currentHandle.onBlur();
+            this.currentHandle = null;
+        },
+
+
 
 
         /*******************************************************************
@@ -1842,7 +1906,7 @@
         *******************************************************************/
         onChanging: function(){
             //If it is dragging and onChangeOnDragging == false => set timeout to call onChange after XX ms if the handle hasn't moved
-            if (this.draggingHandle && !this.options.onChangeOnDragging && this.options.onChangeDelay){
+            if (this.currentHandle && !this.options.onChangeOnDragging && this.options.onChangeDelay){
                 if (this.onChangeDelayTimeout)
                     window.clearTimeout(this.onChangeDelayTimeout);
                 var _this = this;
@@ -1853,7 +1917,7 @@
                     );
             }
 
-            if ( this.options.onChangeOnDragging || (!this.isRepeatingClick && !this.draggingHandle) )
+            if ( this.options.onChangeOnDragging || (!this.isRepeatingClick && !this.currentHandle) )
                 this.onChange();
             this.updateResult();
             this.on('changing');
@@ -2185,6 +2249,7 @@
                 valueP, valueOffset;
 
             while (value <= o.max){
+
                 valueOffset = (value - o.majorTicksOffset)*o.majorTicksFactor;
                 if (valueOffset % o.tickDistanceNum === 0){
                     valueP = (value-o.min)*o.oneP;

@@ -124,6 +124,8 @@ COMMON STYLE
     .base-slider-container .marker-outer.single-from-to.frame .marker-text {
       background: white;
       border: 0.0625rem solid black; }
+  html.no-touchevents .base-slider-container.active .marker-outer:hover.single-from-to.frame .marker-text, html.no-touchevents .base-slider-container.active .marker-outer:hover.min-max .marker-text, html.no-touchevents .base-slider-container.active .marker-outer.hover.single-from-to.frame .marker-text, html.no-touchevents .base-slider-container.active .marker-outer.hover.min-max .marker-text {
+    border-color: #007bff; }
 
 .grid {
   position: absolute;
@@ -159,14 +161,7 @@ COMMON STYLE
       height: 100%;
       margin-left: -50%;
       padding: 0;
-      padding-top: 0.125rem;
-      /* Moved outside
-            &.clickable:hover {
-                .grid-label-text {
-                    border-color: #007bff;
-                }
-            }
-*/ }
+      padding-top: 0.125rem; }
       .grid .grid-label-outer .grid-label .grid-label-text {
         display: inline-block;
         box-sizing: border-box;
@@ -217,7 +212,7 @@ COMMON STYLE
       border-bottom-width: 0.28125rem;
       border-right: 0.5625rem solid black; }
 
-html.no-touchevents .base-slider-container:not(.dragging) .grid-label.clickable:hover .grid-label-text {
+html.no-touchevents .base-slider-container.active:not(.dragging) .grid-label.clickable:hover .grid-label-text {
   border-color: #007bff; }
 
 .disabled {
@@ -258,7 +253,7 @@ STYLE FOR SPECIFIC TYPE
     height: 1.375rem;
     margin-left: -0.4230769231rem;
     background-image: url("images/handle.horizontal.svg"); }
-  html.no-touchevents .base-slider-container.horizontal.active .handle.hover, html.no-touchevents .base-slider-container.horizontal.active .handle:hover {
+  html.no-touchevents .base-slider-container.horizontal.active .handle:hover, html.no-touchevents .base-slider-container.horizontal.active .handle.hover {
     background-image: url("images/handle.horizontal.hover.svg"); }
   .base-slider-container.horizontal .pin {
     top: 1.770625rem; }
@@ -293,7 +288,7 @@ STYLE FOR SPECIFIC TYPE
     height: 0.8461538462rem;
     margin-left: -0.6875rem;
     background-image: url("images/handle.vertical.svg"); }
-  html.no-touchevents .base-slider-container.vertical.active .handle.hover, html.no-touchevents .base-slider-container.vertical.active .handle:hover {
+  html.no-touchevents .base-slider-container.vertical.active .handle:hover, html.no-touchevents .base-slider-container.vertical.active .handle.hover {
     background-image: url("images/handle.vertical.hover.svg"); }
   .base-slider-container.vertical .pin {
     top: 1.5062019231rem; }
@@ -328,7 +323,7 @@ STYLE FOR SPECIFIC TYPE
     height: 1.375rem;
     margin-left: -0.4275618375rem;
     background-image: url("images/handle.down.svg"); }
-  html.no-touchevents .base-slider-container.down.active .handle.hover, html.no-touchevents .base-slider-container.down.active .handle:hover {
+  html.no-touchevents .base-slider-container.down.active .handle:hover, html.no-touchevents .base-slider-container.down.active .handle.hover {
     background-image: url("images/handle.down.hover.svg"); }
   .base-slider-container.down .pin {
     top: 1.770625rem; }
@@ -363,7 +358,7 @@ STYLE FOR SPECIFIC TYPE
     height: 1.375rem;
     margin-left: -0.4275618375rem;
     background-image: url("images/handle.up.svg"); }
-  html.no-touchevents .base-slider-container.up.active .handle.hover, html.no-touchevents .base-slider-container.up.active .handle:hover {
+  html.no-touchevents .base-slider-container.up.active .handle:hover, html.no-touchevents .base-slider-container.up.active .handle.hover {
     background-image: url("images/handle.up.hover.svg"); }
   .base-slider-container.up .pin {
     top: 1.770625rem; }
@@ -398,7 +393,7 @@ STYLE FOR SPECIFIC TYPE
     height: 0.8551236749rem;
     margin-left: -0.6875rem;
     background-image: url("images/handle.right.svg"); }
-  html.no-touchevents .base-slider-container.right.active .handle.hover, html.no-touchevents .base-slider-container.right.active .handle:hover {
+  html.no-touchevents .base-slider-container.right.active .handle:hover, html.no-touchevents .base-slider-container.right.active .handle.hover {
     background-image: url("images/handle.right.hover.svg"); }
   .base-slider-container.right .pin {
     top: 1.5106868375rem; }
@@ -433,7 +428,7 @@ STYLE FOR SPECIFIC TYPE
     height: 0.8551236749rem;
     margin-left: -0.6875rem;
     background-image: url("images/handle.left.svg"); }
-  html.no-touchevents .base-slider-container.left.active .handle.hover, html.no-touchevents .base-slider-container.left.active .handle:hover {
+  html.no-touchevents .base-slider-container.left.active .handle:hover, html.no-touchevents .base-slider-container.left.active .handle.hover {
     background-image: url("images/handle.left.hover.svg"); }
   .base-slider-container.left .pin {
     top: 1.5106868375rem; }
@@ -468,7 +463,7 @@ STYLE FOR SPECIFIC TYPE
     height: 1.125rem;
     margin-left: -0.5625rem;
     background-image: url("images/handle.round.svg"); }
-  html.no-touchevents .base-slider-container.round.active .handle.hover, html.no-touchevents .base-slider-container.round.active .handle:hover {
+  html.no-touchevents .base-slider-container.round.active .handle:hover, html.no-touchevents .base-slider-container.round.active .handle.hover {
     background-image: url("images/handle.round.hover.svg"); }
   .base-slider-container.round .pin {
     top: 1.645625rem; }
