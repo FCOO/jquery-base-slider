@@ -616,10 +616,10 @@
             *******************************************************************/
             this.mouse = ns.sliderValue({ slider: this, value: 0 });
 
-//TODO: Mangler overskrift og evt nye navne
-//HER
+            //options used to calculate grid and labels
             this.options.total  = this.options.max - this.options.min;
-            this.options.oneP  = 100 / (this.options.max - this.options.min);//MANGLER
+            this.options.range  = this.options.max - this.options.min;
+            this.options.percentProValue = 100 / (this.options.max - this.options.min);
 
 
 
@@ -1828,7 +1828,7 @@
 
             result.gridContainerWidthRem = pxToRem( this.cache.$grid.outerWidth(false) );
             result.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-            result.stepRem = o.step*result.gridContainerWidthRem/o.total  / o.majorTicksFactor;
+            result.stepRem = o.step * result.gridContainerWidthRem / o.range / o.majorTicksFactor;
 
             //Increse grid-distance until the space between two ticks are more than 4px
             while ( (result.stepRem*result.gridDistanceStep) <= o.minDistanceRem){
@@ -1908,7 +1908,7 @@
 
                 valueOffset = (value - o.majorTicksOffset)*o.majorTicksFactor;
                 if (valueOffset % o.tickDistanceNum === 0){
-                    valueP = (value-o.min)*o.oneP;
+                    valueP = (value-o.min)*o.percentProValue;
                     if (valueOffset % o.majorTickDistanceNum === 0){
                         //add major tick and text/label
                         this.appendTick( valueP, tickOptions );
