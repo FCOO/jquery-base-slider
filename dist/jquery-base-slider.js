@@ -670,13 +670,9 @@
         this.cache = record with all DOM-elements or jQuery-objects
         *******************************************************************/
         this.cache = {
-            $window: $(window),
-            $body  : $(document.body),
             $input : $(this.input),
             buttons: { from: {}, to: {} }
         };
-
-
 
         //Ready to be build
         this.init();
@@ -1176,9 +1172,6 @@
 
             this.eachHandle('remove');
 
-            offEvents( this.cache.$body,   "touchmove mousemove"          );
-            offEvents( this.cache.$window, "touchend mouseup touchcancel" );
-
             //Unbind click on buttons
             $.each( this.cache.buttons, function( toOrFrom, buttonRecord ){
                 $.each( buttonRecord, function( id, $btn ){
@@ -1248,9 +1241,9 @@
             addEvents( this.cache.$line, "keydown", this.key );
 
             //Bind click on buttons
-            $.each( this.cache.buttons, function( toOrFrom, buttonRecord ){
+            $.each( this.cache.buttons, function( fromOrTo, buttonRecord ){
                 $.each( buttonRecord, function( id, $btn ){
-                    var options = _this.options.buttonOptions[id];
+                    var options = $.extend({handleId: fromOrTo}, _this.options.buttonOptions[id]);
                     addEvents( $btn, 'mousedown',  _this.startRepeatingClick                         );
                     addEvents( $btn, 'mouseup',    _this.endRepeatingClick                           );
                     addEvents( $btn, 'mouseleave', _this.endRepeatingClick,                  true    );
@@ -1485,11 +1478,11 @@
 
             delta = options.sign*delta;
 
-
             //Find handle and new value depending on type and direction
             var handle =
                     this.options.isFixed ? this.handles.fixed :
                     this.options.isSingle ? this.handles.single :
+                    options.handleId && this.handles[options.handleId] ? this.handles[options.handleId] :
                     delta < 0 ? this.handles.from :
                     this.handles.to,
                 oldValue = handle.value.value,
@@ -1506,8 +1499,8 @@
                 case  -3: newValue = oldValue - this.options.keyboardPageStepFactor * this.options.step; break;
             }
 
-            //If the slider has two handle both handles are moved euqal distance to keep the distance between them constant
-            if (this.options.isInterval){
+            //If the slider has two handle and both handles are moved: Move euqal distance to keep the distance between them constant
+            if (!options.handleId && this.options.isInterval){
                 var _this = this;
                 //1: Find possible max delta for both from- and to-value
                 var fromValue = this.handles.from.value,
@@ -1878,6 +1871,13 @@
         },
 
         /*******************************************************************
+        preOnChanging - Called before onChanging
+        *******************************************************************/
+        preOnChanging: function( /* result */ ){
+            //Nothing here but desencing class can overwrite it
+        },
+
+        /*******************************************************************
         on Call the callback-function set by options.onID
         *******************************************************************/
         on: function( id ){
@@ -1920,6 +1920,7 @@
             if ( this.options.onChangeOnDragging || (!this.isRepeatingClick && !this.currentHandle) )
                 this.onChange();
             this.updateResult();
+            this.preOnChanging( this.result );
             this.on('changing');
         },
 

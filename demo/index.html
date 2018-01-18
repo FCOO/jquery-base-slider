@@ -115,11 +115,17 @@
             <br>
             <br>
             <br>
-            <button id="btnFirst">First</button>
-            <button id="btnPrev">Previous</button>
-            <button id="btnNow">"Zero"</button>
-            <button id="btnNext">Next</button>
-            <button id="btnLast">Last</button>
+            <button id="btnFromFirst">From:First</button>
+            <button id="btnFromPrev">From:Previous</button>
+            <button id="btnFromNow">"From:Zero"</button>
+            <button id="btnFromNext">From:Next</button>
+            <button id="btnFromLast">From:Last</button>
+            <br>
+            <button id="btnToFirst">To:First</button>
+            <button id="btnToPrev">To:Previous</button>
+            <button id="btnToNow">"To:Zero"</button>
+            <button id="btnToNext">To:Next</button>
+            <button id="btnToLast">To:Last</button>
         </div>
 
     </div>
@@ -220,15 +226,23 @@ test('START');
         });
 
         createDemoSlider( '08', 'Step=5, tick-offset=2, step-offset=3 and buttons', {
-            handle:'round', min:-100, max:120, value:20, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
+            type:"double", handle:'round', min:-100, max:120, from: -20, to:20, value:40, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
             buttons: {
                 from: {
-                    firstBtn   : 'btnFirst',
-                    previousBtn: 'btnPrev',
-                    nowBtn     : 'btnNow',
-                    nextBtn    : 'btnNext',
-                    lastBtn    : 'btnLast'
+                    firstBtn   : 'btnFromFirst',
+                    previousBtn: 'btnFromPrev',
+                    nowBtn     : 'btnFromNow',
+                    nextBtn    : 'btnFromNext',
+                    lastBtn    : 'btnFromLast'
+                },
+                to: {
+                    firstBtn   : 'btnToFirst',
+                    previousBtn: 'btnToPrev',
+                    nowBtn     : 'btnToNow',
+                    nextBtn    : 'btnToNext',
+                    lastBtn    : 'btnToLast'
                 }
+
             }
         });
 //*/
