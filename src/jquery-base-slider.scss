@@ -75,12 +75,15 @@ $range-value-line-top: $marker-height;
 $tick-width       : myRem(1px);
 $tick-height-minor: $line-height;
 $tick-height      : 1.5 * $tick-height-minor;
-$label-font-size  : myRem(9px);
+$label-font-size  : myRem(10px);
 $margin           : myRem(2px);
 
 $text-padding    : $line-border-radius;
-$label-height    : $margin + $border-width + $text-padding + $label-font-size + $text-padding + $border-width + $margin;
 
+$label-inner-height: $label-font-size;
+$label-height      : $border-width + $text-padding + $label-inner-height + $text-padding + $border-width;
+
+$label-between-ticks-height: $label-inner-height;
 
 $box-shadow: 1px 1px 1px 0px rgba(255,255,255,0.75), -1px 1px 1px 0px rgba(255,255,255,0.75);
 
@@ -261,13 +264,6 @@ COMMON STYLE
     width   : 100%;
     height  : $tick-height + $label-height;
 
-    &.label-between-ticks {
-        height: $margin + max($tick-height, $label-height);
-        .grid-label-outer {
-            top: 0;
-        };
-    }
-
     .grid-pol {
         position  : absolute;
         z-index   : 2;
@@ -295,21 +291,43 @@ COMMON STYLE
             height     : 100%;
             margin-left: -50%;
             padding    : 0;
-            padding-top: $margin;
 
             .grid-label-text {
                 display      : inline-block;
                 box-sizing   : border-box;
                 line-height  : 1;
+                height       : 100%;
                 padding      : $text-padding;
                 border       : $border-width solid transparent;
                 border-radius: $marker-border-radius;
+
                 &.frame {
                     border-color: $border-color;
                 }
             }
         }
     }
+
+    //Special version for grid.label-between-ticks
+    &.label-between-ticks {
+        height: max($tick-height, $label-between-ticks-height);
+        .grid-label-outer {
+            top   : 0;
+            height: $label-between-ticks-height;
+
+            .grid-label {
+                .grid-label-text {
+                    padding      : 0;
+                    border-radius: 0;
+                    border       : 0;
+                }
+            }
+        }
+    }
+
+
+
+
 
     //Text-style for grid-label outside .grid-label-outer to allow used with textElement in BaseSlider
     .grid-label {

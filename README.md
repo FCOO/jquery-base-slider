@@ -21,7 +21,6 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | `readOnly` | `false` | `boolean` | Locks slider and makes it inactive. | 
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `handleFixed` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.valueDistances` must be provided | 
-| `clickable` | `true` | `boolean` | Allows click on labels and line. Default = `true` except for `handleFixed:true` where default = `false` | 
 | `mousewheel` | `true` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
 | `resizable` | `false` | `boolean` | If `true` the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width | 
 
@@ -73,8 +72,6 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | `showImpactLineColor` | `false` | `boolean` | The line on a double slider is coloured as<br>green-[slider]-yellow-[slider]-red | 
 | `impactLineColors` | `{green: "green", yellow: "yellow", red: "red"}` | `{green,yellow,red}` | The line colors used when `showImpactLineColor: true` | 
 | `reverseImpactLineColor` | `false` | `boolean` | The line on a double slider is coloured as<br>red-[slider]-yellow-[slider]-green | 
-
-
 | `barColor` | `null` | `string` | The color of the bar |
 | `showBarColor` | `true` | `boolean` | The bar gets same color as the line | 
 
@@ -90,7 +87,8 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | `ticksOnLine` | `false` | `boolean` | Place the ticks in the (first) grid on the line with the sliders. | 
 | `gridColors` | `null` | `[]` | `Array of { [fromValue, ]value, color }` to set colors on the bar. If no `fromValue` is given the the previous `value` is used.<br>If `value == null or < min` => A triangle is added to the left indicating *below min*<br>If `value > max` =>  A triangle is added to the right indicating *above max*   |  
 | `labelColors` | `null` | `[]` | `Array of {value, className, color, backgroundColor}` to set frame around and `className`, `color`, `backgroundColor` for the label with the given value |
-
+| `labelClickable` | `true` | `boolean` | Allows click on labels to select value of label. If `false` a click on a label is equal to a click on the line (e.q. find nearest value) | 
+| `labelClickableFullWidth` | `true` | `boolean` | If `true` and `options.labelClickable: true` and the value of the label is selectable (with respect to options.step and options.stepOffset) the clickable width of the label is expanded to half the distance to the neighbour labels | 
 
 
 ### Markers above slider 

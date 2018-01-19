@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html id="theHTML" lang="da" style="font-size: 150%">
+<html id="theHTML" lang="da" style="font-size: 100%">
 <head>
     <title>fcoo.dk - jquery-base-slider - Example</title>
     <meta charset="iso-8859-1" />
@@ -175,7 +175,7 @@
 test('START');
         //Fixed slider
         createDemoSlider( '01', 'Fixed handler', {
-            handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, marker_frame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
 
@@ -213,8 +213,9 @@ test('START');
             min:0, max:100, value:20, majorTicksOffset:0, step:5, stepOffset:0, grid:true
         });
 
+
         createDemoSlider( '05', 'Major ticks-offset=2', {
-            min:0, max:100, value:20, majorTicks_offset:2, step:1, stepOffset:0, grid:true
+            min:0, max:100, value:20, majorTicks_offset:2, step:1, stepOffset:0, grid:true, labelClickableFullWidth: false, clickable: false,
         });
 
         createDemoSlider( '06', 'Step=5, Step-offset=3', {
@@ -245,7 +246,6 @@ test('START');
 
             }
         });
-//*/
 //Debug:
 test('END');
 

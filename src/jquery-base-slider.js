@@ -27,7 +27,6 @@
         disable     : false,    // Locks slider and makes it disable ("dissy")
         handleFixed: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
-        clickable   : true,     // Allows click on labels and line. Default = true except for handleFixed:true where default = false
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
         resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
@@ -78,18 +77,21 @@
 
 
         //Grid (ticks and label)
-        grid              : false,                      // Enables grid of values.
-        majorTicks       : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic
+        grid            : false,                      // Enables grid of values.
+        majorTicks      : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic
         majorTicksOffset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  majorTicksOffset:4  the major ticks would be placed on values=4,14,24,...,84,94
-        showMinorTicks  : true,                      // Show minor ticks.
-        gridDistances     : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24]
+        showMinorTicks  : true,                       // Show minor ticks.
+        gridDistances   : [1, 2, 5, 10, 20, 50, 100], // Distance between major ticks. E.g. Slider with hours could use [1, 2, 4, 12, 24]
         ticksOnLine     : false,                      // Place the ticks in the (first) grid on the line with the handles.
         majorTicksFactor: 1,                          // Not documented
 
-        gridColors       : null, //Array of { [fromValue, ]value, color } to set colors on the line. If no fromValue is given the the previous value is used.
-                                  //If value == null or < min => A triangle is added to the left indicating 'below min'.
-                                  //If value > max            =>  A triangle is added to the right indicating 'above max'.
-        labelColors       : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
+        gridColors      : null, //Array of { [fromValue, ]value, color } to set colors on the line. If no fromValue is given the the previous value is used.
+                                //If value == null or < min => A triangle is added to the left indicating 'below min'.
+                                //If value > max            =>  A triangle is added to the right indicating 'above max'.
+        labelColors     : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
+
+        labelClickable         : true, //Allows click on labels to select value of label. If false a click on a label is equal to a click on the line (e.q. find nearest value
+        labelClickableFullWidth: true, //If true and options.labelClickable: true and the value of the label is selectable (with respect to options.step and options.stepOffset) the clickable width of the label is expanded to half the distance to the neighbour labels
 
         //Marker above handle
         showMinMax : false,    // Show min and max markers
@@ -797,8 +799,6 @@
                     this.cache.$input.prop('disabled', false);
                     this.bindEvents();
                 }
-            if (!this.options.clickable || this.options.handleFixed)
-                this.cache.$container.addClass("not-clickable");
 
             this.isBuild = true;
         }, //end of build
@@ -861,21 +861,19 @@
             The difference is necessary to prevent dragging a label in fixed-mode
             resulting in a click-on-label event
             */
-            if (this.options.clickable){
-                if (this.options.isFixed)
-                    addEvents( this.cache.$container, 'tap pressup', this.onTap );
-                else {
-                    addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
-                    addEvents( this.cache.$container, 'tap press', this.onTap )
-                        .data('hammer').get('press').set({time: 1});
-                }
+            if (this.options.isFixed)
+                addEvents( this.cache.$container, 'tap pressup', this.onTap );
+            else {
+                addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
+                addEvents( this.cache.$container, 'tap press', this.onTap )
+                    .data('hammer').get('press').set({time: 1});
+            }
 
-                var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
-                addEvents( $panElement, 'panstart',         this.onPanstart );
-                addEvents( $panElement, 'pan',              this.onPan      );
-                addEvents( $panElement, 'panend pancancel', this.onPanend   )
-                    .data('hammer').get('pan').set({ threshold: 1 });
-           }
+            var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
+            addEvents( $panElement, 'panstart',         this.onPanstart );
+            addEvents( $panElement, 'pan',              this.onPan      );
+            addEvents( $panElement, 'panend pancancel', this.onPanend   )
+                .data('hammer').get('pan').set({ threshold: 1 });
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1678,13 +1676,15 @@
 
             options = $.extend( {color: ''}, options );
 
+            //Check if the value for the label is a selectable one
+            options.labelClickable = options.labelClickable &&  ((value - this.options.stepOffset) % this.options.step) === 0;
+
             var text = this._valueToText( value ),
                 outer = document.createElement("div"),
                 result = document.createElement("div"),
                 className = 'grid-label';
 
             outer.className = 'grid-label-outer';
-            outer.style.width = this.options.majorTickDistanceRem +'rem';
             outer.style.left  = left+'%';
             outer.appendChild(result);
 
@@ -1715,17 +1715,13 @@
             inner.className = innerClassName;
             result.appendChild(inner);
 
-            if (options.clickable){
-                //Check if the value for the label is a selectable one
-                options.clickable =
-                    (this.options.step == 1) ||
-                    ( ((value - this.options.stepOffset) % this.options.step) === 0);
-            }
-
-            if (options.clickable && !this.options.disable && !this.options.readOnly){
+            if (options.labelClickable && !this.options.disable && !this.options.readOnly){
                 //Can be used later: outer.setAttribute('data-base-slider-value', value);
                 outer.setAttribute('data-base-slider-percent', outer.style.left);
                 className += ' clickable';
+                if (this.options.labelClickableFullWidth)
+                    result.style.width = this.options.majorTickDistanceRem +'rem';
+
             }
 
             result.className = className;
@@ -1891,7 +1887,7 @@
         _appendStandardGrid: function ( textOptions, tickOptions ) {
             this.preAppendGrid();
 
-            textOptions = $.extend( {clickable: this.options.clickable}, textOptions || {}  );
+            textOptions = $.extend( {labelClickable: this.options.labelClickable}, textOptions || {}  );
             tickOptions = tickOptions || {};
 
             //Get all options regarding the grid
