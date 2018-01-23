@@ -862,8 +862,7 @@
             resulting in a click-on-label event
             */
             if (this.options.isFixed)
-                addEvents( this.cache.$container, 'tap pressup', this.onTap )
-                    .data('hammer').get('press').set({time: 1000});
+                addEvents( this.cache.$container, 'tap pressup', this.onTap );
             else {
                 addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
                 addEvents( this.cache.$container, 'tap press', this.onTap )
@@ -873,8 +872,7 @@
             var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
             addEvents( $panElement, 'panstart',         this.onPanstart );
             addEvents( $panElement, 'pan',              this.onPan      );
-            addEvents( $panElement, 'panend pancancel', this.onPanend   )
-//Removed: using defalut value                .data('hammer').get('pan').set({ threshold: 1 });
+            addEvents( $panElement, 'panend pancancel', this.onPanend   );
 
 
             //Add onResize to the container
