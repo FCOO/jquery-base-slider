@@ -1210,14 +1210,15 @@
             else {
                 addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
                 addEvents( this.cache.$container, 'tap press', this.onTap )
-                    .data('hammer').get('press').set({time: 1});
+//                    .data('hammer').get('press').set({time: 1});
             }
 
             var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
             addEvents( $panElement, 'panstart',         this.onPanstart );
             addEvents( $panElement, 'pan',              this.onPan      );
             addEvents( $panElement, 'panend pancancel', this.onPanend   )
-                .data('hammer').get('pan').set({ threshold: 1 });
+//Removed: using defalut value                .data('hammer').get('pan').set({ threshold: 1 });
+
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1487,6 +1488,7 @@
                 newValue = oldValue;
 
             switch (delta){
+                case   0: newValue = 0; break;
                 case -99: newValue = this.options.min; break;
                 case  99: newValue = this.options.max; break;
                 case  +1: newValue = oldValue + this.options.step; break;
