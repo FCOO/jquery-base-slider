@@ -1206,7 +1206,8 @@
             resulting in a click-on-label event
             */
             if (this.options.isFixed)
-                addEvents( this.cache.$container, 'tap pressup', this.onTap );
+                addEvents( this.cache.$container, 'tap pressup', this.onTap )
+                    .data('hammer').get('press').set({time: 1000});
             else {
                 addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
                 addEvents( this.cache.$container, 'tap press', this.onTap )
