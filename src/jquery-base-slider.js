@@ -866,7 +866,7 @@
             else {
                 addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
                 addEvents( this.cache.$container, 'tap press', this.onTap )
-//                    .data('hammer').get('press').set({time: 1});
+                    .data('hammer').get('press').set({time: 1});
             }
 
             var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
