@@ -6,7 +6,7 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "^1.0.0",
-    "grunt-fcoo-grunt-plugin": "^2.0.0"
+    "grunt-fcoo-grunt-plugin": "^3.0.0"
   },
   "repository": {
     "type": "git",
