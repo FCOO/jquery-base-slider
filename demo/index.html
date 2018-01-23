@@ -181,9 +181,11 @@ test('START');
 
 
         //Ex #2
+        var slider =
         createDemoSlider( '02', 'Normal', {
             handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
         })
+//$('body').on('click', function(){ slider.update({majorTicksOffset: 1000}); });
 
         //Ex #3
         var vindGridColors = [
