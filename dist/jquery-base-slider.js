@@ -462,12 +462,13 @@
 
 
         //Buttons
-        buttons      : {from: {}, to: {} },
+        buttons      : {value:{}, from:{}, to:{} },
         /*
         JSON-record with id or buttons for first, previous, (now,) next, and last value
             options.buttons = {
-                from: {buttonList},
-                to  : {buttonList}
+                value: {buttonList},
+                from : {buttonList},
+                to   : {buttonList}
             }
             {buttonList} = {
                 firstBtn   : element or string,
@@ -673,7 +674,7 @@
         *******************************************************************/
         this.cache = {
             $input : $(this.input),
-            buttons: { from: {}, to: {} }
+            buttons: { value:{}, from:{}, to:{} }
         };
 
         //Ready to be build
@@ -1118,11 +1119,13 @@
 
             //Append buttons
             function getButton( id ){ return $.type( id ) === 'string' ? $('#' +  id ) : id; }
+            this.options.buttons.value = this.options.buttons.value || {};
             this.options.buttons.from = this.options.buttons.from || {};
             this.options.buttons.to   = this.options.buttons.to   || {};
             $.each( this.options.buttonOptions, function( id ){
-                _this.cache.buttons.from[ id ] = getButton( _this.options.buttons.from[ id ] );
-                _this.cache.buttons.to[ id ]   = getButton( _this.options.buttons.to  [ id ] );
+                _this.cache.buttons.value[ id ] = getButton( _this.options.buttons.value[ id ] );
+                _this.cache.buttons.from[ id ]  = getButton( _this.options.buttons.from[ id ] );
+                _this.cache.buttons.to[ id ]    = getButton( _this.options.buttons.to  [ id ] );
             });
 
             //Append grid(s)
@@ -1175,7 +1178,7 @@
             this.eachHandle('remove');
 
             //Unbind click on buttons
-            $.each( this.cache.buttons, function( toOrFrom, buttonRecord ){
+            $.each( this.cache.buttons, function( valueOrToOrFrom, buttonRecord ){
                 $.each( buttonRecord, function( id, $btn ){
                     offEvents( $btn, 'mousedown mouseup mouseleave click' );
                 });
