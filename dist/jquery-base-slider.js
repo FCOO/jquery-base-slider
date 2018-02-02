@@ -1545,15 +1545,11 @@
         *******************************************************************/
         updateMouse: function ( mouseLeft ) {
             // this.mouse.valueOffset is set to the left-position of the slider incl scrolling
-            this.mouse.valueOffset = this.cache.$innerContainer.get(0).getBoundingClientRect().x;
-
+            this.mouse.valueOffset = this.cache.$innerContainer.get(0).getBoundingClientRect().left;
             //this.mouse.valueRange is set to width of the slider
             this.mouse.valueRange = this.dimentions.containerWidth;
-
             this.mouse.percentOffset = 0;
-
             this.mouse.setValue( mouseLeft );
-
         },
 
         /*******************************************************************
@@ -1662,7 +1658,6 @@
 
                 //Updates this.mouse
                 this.updateMouse( mouseLeft );
-
                 //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
                 //Now this.mouse.getPercent() => 'true' new percent-value for the handle
                 this.mouse.percentOffset = this.currentHandle.value.percent - this.mouse.percent;
