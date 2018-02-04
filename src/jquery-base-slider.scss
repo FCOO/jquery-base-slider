@@ -157,6 +157,9 @@ COMMON STYLE
         background-size: 100% 100%;
         background-repeat: no-repeat;
 
+        background-attachment: local;
+        background-position: 0% 0%;
+
         &.type-last { z-index: 12; }
 
     } //end of .handle
@@ -180,10 +183,10 @@ COMMON STYLE
 
     //Marker: single, from, to, min, and max-marker
     .marker-outer {
-        position: absolute;
-        top     : $marker-top;
-        z-index : 2;
-
+        position   : absolute;
+        top        : $marker-top;
+        z-index    : 2;
+        cursor     : default;
         font-family: Arial, sans-serif;
         font-size  : $marker-font-size;
 
@@ -214,6 +217,7 @@ COMMON STYLE
 
         .marker-text {
             display      : inline-block;
+            cursor       : inherit;
             box-sizing   : border-box;
             line-height  : $marker-line-height;;
             padding      : $marker-padding;
@@ -250,7 +254,6 @@ COMMON STYLE
             }
         }
     }
-
 } //end of .base-slider-container
 
 //**************************************
@@ -263,7 +266,7 @@ COMMON STYLE
     z-index : 2;
     width   : 100%;
     height  : $tick-height + $label-height;
-
+    cursor  : default;
     .grid-pol {
         position  : absolute;
         z-index   : 2;
@@ -293,6 +296,7 @@ COMMON STYLE
             padding    : 0;
 
             .grid-label-text {
+                cursor       : inherit;
                 display      : inline-block;
                 box-sizing   : border-box;
                 line-height  : 1;
@@ -417,9 +421,10 @@ $max-handle-width: 0rem;
 $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, range;
 
 @each $handle-type in $handle-type-list {
-    $handle-dim   : 22px;
-    $img-width    : null;
-    $img-height   : null;
+    $handle-dim   : 24px; //=1.5rem
+    $img-width    : 16px;
+    $img-height   : 24px;
+
     $handle-width : null;
     $handle-height: null;
     $line-top-relative-to-handle: null;
@@ -433,56 +438,48 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
 
     @if $handle-type == horizontal {
-        $img-width : 44px;
-        $img-height: 71.5px;
         $handle-back-ground-image      : 'handle.horizontal.svg';
         $handle-back-ground-image-hover: 'handle.horizontal.hover.svg';;
     }
     @if $handle-type == vertical {
-        $img-width : 71.5px;
-        $img-height: 44px;
+        $img-width : 24px;
+        $img-height: 16px;
         $handle-back-ground-image      : 'handle.vertical.svg';
         $handle-back-ground-image-hover: 'handle.vertical.hover.svg';;
     }
 
     @if $handle-type == down {
-        $img-width : 44px;
-        $img-height: 70.75px;
         $handle-back-ground-image      : 'handle.down.svg';
         $handle-back-ground-image-hover: 'handle.down.hover.svg';;
     }
     @if $handle-type == up {
-        $img-width : 44px;
-        $img-height: 70.75px;
         $handle-back-ground-image      : 'handle.up.svg';
         $handle-back-ground-image-hover: 'handle.up.hover.svg';;
     }
     @if $handle-type == right {
-        $img-width : 70.75px;
-        $img-height: 44px;
+        $img-width : 24px;
+        $img-height: 16px;
         $handle-back-ground-image      : 'handle.right.svg';
         $handle-back-ground-image-hover: 'handle.right.hover.svg';;
     }
     @if $handle-type == left {
-        $img-width : 70.75px;
-        $img-height: 44px;
+        $img-width : 24px;
+        $img-height: 16px;
         $handle-back-ground-image      : 'handle.left.svg';
         $handle-back-ground-image-hover: 'handle.left.hover.svg';;
     }
 
     @if $handle-type == round {
-        $img-width : 70px;
-        $img-height: 70px;
-        $handle-dim: 18px;
+        $img-width : 16px;
+        $img-height: 16px;
+        $handle-dim: 20px;
 
         $handle-back-ground-image      : 'handle.round.svg';
         $handle-back-ground-image-hover: 'handle.round.hover.svg';;
     }
 
     @if $handle-type == fixed {
-        $img-width : 44px;
-        $img-height: 70.75px;
-        $handle-dim: 18px;
+        $handle-dim: 20px;
 
         $handle-back-ground-image: 'handle.fixed.svg';
 
