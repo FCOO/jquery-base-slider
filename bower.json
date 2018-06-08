@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "homepage": "https://github.com/NielsHolt/jquery-base-slider",
   "authors": [
     "Niels Holt <niels@steenbuchholt.dk>"
@@ -19,7 +19,6 @@
     "jquery-autoclick-while-pressed": "fcoo/jquery-autoclick-while-pressed#^1.0.0",
     "jquery-detect-element-resize": "fcoo/jquery-detect-element-resize#^1.0.0",
     "jquery-mousewheel": "^3.1.13",
-    "font-awesome": "fontawesome#^4.7.0",
     "jquery-font-size-event": "fcoo/jquery-font-size-event#^1.0.0",
     "jquery-hammer.js": "fcoo/jquery-hammer.js#^0.1.2",
     "modernizr-mouse-events": "fcoo/modernizr-mouse-events#^1.0.0"
@@ -37,5 +36,6 @@
   ],
   "moduleType": [
     "es6"
-  ]
+  ],
+  "overrides": {}
 }

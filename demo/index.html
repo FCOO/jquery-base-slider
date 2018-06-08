@@ -9,10 +9,7 @@
     <meta name='copyright' content='FCOO'>
     <meta name='owner' content='FCOO'>
 
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-    <link  href="../src/jquery-base-slider.css" rel="stylesheet">
-    <link  href="font-awesome.css" rel="stylesheet">
+    <!-- <link  href="../src/jquery-base-slider.css" rel="stylesheet"> -->
     <style>
         .slider-container {
             width  : 25rem;
@@ -49,7 +46,7 @@
         }
         h4 {
             margin     : 0;
-            font-size: 120%;
+            font-size: 100%;
         }
         .center-line {
             box-sizing: border-box;
@@ -156,23 +153,23 @@
     </script>
 
 
-    <script src="browser-polyfill.js"></script>
+    <!-- <script src="browser-polyfill.js"></script> -->
     <script src="bower_components.js"></script>
     <script src="../src/jquery-base-slider.js"></script>
     <script src="../src/jquery-base-slider-handle.js"></script>
     <script src="../src/jquery-base-slider-value.js"></script>
 
-    <script>
-        $('.scaleRadio').on( 'change', function(event) {
-            var percent = 16*parseInt($(event.target).attr('value'))/100;
-            $('html').css('font-size', percent+'px');
-        });
+<script>
+    $('.scaleRadio').on( 'change', function(event) {
+        var percent = 16*parseInt($(event.target).attr('value'))/100;
+        $('html').css('font-size', percent+'px');
+    });
 
+    //Debug:
+    test('START');
 
-
-
-//Debug:
-test('START');
+    //Wait for cc to load
+    $(window).on("load", function() {
         //Fixed slider
         createDemoSlider( '01', 'Fixed handler', {
             handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
@@ -248,9 +245,11 @@ test('START');
 
             }
         });
-//Debug:
-test('END');
+    //Debug:
+    test('END');
+});
+</script>
 
-    </script>
 </body>
+<link  href="../src/jquery-base-slider.css" rel="stylesheet">
 </html>
