@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "package.json is only use for building the package. see bower.json for more info",
   "author": "Niels Holt nho@fcoo.dk",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/FCOO/jquery-time-slider.git"
+    "url": "https://github.com/FCOO/jquery-base-slider.git"
   },
-  "homepage": "https://github.com/FCOO/jquery-time-slider"
+  "homepage": "https://github.com/FCOO/jquery-base-slider"
 }
