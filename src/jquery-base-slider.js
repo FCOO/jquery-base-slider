@@ -21,7 +21,7 @@
     *******************************************************************/
     var defaultOptions = {
         //Type and handle
-        type        : "single", // Choose single or double, could be "single" - for one handle, or "double" for two handles
+        double      : false,    // Choose single or double, could be false - for one handle, or true for two handles
         handle      : "down",   // Choose handle type, could be "horizontal", "vertical", "down", "up", "left", "right", "round", "range", or "fixed"
         readOnly    : false,    // Locks slider and makes it inactive.
         disable     : false,    // Locks slider and makes it disable ("dissy")
@@ -58,9 +58,9 @@
 
         //Steps
         step        : 1,    // Set sliders step. Always > 0. Could be fractional.
-        stepOffset  : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, stepOffset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for  type="single"
-        intervalMin : 0,    // Minimum interval between left and right handles. Only in "double" type
-        intervalMax : 0,    // Maximum interval between left and right handles. Only in "double" type
+        stepOffset  : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, stepOffset=3 => allowed values=3,8,13,...,92,97 (3+N*5). Only tested for options.single: true
+        intervalMin : 0,    // Minimum interval between left and right handles. Only for options.double: true
+        intervalMax : 0,    // Maximum interval between left and right handles. Only for options.double: true
 
         keyboardShiftStepFactor: 5,  //Factor when pressing etc. shift-left compare to left
         keyboardPageStepFactor : 20, //Step-factor when pressing pgUp or PgDn
@@ -103,7 +103,7 @@
         prettifyLabel  : null,  // As  prettify  but for the labels in the grid.
         prefix          : "",    // Set prefix for values. Will be set up right before the number: $100
         postfix         : "",    // Set postfix for values. Will be set up right after the number: 100k
-        decorateBoth   : true,  // Used for "double" type and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
+        decorateBoth   : true,  // Used for options.double:true and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
         decorateLabel  : false, // The labels in the grid also gets  prefix  and/or  postfix
         valuesSeparator: " - ", // Text between min and max value when labels are combined. valuesSeparator:" to " => "12 to 24"
 
@@ -274,13 +274,13 @@
         this.options = $.extend( {}, defaultOptions, options );
 
         if (this.options.handleFixed){
-            this.options.type   = 'single'; //TODO Allow double slider when fixed (how??)
+            this.options.double = false;
             this.options.handle = 'fixed';
         }
 
-        this.options.isSingle   = (this.options.type == 'single');
-        this.options.isInterval = (this.options.type == 'double');
-        this.options.isFixed    = this.options.isSingle &&  this.options.handleFixed;
+        this.options.isSingle = !this.options.double;
+        this.options.isDouble = this.options.double;
+        this.options.isFixed  = this.options.isSingle && this.options.handleFixed;
 
         this.options.singleHandleId =
             this.options.isSingle ? (this.options.handleFixed ? 'fixed' : 'single') : 'from-to';
@@ -723,7 +723,7 @@
             }
 
             //1. double-handle with impact- or reverse-impact-colors
-            if (this.options.isInterval && this.options.showImpactLineColor){
+            if (this.options.isDouble && this.options.showImpactLineColor){
                 appendLineColor( true, true, true );
                 this.setImpactLineColors();
             }
@@ -751,7 +751,7 @@
                 else
                     //3. Normal line-color to the left of handle (single) or between handles (double)
                     if (this.options.showLineColor)
-                        appendLineColor( this.options.isSingle, this.options.isInterval, false )
+                        appendLineColor( this.options.isSingle, this.options.isDouble, false )
                             .css('background-color', this.options.lineColor);
 
 
@@ -1166,7 +1166,7 @@
             }
 
             //If the slider has two handle and both handles are moved: Move euqal distance to keep the distance between them constant
-            if (!options.handleId && this.options.isInterval){
+            if (!options.handleId && this.options.isDouble){
                 var _this = this;
                 //1: Find possible max delta for both from- and to-value
                 var fromValue = this.handles.from.value,

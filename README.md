@@ -16,12 +16,12 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 ### Type and slider
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
-| `type` | `"single"` | `string` | Choose single or double, could be `"single"` - for one handle, or `"double"` for two handles | 
+| `double` | `false` | `boolean` | Choose single or double, could be `false` - for one handle, or `true` for two handles | 
 | `slider` | `"down"` | `string` | Choose slider type, could be `"horizontal"`, `"vertical"`, `"down"`, `"up"`, `"left"`, `"right"`, `"round"`, `"range"`, or `"fixed"`| 
 | `readOnly` | `false` | `boolean` | Locks slider and makes it inactive. | 
 | `disable` | `false` | `boolean` | Locks slider and makes it disable ("dissy"). | 
 | `handleFixed` | `false` | `boolean` | Special version where the slider is fixed and the grid are moved left or right to select value. `slider` is set to `"single"`<br>A value for `options.width` OR `options.valueDistances` must be provided | 
-| `mousewheel` | `true` | `boolean` | Only for `type:"single"`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
+| `mousewheel` | `true` | `boolean` | Only for `double: false`: Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width | 
 | `resizable` | `false` | `boolean` | If `true` the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width | 
 
 
@@ -56,9 +56,9 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | Option | Defaults | Type | Description |
 | :--: | :--: | :--: | :-- |
 | `step` | `1` | `number` | Set sliders step. Always > 0. Could be fractional. | 
-| `stepOffset` | `0` | `number` | When `step` > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, stepOffset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for `type="single"` | 
-| `intervalMin` | `-` | `number` | Set minimum diapason between sliders. Only in "double" type | 
-| `intervalMax` | `-` | `number` | Set maximum diapason between sliders. Only in "double" type | 
+| `stepOffset` | `0` | `number` | When `step` > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, stepOffset=3 => allowed values=3,8,13,...,92,97 (3+N*5)<br>Only tested for `options.double: false` | 
+| `intervalMin` | `-` | `number` | Set minimum diapason between sliders. Only for `options.double: true` | 
+| `intervalMax` | `-` | `number` | Set maximum diapason between sliders. Only for `options.double: true` | 
 | `keyboardShiftStepFactor` | `5` | `number` | Step-factor when stepping using keyboard and holding down shift xor ctrl. Etc. shift-left compare to left |
 | `keyboardPageStepFactor` | `20` | `number` | Step-factor when stepping pressing PgDn or PrUp or arrows and holding down shift and ctrl |
  
@@ -106,7 +106,7 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | `prettifyLabel` | `null` | `function` | As `prettify` but for the labels in the grid. | 
 | `prefix` | `-` | `string` | Set prefix for values. Will be set up right before the number: Ex. `$100` | 
 | `postfix` | `-` | `string` | Set postfix for values. Will be set up right after the number: Ex. `100k` | 
-| `decorateBoth` | `true` | `boolean` | Used for "double" type and only if prefix or postfix was set up. Determine how to decorate close values. For example: `$10k - $100k` or `$10 - 100k` | 
+| `decorateBoth` | `true` | `boolean` | Used for `options.double: true` and only if prefix or postfix was set up. Determine how to decorate close values. For example: `$10k - $100k` or `$10 - 100k` | 
 | `decorateLabel` | `false` | `boolean` | The labels in the grid also gets `prefix` and/or `postfix` | 
 | `valuesSeparator` | `" - "` | `string` | Text between min and max value when labels are combined. `valuesSeparator:" to "` => `"10 to 100"` |
 

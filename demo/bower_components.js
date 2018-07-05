@@ -13648,47 +13648,40 @@ if (typeof define === 'function' && define.amd) {
     Create a Modernizr-test named 'mouse-hover' to mark if hover "events" is fired. Can be use to prevent :hover {...} css to fail on touch devices
     */
 
-	/******************************************
-	Initialize/ready
-	*******************************************/
-	$(function() {
-        var mouseTest         = 'mouse',
-            mouseHoverTest    = 'mouse-hover',
-            mouseEventPostfix = '.modernizr.mouse.events',
-            hasModernizr = !!window.Modernizr,
-            hasTouchEventsTest = hasModernizr && (jQuery.type( window.Modernizr['touchevents'] ) === "boolean"),
-            hasTouchEvents = hasTouchEventsTest ? window.Modernizr['touchevents'] : true;
+    var mouseTest         = 'mouse',
+        mouseHoverTest    = 'mouse-hover',
+        mouseEventPostfix = '.modernizr.mouse.events',
+        hasModernizr = !!window.Modernizr,
+        hasTouchEventsTest = hasModernizr && (jQuery.type( window.Modernizr['touchevents'] ) === "boolean"),
+        hasTouchEvents = hasTouchEventsTest ? window.Modernizr['touchevents'] : true;
 
-        if (hasModernizr)
-            window.Modernizr.addTest(mouseTest, false);
-        window.modernizrOff(mouseTest);
+    if (hasModernizr)
+        window.Modernizr.addTest(mouseTest, false);
+    window.modernizrOff(mouseTest);
 
-        //If Modernizr-test "touchevents" is included => use if to set "mouse-hover" else set "mouse-hover" = "mouse"
-        if (hasModernizr)
-            window.Modernizr.addTest( mouseHoverTest, !hasTouchEvents );
-        window.modernizrToggle( mouseHoverTest, !hasTouchEvents );
+    //If Modernizr-test "touchevents" is included => use if to set "mouse-hover" else set "mouse-hover" = "mouse"
+    if (hasModernizr)
+        window.Modernizr.addTest( mouseHoverTest, !hasTouchEvents );
+    window.modernizrToggle( mouseHoverTest, !hasTouchEvents );
 
-        $(window)
-            //Check for mouse
-            .bind('mousemove'+mouseEventPostfix,function(){
-                $(window).unbind(mouseEventPostfix);
+    $(window)
+        //Check for mouse
+        .bind('mousemove'+mouseEventPostfix,function(){
+            $(window).unbind(mouseEventPostfix);
+            if (hasModernizr)
+                window.Modernizr[mouseTest] = true;
+            window.modernizrOn(mouseTest);
+            if (!hasTouchEventsTest){
                 if (hasModernizr)
-                    window.Modernizr[mouseTest] = true;
-                window.modernizrOn(mouseTest);
-                if (!hasTouchEventsTest){
-                    if (hasModernizr)
-                        window.Modernizr.addTest( mouseHoverTest, true );
-                    window.modernizrOn(mouseHoverTest);
-                }
-            })
-            .bind('touchstart'+mouseEventPostfix,function(){
-                $(window).unbind(mouseEventPostfix);
-                if (hasModernizr)
-                    window.Modernizr[mouseTest] = false;
-                window.modernizrOff(mouseTest);
-            });
-    });
-
-    //******************************************
+                    window.Modernizr.addTest( mouseHoverTest, true );
+                window.modernizrOn(mouseHoverTest);
+            }
+        })
+        .bind('touchstart'+mouseEventPostfix,function(){
+            $(window).unbind(mouseEventPostfix);
+            if (hasModernizr)
+                window.Modernizr[mouseTest] = false;
+            window.modernizrOff(mouseTest);
+        });
 
 }(jQuery, this, document));
