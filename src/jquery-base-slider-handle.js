@@ -49,6 +49,7 @@
         this.$handle = !!options.$handle; //Set to boolean. Created in this.append
         this.handleClassName = options.handleClassName || '';
         this.handleCSS = options.handleCSS || {};
+this.appended = false,
 
         this.markerData = options.markerData || {};
 
@@ -106,11 +107,13 @@
                             .attr( this.markerData )
                             .appendTo(this.marker.$inner);
             }
+            this.appended = true;
             return this;
         },
 
         //remove
         remove: function(){
+            if (!this.appended) return;
             if (this.$handle){
                 this.$handle.remove();
                 this.$handle = true;
@@ -119,11 +122,13 @@
                 this.marker.$outer.remove();
                 this.marker = true;
             }
+            this.appended = false;
         },
 
         //update()
         //Set the position of $handle and $marker and update the content of $marker
         update: function( force ){
+            if (!this.appended) return;
             var leftPercent = this.getLeftPosition() + '%';
 
             if (force || (leftPercent != this.lastLeftPercent)){
@@ -153,6 +158,7 @@
 
         //onFocus - overwriten for individual handle-types
         onFocus: function(){
+            if (!this.appended) return;
             this.$handle.addClass('hover');
             if (this.marker && this.marker.$outer)
                 this.marker.$outer.addClass('hover');
@@ -161,6 +167,7 @@
 
         //onBlur - overwriten for individual handle-types
         onBlur: function(){
+            if (!this.appended) return;
             this.$handle.removeClass('hover');
             if (this.marker && this.marker.$outer)
                 this.marker.$outer.removeClass('hover');
