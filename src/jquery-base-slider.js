@@ -755,6 +755,9 @@
                             .css('background-color', this.options.lineColor);
 
 
+            //Update the height of the slider
+            this.cache.$container.css('height', pxToRem( this.cache.$lineBackground.height(), true) );
+
             /****************************************************
             Append grid with ticks and optional labels
             ****************************************************/
@@ -1641,6 +1644,7 @@
                 this.$currentGridContainer = this.cache.$grid;
                 this.totalGridContainerTop = this.$currentGridContainer.position().top;
             }
+
             this.cache.$grid = this.cache.$container.find(".grid");
             return this.$currentGridContainer;
         },
@@ -1818,6 +1822,10 @@
             this.$currentGridContainer.insertBefore( this.$currentGridContainerMarker );
             this.$currentGridContainer.css('width', this.currentGridContainerWidth );
             this.$currentGridContainerMarker.remove();
+
+            //Update the height of the slider
+            this.cache.$container.css('height', pxToRem( this.totalGridContainerTop + this.$currentGridContainer.height(), true) );
+
         },
 
 
