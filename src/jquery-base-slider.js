@@ -213,18 +213,8 @@
                     ((type1 != type2) || (obj1[id] != obj2[id]))    //type are different OR value are different
                 );
         });
-
-/*
-        $.each( obj1, function( id, value ){
-            result = result || (obj2[id] !== value);
-        });
-        $.each( obj2, function( id, value ){
-            result = result || (obj1[id] !== value);
-        });
-*/
         return result;
     }
-
 
     //'Global' text-element to be used by getTextWidth
     var $outerTextElement = null,
@@ -332,6 +322,9 @@
             $input : $(this.input),
             buttons: { value:{}, from:{}, to:{} }
         };
+
+        //Hide the input
+        this.cache.$input.addClass('hidden-input');
 
         //Ready to be build
         this.init();
@@ -1003,7 +996,6 @@
                 }
 
                 if (this.dimentions.containerWidthRem){
-                    this.toggleInput();
                     this.build();
                     updateSlider = true;
                 }
@@ -1596,13 +1588,6 @@
         *******************************************************************/
 
         /*******************************************************************
-        toggleInput
-        *******************************************************************/
-        toggleInput: function () {
-            this.cache.$input.toggleClass("hidden-input");
-        },
-
-        /*******************************************************************
         _prettify
         *******************************************************************/
         _prettify: function (num) {
@@ -2005,7 +1990,6 @@
 
             this.options = $.extend(this.options, options || {});
 
-            this.toggleInput();
             this.remove();
             this.init();
 
@@ -2026,7 +2010,6 @@
         destroy: function () {
             if (!this.input) return;
 
-            this.toggleInput();
             this.cache.$input.prop("readonly", false);
             $.data(this.input, "baseSlider", null);
 
