@@ -49,7 +49,7 @@
         this.$handle = !!options.$handle; //Set to boolean. Created in this.append
         this.handleClassName = options.handleClassName || '';
         this.handleCSS = options.handleCSS || {};
-this.appended = false,
+        this.appended = false,
 
         this.markerData = options.markerData || {};
 

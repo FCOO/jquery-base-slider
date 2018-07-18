@@ -49,7 +49,7 @@
         this.$handle = !!options.$handle; //Set to boolean. Created in this.append
         this.handleClassName = options.handleClassName || '';
         this.handleCSS = options.handleCSS || {};
-this.appended = false,
+        this.appended = false,
 
         this.markerData = options.markerData || {};
 
@@ -564,18 +564,8 @@ this.appended = false,
                     ((type1 != type2) || (obj1[id] != obj2[id]))    //type are different OR value are different
                 );
         });
-
-/*
-        $.each( obj1, function( id, value ){
-            result = result || (obj2[id] !== value);
-        });
-        $.each( obj2, function( id, value ){
-            result = result || (obj1[id] !== value);
-        });
-*/
         return result;
     }
-
 
     //'Global' text-element to be used by getTextWidth
     var $outerTextElement = null,
@@ -683,6 +673,9 @@ this.appended = false,
             $input : $(this.input),
             buttons: { value:{}, from:{}, to:{} }
         };
+
+        //Hide the input
+        this.cache.$input.addClass('hidden-input');
 
         //Ready to be build
         this.init();
@@ -1234,11 +1227,7 @@ this.appended = false,
             addEvents( $panElement, 'panleft panright', this.onPan      );
             addEvents( $panElement, 'panend pancancel', this.onPanend   );
 
-            var threshold = 1;
-            //If the distance between steps is set and fixed => use it as threshold
-            if (!this.options.resizable && this.gridOptions && this.gridOptions.stepRem)
-                threshold = Math.floor(this.gridOptions.stepRem*16);
-            $panElement.data('hammer').get('pan').set({threshold:threshold});
+            $panElement.data('hammer').get('pan').set({threshold: 1});
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1354,7 +1343,6 @@ this.appended = false,
                 }
 
                 if (this.dimentions.containerWidthRem){
-                    this.toggleInput();
                     this.build();
                     updateSlider = true;
                 }
@@ -1672,7 +1660,7 @@ this.appended = false,
                 if (this.options.isFixed)
                     this.options.mouseLeftStart = mouseLeft;
 
-                //Updates this.mouse
+                //Updates this.mouse with corrected mouseLeft
                 this.updateMouse( mouseLeft );
                 //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
                 //Now this.mouse.getPercent() => 'true' new percent-value for the handle
@@ -1945,13 +1933,6 @@ this.appended = false,
         SERVICE METHODS
         ********************************************************************
         *******************************************************************/
-
-        /*******************************************************************
-        toggleInput
-        *******************************************************************/
-        toggleInput: function () {
-            this.cache.$input.toggleClass("hidden-input");
-        },
 
         /*******************************************************************
         _prettify
@@ -2356,7 +2337,6 @@ this.appended = false,
 
             this.options = $.extend(this.options, options || {});
 
-            this.toggleInput();
             this.remove();
             this.init();
 
@@ -2377,7 +2357,6 @@ this.appended = false,
         destroy: function () {
             if (!this.input) return;
 
-            this.toggleInput();
             this.cache.$input.prop("readonly", false);
             $.data(this.input, "baseSlider", null);
 

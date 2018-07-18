@@ -131,7 +131,7 @@
             last = start;
         function test(txt){
             var now = (new Date()).getTime();
-            console.log(txt, now - start, now - last );
+            //console.log(txt, now - start, now - last );
             last = now;
         }
 
@@ -206,8 +206,10 @@
         });
 
 
-        createDemoSlider( '04', 'Step=5', {
-            min:0, max:100, value:20, majorTicksOffset:0, step:5, stepOffset:0, grid:true
+        createDemoSlider( '04', 'Step=10', {
+            min:0, max:100, value:20, majorTicksOffset:0, step:10, stepOffset:0, grid:true,
+            onChange: function( result ){ console.log('onChange', result.value); }
+
         });
 
 

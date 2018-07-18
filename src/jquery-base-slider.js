@@ -876,11 +876,7 @@
             addEvents( $panElement, 'panleft panright', this.onPan      );
             addEvents( $panElement, 'panend pancancel', this.onPanend   );
 
-            var threshold = 1;
-            //If the distance between steps is set and fixed => use it as threshold
-            if (!this.options.resizable && this.gridOptions && this.gridOptions.stepRem)
-                threshold = Math.floor(this.gridOptions.stepRem*16);
-            $panElement.data('hammer').get('pan').set({threshold:threshold});
+            $panElement.data('hammer').get('pan').set({threshold: 1});
 
             //Add onResize to the container
             if (this.options.resizable){
@@ -1313,7 +1309,7 @@
                 if (this.options.isFixed)
                     this.options.mouseLeftStart = mouseLeft;
 
-                //Updates this.mouse
+                //Updates this.mouse with corrected mouseLeft
                 this.updateMouse( mouseLeft );
                 //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
                 //Now this.mouse.getPercent() => 'true' new percent-value for the handle
