@@ -13671,17 +13671,33 @@ if (typeof define === 'function' && define.amd) {
             if (hasModernizr)
                 window.Modernizr[mouseTest] = true;
             window.modernizrOn(mouseTest);
+/* REMOVED IN VERSION 2.0.0
             if (!hasTouchEventsTest){
                 if (hasModernizr)
                     window.Modernizr.addTest( mouseHoverTest, true );
                 window.modernizrOn(mouseHoverTest);
             }
+*/
         })
         .bind('touchstart'+mouseEventPostfix,function(){
             $(window).unbind(mouseEventPostfix);
             if (hasModernizr)
                 window.Modernizr[mouseTest] = false;
             window.modernizrOff(mouseTest);
+        })
+
+        //Create hidden dummy element to test for true hover support
+        .on( "load", function() {
+            var $elem = $('<i/>')
+                            .appendTo($('body'))
+                            .addClass('_test-for-hover_');
+
+            if ($elem.css('font-family') == "__HOVER_SUPPORT__"){
+                if (hasModernizr)
+                    window.Modernizr.addTest( mouseHoverTest, true );
+                window.modernizrOn(mouseHoverTest);
+            }
         });
+
 
 }(jQuery, this, document));
