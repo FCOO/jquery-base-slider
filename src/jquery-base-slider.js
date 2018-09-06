@@ -944,7 +944,7 @@
         *******************************************************************/
         getDimentions: function(){
             var result = {};
-            result.containerWidth    = this.cache.$container.innerWidth() || this.dimentions.containerWidth;
+            result.containerWidth    = Math.max(0, this.cache.$container.innerWidth()) || this.dimentions.containerWidth;
             result.containerWidthRem = pxToRem(result.containerWidth);
             if (this.options.isFixed)
                 result.outerContainerWidthRem = pxToRem( this.cache.$outerContainer.innerWidth() );
