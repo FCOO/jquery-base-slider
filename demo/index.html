@@ -21,7 +21,7 @@
             margin-bottom: 1rem;
         }
         .slider-container.resizable {
-            width  : 80%;
+            width  : 80% !important;
         }
 
         .date-box {
@@ -136,7 +136,7 @@
         }
 
 
-        function createDemoSlider( no, header, options ){
+        function createDemoSlider( no, header, options ){ return;
             var result = $('#example_'+no).baseSlider( options ).data('baseSlider')
                 text = '{';
             $.each( options, function( id, value ){
@@ -247,6 +247,36 @@
         });
     //Debug:
     test('END');
+
+
+    var $div = $('<div class="slider-container" style="width:0"><input type="text" id="example_99"/></div>');
+    var $input = $('<input type="text" id="example_99"/></div>').appendTo( $div );
+
+    var testSlider = $input.baseSlider( {min:0, max:100, value:20, _majorTicksOffset:0, _step:10, _stepOffset:0, grid:true, resizable:true} ).data('baseSlider');
+
+var NIELS = true, w = 300;
+$('body').on('click', function(){
+    if (NIELS){
+        $('body').prepend( $div );
+        NIELS = false;
+    }
+    else {
+        w = w + 100;
+        console.log('set width', w);
+        $div.width(w+'px');
+    };
+});
+
+/*
+window.setTimeout(function(){
+    $div.detach();
+}, 2000 );
+
+window.setTimeout(function(){
+    $('body').append( $div );
+}, 3000 );
+*/
+
 });
 </script>
 

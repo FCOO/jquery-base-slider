@@ -357,6 +357,8 @@
             this.currentHandle    = null;
             this.isRepeatingClick = false;
 
+            this.checkParentResize = true;
+
             /*******************************************************************
             Set and adjust options
             *******************************************************************/
@@ -931,11 +933,31 @@
             if (this.initializing || !this.isBuild)
                 return;
 
+            this.parentOnResize();
+        },
+
+
+        /*******************************************************************
+        parentOnResize
+        Call checkContainerDimentions when the container is resized.
+        Prevent multi updates by setting delay of 200ms
+        *******************************************************************/
+        parentOnResize: function(){
+console.log('1:parentOnResize', this.cache.$parent.width());
+
+            //Remove resize-event from parent if it isn't a resizable slider
+            if (!this.options.resizable && this.parentOnResizeFunc && this.cache.$parent){
+                var _this = this, f = this.parentOnResizeFunc;
+                this.cache.$parent.removeResize( this.parentOnResizeFunc );
+                this.parentOnResizeFunc = null;
+            }
+
             //Clear any previous added timeout
             if (this.resizeTimeoutId)
                 window.clearTimeout(this.resizeTimeoutId);
-
             this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+
+console.log('2:parentOnResize', this.cache.$parent.width());
         },
 
         /*******************************************************************
@@ -948,7 +970,6 @@
             result.containerWidthRem = pxToRem(result.containerWidth);
             if (this.options.isFixed)
                 result.outerContainerWidthRem = pxToRem( this.cache.$outerContainer.innerWidth() );
-
             return result;
         },
 
@@ -957,6 +978,7 @@
         Get width and left-position and redraw the slider
         *******************************************************************/
         checkContainerDimentions: function(){
+console.log('1:checkContainerDimentions');
             var updateSlider = false;
 
             //Get dimentions of the slider containers
@@ -995,8 +1017,20 @@
                     this.build();
                     updateSlider = true;
                 }
-                else
-                    this.checkContainerDimentions_TimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+                else {
+                    // if this.cache.$container has a parent-element with no-width => add ONE resize-event on the parent to detect when it changes it width e.q. is added to the DOM or made visible
+                    // else set timeout to check dimention of the container
+                    this.cache.$parent = this.cache.$parent || this.cache.$container.parent();
+
+                    if (this.checkParentResize && this.cache.$parent.length){
+                        this.checkParentResize = false;
+                        this.parentOnResizeFunc = $.proxy( this.parentOnResize, this );
+                        this.cache.$parent.resize( this.parentOnResizeFunc );
+                    }
+                    else
+                        this.checkContainerDimentions_TimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+                }
+
             }
 
             //Update slider
@@ -1004,6 +1038,9 @@
                 this.dimentions_old = $.extend({}, this.dimentions);
                 this.updateHandlesAndLines();
             }
+
+console.log('2:checkContainerDimentions');
+
         },
 
         /*******************************************************************
