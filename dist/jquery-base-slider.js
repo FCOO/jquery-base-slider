@@ -1294,7 +1294,7 @@
         Prevent multi updates by setting delay of 200ms
         *******************************************************************/
         parentOnResize: function(){
-console.log('1:parentOnResize', this.cache.$parent.width());
+console.log('1:parentOnResize');
 
             //Remove resize-event from parent if it isn't a resizable slider
             if (!this.options.resizable && this.parentOnResizeFunc && this.cache.$parent){
@@ -1308,7 +1308,7 @@ console.log('1:parentOnResize', this.cache.$parent.width());
                 window.clearTimeout(this.resizeTimeoutId);
             this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
 
-console.log('2:parentOnResize', this.cache.$parent.width());
+console.log('2:parentOnResize');
         },
 
         /*******************************************************************
