@@ -281,7 +281,8 @@
         this.events.containerOnResize = called when the sizse of the container is changed
         *******************************************************************/
         this.events = {
-            containerOnResize: $.proxy( this.containerOnResize, this )
+            containerOnResize: $.proxy( this.containerOnResize, this ),
+            parentOnResize   : $.proxy( this.parentOnResize, this )
         };
 
         //Create event-function to be called on resize of the window and the container (added in init)
@@ -358,6 +359,7 @@
             this.isRepeatingClick = false;
 
             this.checkParentResize = true;
+
 
             /*******************************************************************
             Set and adjust options
@@ -926,8 +928,7 @@
 
         /*******************************************************************
         containerOnResize
-        Call checkContainerDimentions when the container is resized.
-        Prevent multi updates by setting delay of 200ms
+        Call parentOnResize when the slider is finish building and the container is resized
         *******************************************************************/
         containerOnResize: function(){
             if (this.initializing || !this.isBuild)
@@ -943,21 +944,16 @@
         Prevent multi updates by setting delay of 200ms
         *******************************************************************/
         parentOnResize: function(){
-console.log('1:parentOnResize');
-
             //Remove resize-event from parent if it isn't a resizable slider
-            if (!this.options.resizable && this.parentOnResizeFunc && this.cache.$parent){
-                var _this = this, f = this.parentOnResizeFunc;
-                this.cache.$parent.removeResize( this.parentOnResizeFunc );
-                this.parentOnResizeFunc = null;
+            if (!this.options.resizable && this.parentOnResizeAdded && this.cache.$parent){
+                this.cache.$parent.removeResize( this.events.parentOnResize );
+                this.parentOnResizeAdded = null;
             }
 
             //Clear any previous added timeout
             if (this.resizeTimeoutId)
                 window.clearTimeout(this.resizeTimeoutId);
             this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
-
-console.log('2:parentOnResize');
         },
 
         /*******************************************************************
@@ -978,7 +974,6 @@ console.log('2:parentOnResize');
         Get width and left-position and redraw the slider
         *******************************************************************/
         checkContainerDimentions: function(){
-console.log('1:checkContainerDimentions');
             var updateSlider = false;
 
             //Get dimentions of the slider containers
@@ -1020,12 +1015,12 @@ console.log('1:checkContainerDimentions');
                 else {
                     // if this.cache.$container has a parent-element with no-width => add ONE resize-event on the parent to detect when it changes it width e.q. is added to the DOM or made visible
                     // else set timeout to check dimention of the container
-                    this.cache.$parent = this.cache.$parent || this.cache.$container.parent();
+                    this.cache.$parent = this.cache.$container.parent();
 
                     if (this.checkParentResize && this.cache.$parent.length){
                         this.checkParentResize = false;
-                        this.parentOnResizeFunc = $.proxy( this.parentOnResize, this );
-                        this.cache.$parent.resize( this.parentOnResizeFunc );
+                        this.parentOnResizeAdded = true;
+                        this.cache.$parent.resize( this.events.parentOnResize );
                     }
                     else
                         this.checkContainerDimentions_TimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
@@ -1038,9 +1033,6 @@ console.log('1:checkContainerDimentions');
                 this.dimentions_old = $.extend({}, this.dimentions);
                 this.updateHandlesAndLines();
             }
-
-console.log('2:checkContainerDimentions');
-
         },
 
         /*******************************************************************
