@@ -1,16 +1,16 @@
 {
   "name": "jquery-base-slider",
-  "version": "5.2.0",
+  "version": "5.3.0",
+  "homepage": "https://github.com/FCOO/jquery-base-slider",
   "description": "package.json is only use for building the package. see bower.json for more info",
   "author": "Niels Holt nho@fcoo.dk",
   "license": "MIT",
-  "devDependencies": {
-    "grunt": "^1.0.0",
-    "grunt-fcoo-grunt-plugin": "^4.2.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/FCOO/jquery-base-slider.git"
   },
-  "homepage": "https://github.com/FCOO/jquery-base-slider"
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-fcoo-grunt-plugin": "^5.0.0"
+  }
 }

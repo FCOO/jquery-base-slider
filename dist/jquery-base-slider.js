@@ -376,7 +376,7 @@
         handle      : "down",   // Choose handle type, could be "horizontal", "vertical", "down", "up", "left", "right", "round", "range", or "fixed"
         readOnly    : false,    // Locks slider and makes it inactive.
         disable     : false,    // Locks slider and makes it disable ("dissy")
-        handleFixed: false,     // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
+        handleFixed : false,    // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
         resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
@@ -451,12 +451,12 @@
 
         //Adjust labels and markers
         prettify        : null,  // Set up your prettify function. Can be anything. For example, you can set up unix time as slider values and than transform them to cool looking dates.
-        prettifyLabel  : null,  // As  prettify  but for the labels in the grid.
+        prettifyLabel  : null,   // As  prettify  but for the labels in the grid.
         prefix          : "",    // Set prefix for values. Will be set up right before the number: $100
         postfix         : "",    // Set postfix for values. Will be set up right after the number: 100k
-        decorateBoth   : true,  // Used for options.double:true and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
-        decorateLabel  : false, // The labels in the grid also gets  prefix  and/or  postfix
-        valuesSeparator: " - ", // Text between min and max value when labels are combined. valuesSeparator:" to " => "12 to 24"
+        decorateBoth   : true,   // Used for options.double:true and only if prefix or postfix was set up. Determine how to decorate close values. For example: $10k - $100k or $10 - 100k
+        decorateLabel  : false,  // The labels in the grid also gets  prefix  and/or  postfix
+        valuesSeparator: " - ",  // Text between min and max value when labels are combined. valuesSeparator:" to " => "12 to 24"
 
         //Callback
         onCreate : null, // Called when the slider is created the first time.
@@ -471,34 +471,43 @@
         //Buttons
         buttons      : {value:{}, from:{}, to:{} },
         /*
-        JSON-record with id or buttons for first, previous, (now,) next, and last value
+        JSON-record with id or buttons for first, previousPage, previousShift, previous, (now,) next, nextShift, nextPage and last value
             options.buttons = {
                 value: {buttonList},
                 from : {buttonList},
                 to   : {buttonList}
             }
             {buttonList} = {
-                firstBtn   : element or string,
-                previousBtn: element or string,
-                nowBtn     : element or string,
-                nextBtn    : element or string,
-                lastBtn    : element or string
+                firstBtn        : element or string,
+                previousPageBtn : element or string,
+                previousShiftBtn: element or string,
+                previousBtn     : element or string,
+                nowBtn          : element or string,
+                nextBtn         : element or string,
+                nextShiftBtn    : element or string,
+                nextPageBtn     : element or string,
+                lastBtn         : element or string
             }
         */
+
 
         /****************************************
         Internal options
         ****************************************/
-        minDistanceRem: 4/16, //Minimum distance between ticks and between labels
-
-        //Internal options for clicking on buttons
+        //The standard button-ids are firstBtn, previousBtn, nowBtn, nextBtn, lastBtn with the following steps
         buttonOptions: {
-            'firstBtn'   : { sign: -1, delta: 99 },
-            'previousBtn': { sign: -1, delta:  1 },
-            'nowBtn'     : { sign: +1, delta:  0 },
-            'nextBtn'    : { sign: +1, delta:  1 },
-            'lastBtn'    : { sign: +1, delta: 99 }
-        }
+            'firstBtn'        : { sign: -1, delta: 99 },
+            'previousPageBtn' : { sign: -1, delta:  3 },
+            'previousShiftBtn': { sign: -1, delta:  2 },
+            'previousBtn'     : { sign: -1, delta:  1 },
+            'nowBtn'          : { sign: +1, delta:  0 },
+            'nextBtn'         : { sign: +1, delta:  1 },
+            'nextShiftBtn'    : { sign: +1, delta:  2 },
+            'nextPageBtn'     : { sign: +1, delta:  3 },
+            'lastBtn'         : { sign: +1, delta: 99 }
+        },
+
+        minDistanceRem: 4/16 //Minimum distance between ticks and between labels
 
     };
 
@@ -612,7 +621,7 @@
         Set and adjust options that can't be changed by this.update(options)
         *******************************************************************/
         // get config from options
-        this.options = $.extend( {}, defaultOptions, options );
+        this.options = $.extend(true, {}, defaultOptions, options );
 
         if (this.options.handleFixed){
             this.options.double = false;
@@ -1125,7 +1134,9 @@
                 this.cache.$container.addClass("has-pin");
 
             //Append buttons
-            function getButton( id ){ return $.type( id ) === 'string' ? $('#' +  id ) : id; }
+            function getButton( id ){
+                return $.type( id ) === 'string' ? $('#' +  id ) : id;
+            }
             this.options.buttons.value = this.options.buttons.value || {};
             this.options.buttons.from = this.options.buttons.from || {};
             this.options.buttons.to   = this.options.buttons.to   || {};
@@ -1249,7 +1260,7 @@
                     this.mousewheel
                 );
 
-            //Add keyboard events to theline
+            //Add keyboard events to the line
             addEvents( this.cache.$line, "keydown", this.key );
 
             //Bind click on buttons
@@ -1599,7 +1610,6 @@
 
             this.currentHandleBlur();
 
-
             //First check if the tap was on a handle or the marker of a handler
             if (!this.options.isFixed)
                 $.each( this.handles, function( id, handle ){
@@ -1762,8 +1772,6 @@
         },
 
 
-
-
         /*******************************************************************
         updateHandlesAndLines
         *******************************************************************/
@@ -1806,6 +1814,7 @@
                 var containerLeft =
                         -1.0 * this.dimentions.containerWidthRem * this.handles.fixed.value.percent/100 +
                          0.5 * this.dimentions.outerContainerWidthRem;
+
                 this.cache.$container.css('left', toFixed(containerLeft) + 'rem');
             }
 

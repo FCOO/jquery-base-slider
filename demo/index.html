@@ -62,6 +62,16 @@
 </head>
 
 <body>
+<!--
+    <div style="background-color: red; width: 25rem;">
+        <div style="background-color: gray; width: 200px; height:30px; overflow-x:hidden">
+            <div style="background-color: red; width: 75rem; height:100%; position:relative; left:0">
+                <div style="background-color: green; position: relative; left: 4rem; width:1oo%; height:3rem"></div>
+            </div>
+        </div>
+    </div>
+ -->
+
     <h4>Scale &#177; </h4>
     <div>
         <input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off"><label for="option1">60%</label>
@@ -76,7 +86,7 @@
 
     <div style="position: relative; width:100%; _display:none">
 
-        <div class="slider-container resizable">
+        <div class="slider-container _resizable">
             <div class="code-container" id="options_01"></div><hr>
             <input type="text" id="example_01"/>
         </div>
@@ -114,6 +124,7 @@
             <button id="btnFromPrev">From:Previous</button>
             <button id="btnFromNow">"From:Zero"</button>
             <button id="btnFromNext">From:Next</button>
+            <button id="btnFromShiftNext">From:Shift-Next</button>
             <button id="btnFromLast">From:Last</button>
             <br>
             <button id="btnToFirst">To:First</button>
@@ -169,8 +180,9 @@
     //Wait for cc to load
     $(window).on("load", function() {
         //Fixed slider
+        var range = 100;//4000;
         createDemoSlider( '01', 'Fixed handler', {
-            handleFixed: true, handle:"fixed", resizable: true, width: 3*4000, min:-4000, max:4000, value:-50, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            handleFixed: true, handle:"fixed", _resizable: true, width: 3*400, min:-range, max:range, value:-50, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
 
@@ -225,15 +237,17 @@
             min:0, max:120, value:20, majorTicks_offset:2, step:5, stepOffset:3, grid:true, showMinMax: true
         });
 
-        createDemoSlider( '08', 'Step=5, tick-offset=2, step-offset=3 and buttons', {
-            type:"double", handle:'round', min:-100, max:120, from: -20, to:20, value:40, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
+        createDemoSlider( '08', 'Step=3, tick-offset=2, step-offset=3 and buttons', {
+            double: true, handle:'round', min:-100, max:120, from: -20, to:20, value:40, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
+            buttonOptions: {nextFourBtn: {sign:+1, delta:+2}},
             buttons: {
                 from: {
                     firstBtn   : 'btnFromFirst',
                     previousBtn: 'btnFromPrev',
                     nowBtn     : 'btnFromNow',
                     nextBtn    : 'btnFromNext',
-                    lastBtn    : 'btnFromLast'
+                    lastBtn    : 'btnFromLast',
+                    nextShiftBtn: 'btnFromShiftNext'
                 },
                 to: {
                     firstBtn   : 'btnToFirst',
@@ -245,6 +259,7 @@
 
             }
         });
+
     //Debug:
     test('END');
 
