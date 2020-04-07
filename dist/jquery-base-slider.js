@@ -1272,7 +1272,7 @@
                     addEvents( $btn, 'mouseleave', _this.endRepeatingClick,                  true    );
                     addEvents( $btn, 'click',      _this.moveByButtonOrKeyboardOrMouseWheel, options );
 
-                    if ( $btn && $btn.autoclickWhilePressed && (options.delta == 1) && (!$btn.data('auto-click-when-pressed-added')) ){
+                    if ( $btn && $btn.autoclickWhilePressed && options.delta && (options.delta != 99) && (!$btn.data('auto-click-when-pressed-added')) ){
                         $btn.data('auto-click-when-pressed-added', true);
                         $btn.autoclickWhilePressed();
                     }
