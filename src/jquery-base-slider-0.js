@@ -155,28 +155,6 @@
         return +num.toFixed(5);
     }
 
-
-    /*******************************************************************
-    objectsAreDifferent
-    Return true if obj1 and obj2 are not equal
-    *******************************************************************/
-    ns.objectsAreDifferent = function( obj1, obj2 ){
-        var result = false,
-            props = Object.getOwnPropertyNames(obj1).concat( Object.getOwnPropertyNames(obj2) );
-
-        $.each( props, function( index, id ){
-            var type1 = $.type(obj1[id]),
-                type2 = $.type(obj2[id]);
-
-            result =
-                result ||
-                (   ((type1 == 'number') || (type2 == 'number')) && //One or both are number AND
-                    ((type1 != type2) || (obj1[id] != obj2[id]))    //type are different OR value are different
-                );
-        });
-        return result;
-    };
-
     /*******************************************************************
     ********************************************************************
     CONSTRUCTOR BaseSlider
@@ -709,7 +687,7 @@
                 this.cache.$container.addClass("has-pin");
 
             //Append grid(s)
-            this.$currentGridContainer = null;
+            this.$currentGrid = null;
             if (this.options.grid)
                 this.appendGrid();
 
@@ -820,15 +798,12 @@
                 this.cache.$container.css('left', toFixed(containerLeft) + 'px');
             }
 
-
             /*****************************************************
             Callback and reset
             *****************************************************/
             this.onChanging();
 
         },
-
-
 
         /*******************************************************************
         ********************************************************************
@@ -899,7 +874,8 @@
                 $newCanvas =
                     $('<canvas/>')
                         .addClass('grid-canvas')
-                        .appendTo(this.cache.$container),
+// HER>                         .appendTo(this.cache.$container),
+                        .appendTo($newGrid),
                 size = this.options.size,
                 ctx = this.cache.ctx = $newCanvas.get(0).getContext("2d"),
                 canvasMargin = this.cache.canvasMargin = Math.ceil( this.getTextWidth([this._valueToText(this.options.min), this._valueToText(this.options.max)] ) ),
@@ -930,28 +906,26 @@
                 this.canvasLabels[this.canvasId] = [];
             }
 
-            if (this.$currentGridContainer){
-                this.totalGridContainerTop += this.$currentGridContainer.height();
-                this.$currentGridContainer = $newGrid.insertAfter( this.$currentGridContainer );
-                this.$currentCanvas = $newCanvas.insertAfter( this.$currentGridContainer );
-                this.$currentGridContainer.css('top', this.totalGridContainerTop+'px' );
+            if (this.$currentGrid){
+                this.nextGridTop += this.$currentGrid.height();
+                this.$currentGrid = $newGrid.insertAfter( this.$currentGrid );
+//REMOVED IN V6                this.$currentCanvas = $newCanvas.insertAfter( this.$currentGrid );
+                this.$currentGrid.css('top', this.nextGridTop+'px' );
             }
             else {
-                this.$currentGridContainer = $newGrid.appendTo(this.cache.$container);
-                this.$currentCanvas = $newCanvas.appendTo(this.cache.$container);
-                this.totalGridContainerTop = this.$currentGridContainer.position().top;
+                this.$currentGrid = $newGrid.appendTo(this.cache.$container);
+//REMOVED IN V6                this.$currentCanvas = $newCanvas.appendTo(this.cache.$container);
+                this.nextGridTop = this.$currentGrid.position().top;
             }
 
             this.cache.$grid = this.cache.$container.find(".grid");
 
-
             //Special case: If the labels for the current grid shall be placed between the ticks instead of under..
             if (this.options.labelBetweenTicks){
-                this.$currentGridContainer.addClass("label-between-ticks");
+                this.$currentGrid.addClass("label-between-ticks");
             }
 
-
-            return this.$currentGridContainer;
+//REMOVED IN V6            return this.$currentGrid;
         },
 
 
@@ -959,7 +933,7 @@
         appendTick
         *******************************************************************/
         appendTick: function( leftPercent, options ){
-            if (!this.$currentGridContainer) return;
+            if (!this.$currentGrid) return;
 
             options = $.extend( {minor: false, color: ''}, options );
 
@@ -996,7 +970,7 @@
         appendLabel
         *******************************************************************/
         appendLabel: function( leftPercent, value, options ){
-            if (!this.$currentGridContainer) return;
+            if (!this.$currentGrid) return;
 
             options = $.extend( {color: ''}, options );
 
@@ -1072,6 +1046,7 @@
         appendGrid: function () {
             if (!this.options.grid) return;
             this.appendStandardGrid();
+//            this.appendStandardGrid();
         },
 
         /*******************************************************************
@@ -1089,25 +1064,21 @@
         *******************************************************************/
         preAppendGrid: function( options = {} ){
             this.appendGridContainer( options );
-            //The DOM-version of this.$currentGridContainer
-            this.currentGridContainer = this.$currentGridContainer.get(0);
 
-            //Create the grid outside the DOM
-            //Save width in % and set in in px instead of %
-            this.currentGridContainerWidth = this.currentGridContainer.style.width;
-            this.$currentGridContainer.css('width', this.$currentGridContainer.width());
-            this.$currentGridContainer.width( this.$currentGridContainer.width() );
-            this.$currentGridContainerMarker = $('<div/>').insertAfter( this.$currentGridContainer );
-            this.$currentGridContainer.detach();
+//REMOVED IN V6            //The DOM-version of this.$currentGrid
+//REMOVED IN V6            this.currentGridContainer = this.$currentGrid.get(0);
+//REMOVED IN V6
+//REMOVED IN V6            //Save width in % and set in in px instead of %
+//REMOVED IN V6            this.currentGridContainerWidth = this.currentGridContainer.style.width;
+//REMOVED IN V6            this.$currentGrid.css('width', this.$currentGrid.width());
+//REMOVED IN V6            this.$currentGrid.width( this.$currentGrid.width() );
         },
         postAppendGrid: function(){
-            //Insert the created grid into the DOM
-            this.$currentGridContainer.insertBefore( this.$currentGridContainerMarker );
-            this.$currentGridContainer.css('width', this.currentGridContainerWidth );
-            this.$currentGridContainerMarker.remove();
+
+//REMOVED IN V6            this.$currentGrid.css('width', this.currentGridContainerWidth );
 
             //Update the height of the slider
-            this.cache.$container.css('height', (this.totalGridContainerTop + this.$currentGridContainer.height())+'px' );
+            this.cache.$container.css('height', (this.nextGridTop + this.$currentGrid.height())+'px' );
 
         },
 
@@ -1191,14 +1162,12 @@
             this.gridOptions = this.getGridOptions();
             $.extend( this.options, this.gridOptions );
 
-
             //Add all the minor and major ticks
             var o     = this.options,
                 value = o.min,
                 step  = 1,
                 valueP, valueOffset;
 
-  //          this.cache.ctx.beginPath();
             while (value <= o.max){
                 valueOffset = (value - o.majorTicksOffset)*o.majorTicksFactor;
                 if (valueOffset % o.tickDistanceNum === 0){
@@ -1216,7 +1185,6 @@
                 }
                 value += step;
             }
-//            this.cache.ctx.stroke();
 
             //Append colors on the grid
             if (this.options.gridColors)
@@ -1242,7 +1210,7 @@
                     //add triangle to the left or right
                     var $span = $('<span/>')
                                     .addClass( 'grid-color')
-                                    .appendTo( this.$currentGridContainer );
+                                    .appendTo( this.$currentGrid );
                     if (gridColor.value > this.options.max)
                         $span
                             .addClass('gt-max')
@@ -1263,7 +1231,7 @@
                             'width'           : percentFactor*(toValue-fromValue) + '%',
                             'background-color': gridColor.color
                            })
-                        .appendTo( this.$currentGridContainer );
+                        .appendTo( this.$currentGrid );
                 }
             }
         },

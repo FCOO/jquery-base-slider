@@ -4,11 +4,6 @@ jquery-base-slider-events
 (function ($, window/*, document, undefined*/) {
     "use strict";
 
-    //Create baseSlider-namespace
-	window._baseSlider = window._baseSlider || {};
-	var ns = window._baseSlider;
-
-
     /*******************************************************************
     getEventLeft
     Return the left (= x) position of an event
@@ -20,6 +15,29 @@ jquery-base-slider-events
                 event.touches && event.touches.length ? event.touches[0].pageX :
                 0;
     }
+
+
+    /*******************************************************************
+    objectsAreDifferent
+    Return true if obj1 and obj2 are not equal
+    *******************************************************************/
+    function objectsAreDifferent( obj1, obj2 ){
+        var result = false,
+            props = Object.getOwnPropertyNames(obj1).concat( Object.getOwnPropertyNames(obj2) );
+
+        $.each( props, function( index, id ){
+            var type1 = $.type(obj1[id]),
+                type2 = $.type(obj2[id]);
+
+            result =
+                result ||
+                (   ((type1 == 'number') || (type2 == 'number')) && //One or both are number AND
+                    ((type1 != type2) || (obj1[id] != obj2[id]))    //type are different OR value are different
+                );
+        });
+        return result;
+    }
+
 
 
     $.extend(window.BaseSlider.prototype, {
@@ -106,7 +124,7 @@ jquery-base-slider-events
 
             if (!this.initializing && this.isBuild){
                 //Update the slider if the width has changed
-                if (this.dimentions.containerWidth && ns.objectsAreDifferent( this.dimentions, this.dimentions_old))
+                if (this.dimentions.containerWidth && objectsAreDifferent( this.dimentions, this.dimentions_old))
                     updateSlider = true;
             }
             else {
@@ -538,7 +556,7 @@ jquery-base-slider-events
         *******************************************************************/
         onChange: function(){
             this.updateResult();
-            if ( this.callback.change && ns.objectsAreDifferent(this.result, this.lastResult) ){
+            if ( this.callback.change && objectsAreDifferent(this.result, this.lastResult) ){
                 this.adjustResult();
                 this.preOnChange( this.result );
                 this.on('change');

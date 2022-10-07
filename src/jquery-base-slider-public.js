@@ -4,13 +4,7 @@ jquery-base-slider-public.js
 (function ($, window/*, document, undefined*/) {
     "use strict";
 
-    //Create baseSlider-namespace
-//	window._baseSlider = window._baseSlider || {};
-//	var ns = window._baseSlider;
-
-
     $.extend(window.BaseSlider.prototype, {
-
         /*******************************************************************
         SET VALUES (TO, FROM, PIN ETC.)
         *******************************************************************/
