@@ -12,17 +12,16 @@
     <!-- <link  href="../src/jquery-base-slider.css" rel="stylesheet"> -->
     <style>
         .slider-container {
-            width  : 25rem;
-            _max-width: 80%;
-            _height : 10rem;
-            border : 0.12rem solid red;
-            padding: .25rem;
-            margin-left: 5%; //2rem;
-            margin-bottom: 1rem;
+            width           : 30rem;
+            border          : 1px solid blue;
+            padding         : 4px;
+            margin-left     : 5%;
+            margin-bottom   : 1rem;
         }
-        .slider-container.resizable {
-            width  : 80% !important;
-        }
+
+//REMOVED IN V6        .slider-container.resizable {
+//REMOVED IN V6            width  : 80% !important;
+//REMOVED IN V6        }
 
         .date-box {
             display : inline-block;
@@ -72,6 +71,7 @@
     </div>
  -->
 
+<!--
     <h4>Scale &#177; </h4>
     <div>
         <input type="radio" class="scaleRadio" name="options" id="option1" value="60" autocomplete="off"><label for="option1">60%</label>
@@ -83,15 +83,15 @@
     </div>
 
     <br><br>
+ -->
 
     <div style="position: relative; width:100%; _display:none">
-
         <div class="slider-container _resizable">
             <div class="code-container" id="options_01"></div><hr>
             <input type="text" id="example_01"/>
         </div>
 
-        <div class="slider-container resizable">
+        <div class="slider-container _resizable">
             <div class="code-container" id="options_02"></div><hr>
             <input type="text" id="example_02"/>
         </div>
@@ -119,6 +119,7 @@
         <div class="slider-container">
             <div class="code-container" id="options_08"></div><hr>
             <input type="text" id="example_08"/>
+<!-- 
             <br>
             <button id="btnFromFirst">From:First</button>
             <button id="btnFromPrev">From:Previous</button>
@@ -132,8 +133,8 @@
             <button id="btnToNow">"To:Zero"</button>
             <button id="btnToNext">To:Next</button>
             <button id="btnToLast">To:Last</button>
+ -->
         </div>
-
     </div>
 
         <script>
@@ -142,7 +143,7 @@
             last = start;
         function test(txt){
             var now = (new Date()).getTime();
-            //console.log(txt, now - start, now - last );
+            console.log(txt, now - start, now - last );
             last = now;
         }
 
@@ -164,15 +165,18 @@
 
     <!-- <script src="browser-polyfill.js"></script> -->
     <script src="bower_components.js"></script>
-    <script src="../src/jquery-base-slider.js"></script>
+    <script src="../src/jquery-base-slider-0.js"></script>
+    <script src="../src/jquery-base-slider-events.js"></script>
+
     <script src="../src/jquery-base-slider-handle.js"></script>
+    <script src="../src/jquery-base-slider-public.js"></script>
     <script src="../src/jquery-base-slider-value.js"></script>
 
 <script>
-    $('.scaleRadio').on( 'change', function(event) {
-        var percent = 16*parseInt($(event.target).attr('value'))/100;
-        $('html').css('font-size', percent+'px');
-    });
+//REMOVED IN V6    $('.scaleRadio').on( 'change', function(event) {
+//REMOVED IN V6        var percent = 16*parseInt($(event.target).attr('value'))/100;
+//REMOVED IN V6        $('html').css('font-size', percent+'px');
+//REMOVED IN V6    });
 
     //Debug:
     test('START');
@@ -180,17 +184,19 @@
     //Wait for cc to load
     $(window).on("load", function() {
         //Fixed slider
-        var range = 100;//4000;
+        var range = 1000; //400
         createDemoSlider( '01', 'Fixed handler', {
-            handleFixed: true, handle:"fixed", _resizable: true, width: 3*400, min:-range, max:range, value:-50, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            handleFixed: true, width: 3*range, min:-range, max:range, value:0, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
 
-
+//return;
         //Ex #2
         var slider =
         createDemoSlider( '02', 'Normal', {
-            handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
+            handle:'down', _resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, 
+            ticksOnLine: true,
+            markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
         })
 //$('body').on('click', function(){ slider.update({majorTicksOffset: 1000}); });
 
@@ -237,8 +243,8 @@
             min:0, max:120, value:20, majorTicks_offset:2, step:5, stepOffset:3, grid:true, showMinMax: true
         });
 
-        createDemoSlider( '08', 'Step=3, tick-offset=2, step-offset=3 and buttons', {
-            double: true, handle:'round', min:-100, max:120, from: -20, to:20, value:40, majorTicksOffset:2, step:3, stepOffset:1, grid:true,
+        createDemoSlider( '08', 'Step=3, tick-offset=2, step-offset=3, showImpactLineColor=true and buttons', {
+            double: true, handle:'round', min:-100, max:120, from: -20, to:20, value:40, majorTicksOffset:2, step:3, stepOffset:1, grid:true, showImpactLineColor: true,
             buttonOptions: {nextFourBtn: {sign:+1, delta:+2}},
             buttons: {
                 from: {

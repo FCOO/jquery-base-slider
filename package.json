@@ -11,6 +11,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "grunt-fcoo-grunt-plugin": "^5.0.0"
+    "grunt-fcoo-grunt-plugin": "^6.0.0"
   }
 }

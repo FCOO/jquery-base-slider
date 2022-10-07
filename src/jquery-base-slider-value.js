@@ -29,7 +29,6 @@
     The object contains the following items:
         value   : The actual value ,
         percent : The value as percent of the total slider width
-        rem     : The value converted to rem
     *******************************************************************/
     var SliderValue = function( options ){
         this.slider = options.slider;
@@ -41,7 +40,6 @@
         this.fixed = !!options.fixed;
         this.fixedValue = options.value;
         this.value   = 0;
-        this.rem     = 0;
         this.percent = 0;
         this.minList = [];
         this.maxList = [];
@@ -127,11 +125,6 @@
         getPercent: function( inclUnit ){
             return toFixed( this.percent ) + (inclUnit ? '%' : 0);
         },
-
-        getRem: function( inclUnit ){
-            return toFixed( this.rem ) + (inclUnit ? 'rem' : 0);
-        }
-
     };
 
 

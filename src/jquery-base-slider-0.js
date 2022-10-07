@@ -28,11 +28,11 @@
         handleFixed : false,    // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
-        resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
+//REMOVED IN V6        resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
-        width         : 0,  // The total width of the slider (in px for 1rem = 16px)
-        valueDistances: 3,  // The distance between each value on the slider (in px for 1rem = 16px). Width will be valueDistances*( max - min )
+        width         : 0,  // The total width of the slider (px)
+        valueDistances: 3,  // The distance between each value on the slider (px). Width will be valueDistances*( max - min )
 
         //Ranges and value
         min  : 0,           // Set slider minimum value
@@ -56,6 +56,11 @@
         pinColor: 'black',          // The color of the pin. Use  setPin( value , color )  to change the color dynamical
         pinIcon : 'fa-map-marker',  // The class-name from Fontawasome setting the icon used as pin
 
+
+        //Ticks and labels
+        majorColor  : '#000000',
+        minorColor  : '#555555',
+
         //Steps
         step        : 1,    // Set sliders step. Always > 0. Could be fractional.
         stepOffset  : 0,    // When  step  > 1: Offset for the allowed values. Eq. Min=0, max=100, step=5, stepOffset=3 => allowed values=3,8,13,...,92,97 (3+N*5). Only tested for options.single: true
@@ -75,6 +80,24 @@
         impactLineColors      : {green: "green", yellow: "yellow", red: "red"}, //The line colors used when showImpactLineColor: true
         reverseImpactLineColor: false, // The line on a double slider is colored as red-[handle]-yellow-[handle]-green. Must have showImpactLineColor: true
 
+        //Size
+        sizeFactor: 1, //Factor to re-size default sizes
+        fixedSize: {
+            borderWidth: 1,
+        },
+        size: {
+            fontSize        : 10,
+            majorTickLength : 9,
+            minorTickLength : 6,
+
+            lineHeight      : 6,
+
+
+            lineBorderRadius: 2,
+            textPadding     : 2,
+
+            labelInnerHeight: 10,
+        },
 
         //Grid (ticks and label)
         grid            : false,                      // Enables grid of values.
@@ -88,10 +111,10 @@
         gridColors      : null, //Array of { [fromValue, ]value, color } to set colors on the line. If no fromValue is given the the previous value is used.
                                 //If value == null or < min => A triangle is added to the left indicating 'below min'.
                                 //If value > max            =>  A triangle is added to the right indicating 'above max'.
-        labelColors     : null, //Array of {value, className, color, backgroundColor} to set frame around and className, color, backgroundColor for the label and with value
+        labelColors     : null, //Array of {value, color, backgroundColor} to set frame around and color, backgroundColor for the label and with value
 
         labelClickable         : true, //Allows click on labels to select value of label. If false a click on a label is equal to a click on the line (e.q. find nearest value
-        labelClickableFullWidth: true, //If true and options.labelClickable: true and the value of the label is selectable (with respect to options.step and options.stepOffset) the clickable width of the label is expanded to half the distance to the neighbour labels
+//REMOVED IN V6        labelClickableFullWidth: true, //If true and options.labelClickable: true and the value of the label is selectable (with respect to options.step and options.stepOffset) the clickable width of the label is expanded to half the distance to the neighbour labels
 
         //Marker above handle
         showMinMax : false,    // Show min and max markers
@@ -117,46 +140,46 @@
         onChangeDelay     : 500,  // If onChangeOnDragging == false the callback-function is called when the slider has been on the same tick for onChangeDelay milliseconds
 
 
-        //Buttons
-        buttons      : {value:{}, from:{}, to:{} },
-        /*
-        JSON-record with id or buttons for first, previousPage, previousShift, previous, (now,) next, nextShift, nextPage and last value
-            options.buttons = {
-                value: {buttonList},
-                from : {buttonList},
-                to   : {buttonList}
-            }
-            {buttonList} = {
-                firstBtn        : element or string,
-                previousPageBtn : element or string,
-                previousShiftBtn: element or string,
-                previousBtn     : element or string,
-                nowBtn          : element or string,
-                nextBtn         : element or string,
-                nextShiftBtn    : element or string,
-                nextPageBtn     : element or string,
-                lastBtn         : element or string
-            }
-        */
+//REMOVED IN V6        //Buttons
+//REMOVED IN V6        buttons      : {value:{}, from:{}, to:{} },
+//REMOVED IN V6        /*
+//REMOVED IN V6        JSON-record with id or buttons for first, previousPage, previousShift, previous, (now,) next, nextShift, nextPage and last value
+//REMOVED IN V6            options.buttons = {
+//REMOVED IN V6                value: {buttonList},
+//REMOVED IN V6                from : {buttonList},
+//REMOVED IN V6                to   : {buttonList}
+//REMOVED IN V6            }
+//REMOVED IN V6            {buttonList} = {
+//REMOVED IN V6                firstBtn        : element or string,
+//REMOVED IN V6                previousPageBtn : element or string,
+//REMOVED IN V6                previousShiftBtn: element or string,
+//REMOVED IN V6                previousBtn     : element or string,
+//REMOVED IN V6                nowBtn          : element or string,
+//REMOVED IN V6                nextBtn         : element or string,
+//REMOVED IN V6                nextShiftBtn    : element or string,
+//REMOVED IN V6                nextPageBtn     : element or string,
+//REMOVED IN V6                lastBtn         : element or string
+//REMOVED IN V6            }
+//REMOVED IN V6        */
 
 
-        /****************************************
-        Internal options
-        ****************************************/
-        //The standard button-ids are firstBtn, previousBtn, nowBtn, nextBtn, lastBtn with the following steps
-        buttonOptions: {
-            'firstBtn'        : { sign: -1, delta: 99 },
-            'previousPageBtn' : { sign: -1, delta:  3 },
-            'previousShiftBtn': { sign: -1, delta:  2 },
-            'previousBtn'     : { sign: -1, delta:  1 },
-            'nowBtn'          : { sign: +1, delta:  0 },
-            'nextBtn'         : { sign: +1, delta:  1 },
-            'nextShiftBtn'    : { sign: +1, delta:  2 },
-            'nextPageBtn'     : { sign: +1, delta:  3 },
-            'lastBtn'         : { sign: +1, delta: 99 }
-        },
+//REMOVED IN V6        /****************************************
+//REMOVED IN V6        Internal options
+//REMOVED IN V6        ****************************************/
+//REMOVED IN V6        //The standard button-ids are firstBtn, previousBtn, nowBtn, nextBtn, lastBtn with the following steps
+//REMOVED IN V6        buttonOptions: {
+//REMOVED IN V6            'firstBtn'        : { sign: -1, delta: 99 },
+//REMOVED IN V6            'previousPageBtn' : { sign: -1, delta:  3 },
+//REMOVED IN V6            'previousShiftBtn': { sign: -1, delta:  2 },
+//REMOVED IN V6            'previousBtn'     : { sign: -1, delta:  1 },
+//REMOVED IN V6            'nowBtn'          : { sign: +1, delta:  0 },
+//REMOVED IN V6            'nextBtn'         : { sign: +1, delta:  1 },
+//REMOVED IN V6            'nextShiftBtn'    : { sign: +1, delta:  2 },
+//REMOVED IN V6            'nextPageBtn'     : { sign: +1, delta:  3 },
+//REMOVED IN V6            'lastBtn'         : { sign: +1, delta: 99 }
+//REMOVED IN V6        },
 
-        minDistanceRem: 4/16 //Minimum distance between ticks and between labels
+        minDistance: 4 //Minimum distance between ticks and between labels
 
     };
 
@@ -167,17 +190,6 @@
     *******************************************************************/
 
     /*******************************************************************
-    Get font-size for the html
-    *******************************************************************/
-    var htmlFontSize = parseFloat( $('html').css('font-size') || $('body').css('font-size') || $.DEFAULT_BROWSER_FONT_SIZE || '16px' );
-
-    function onFontSizeChange( event, fontSize ){
-        htmlFontSize = parseFloat( fontSize.fontSizePx ) || htmlFontSize;
-    }
-
-    $.onFontSizeChanged( onFontSizeChange );
-
-    /*******************************************************************
     toFixed
     Round num to 5 digits
     *******************************************************************/
@@ -185,30 +197,12 @@
         return +num.toFixed(5);
     }
 
-    /*******************************************************************
-    pxToRem
-    *******************************************************************/
-    function pxToRem( valuePx, inclUnit ){
-        return valuePx / htmlFontSize + (inclUnit ? 'rem' : 0);
-    }
-
-    /*******************************************************************
-    getEventLeft
-    Return the left (= x) position of an event
-    *******************************************************************/
-    function getEventLeft( event ){
-        return  event.gesture && event.gesture.center ? event.gesture.center.x :
-                event.pageX ? event.pageX :
-                event.originalEvent && event.originalEvent.touches && event.originalEvent.touches.length ? event.originalEvent.touches[0].pageX :
-                event.touches && event.touches.length ? event.touches[0].pageX :
-                0;
-    }
 
     /*******************************************************************
     objectsAreDifferent
     Return true if obj1 and obj2 are not equal
     *******************************************************************/
-    function objectsAreDifferent( obj1, obj2 ){
+    ns.objectsAreDifferent = function( obj1, obj2 ){
         var result = false,
             props = Object.getOwnPropertyNames(obj1).concat( Object.getOwnPropertyNames(obj2) );
 
@@ -223,12 +217,7 @@
                 );
         });
         return result;
-    }
-
-    //'Global' text-element to be used by getTextWidth
-    var $outerTextElement = null,
-        textElement       = null;
-
+    };
 
     /*******************************************************************
     ********************************************************************
@@ -242,29 +231,27 @@
         this.input          = input;
         this.pluginCount   = pluginCount;
 
-        this.htmlFontSize = htmlFontSize;
-
         this.initializing     = true;
         this.currentHandle    = null;
         this.isRepeatingClick = false;
 
 
-        //Create element outside DOM used to calc width of text-elements
-        this.$outerTextElement =
-            $outerTextElement ||
-            $('<div/>')
-                .addClass('grid')
-                .css({ position: 'absolute', top: -10000, left: -10000 })
-                .appendTo( $('body') );
-        $outerTextElement = this.$outerTextElement;
-
-        this.textElement =
-            textElement ||
-            $('<span/>')
-                .addClass('grid-label')
-                .appendTo( this.$outerTextElement )
-                .get(0);
-        textElement = this.textElement;
+// HER>         //Create element outside DOM used to calc width of text-elements
+// HER>         this.$outerTextElement =
+// HER>             $outerTextElement ||
+// HER>             $('<div/>')
+// HER>                 .addClass('grid')
+// HER>                 .css({ position: 'absolute', top: -10000, left: -10000 })
+// HER>                 .appendTo( $('body') );
+// HER>         $outerTextElement = this.$outerTextElement;
+// HER>
+// HER>         this.textElement =
+// HER>             textElement ||
+// HER>             $('<span/>')
+// HER>                 .addClass('grid-label')
+// HER>                 .appendTo( this.$outerTextElement )
+// HER>                 .get(0);
+// HER>         textElement = this.textElement;
 
         /*******************************************************************
         Set and adjust options that can't be changed by this.update(options)
@@ -274,7 +261,7 @@
 
         if (this.options.handleFixed){
             this.options.double = false;
-            this.options.handle = 'fixed';
+            this.options.handle = options.handle || 'fixed';
         }
 
         this.options.isSingle = !this.options.double;
@@ -284,23 +271,39 @@
         this.options.singleHandleId =
             this.options.isSingle ? (this.options.handleFixed ? 'fixed' : 'single') : 'from-to';
 
-
         /*******************************************************************
-        this.events contains event-functions and options
-        this.events.containerOnResize = called when the sizse of the container is changed
+        Adjust different sizes
         *******************************************************************/
-        this.events = {
-            containerOnResize: $.proxy( this.containerOnResize, this ),
-            parentOnResize   : $.proxy( this.parentOnResize, this )
-        };
+        var size       = this.options.size,
+            sizeFactor = this.options.sizeFactor;
 
-        //Create event-function to be called on resize of the window and the container (added in init)
-        if (this.options.resizable)
-            //Add resize-event to window
-            $(window).on('resize', this.events.containerOnResize );
+        $.each(size, function(index, id){
+            if ( size[id] && $.isNumeric(size[id]) )
+                size[id] = sizeFactor * parseFloat( size[id] );
+        });
 
-        //Update slider when browser font-size is changed
-        $.onFontSizeChanged( this.onFontSizeChange, this );
+        $.each(this.options.fixedSize, function(id, value){
+            size[id] = value;
+        });
+
+        //Calc sizes
+        size.labelHeight = size.borderWidth + size.textPadding + size.fontSize + size.textPadding + size.borderWidth;
+
+
+//REMOVED IN V6        /*******************************************************************
+//REMOVED IN V6        this.events contains event-functions and options
+//REMOVED IN V6        this.events.containerOnResize = called when the sizse of the container is changed
+//REMOVED IN V6        *******************************************************************/
+//REMOVED IN V6        this.events = {
+//REMOVED IN V6            containerOnResize: $.proxy( this.containerOnResize, this ),
+//REMOVED IN V6            parentOnResize   : $.proxy( this.parentOnResize, this )
+//REMOVED IN V6        };
+//REMOVED IN V6
+//REMOVED IN V6        //Create event-function to be called on resize of the window and the container (added in init)
+//REMOVED IN V6        if (this.options.resizable)
+//REMOVED IN V6            //Add resize-event to window
+//REMOVED IN V6            $(window).on('resize', this.events.containerOnResize );
+
 
         /*******************************************************************
         this.result = record with the current result from the slider
@@ -330,7 +333,7 @@
         *******************************************************************/
         this.cache = {
             $input : $(this.input),
-            buttons: { value:{}, from:{}, to:{} }
+//REMOVED IN V6            buttons: { value:{}, from:{}, to:{} }
         };
 
         //Hide the input
@@ -403,9 +406,8 @@
             this.dimentions_old is the last values
             *******************************************************************/
             this.dimentions = {
-                containerWidth          :  0,   //Width of the container [px]
-                containerWidthRem       :  0,   //Width of the container [rem]
-                outerContainerWidthRem  :  0    //Width of outer container [rem]
+                containerWidth     :  0, //Width of the container [px]
+                outerContainerWidth:  0  //Width of outer container [px]
             };
 
             this.dimentions_old = $.extend({}, this.dimentions );
@@ -658,7 +660,7 @@
                 //Sets the width of the container with full width
                 var width = this.options.width || this.options.valueDistances*(this.options.max - this.options.min);
 
-                this.cache.$fullWidthContainer.width( Math.ceil(pxToRem(width))+'rem' );
+                this.cache.$fullWidthContainer.width( width +'px' );
 
                 this.cache.$fullWidthContainer.wrap('<div/>');
                 this.cache.$outerContainer = this.cache.$fullWidthContainer.parent();
@@ -762,14 +764,15 @@
 
 
             //Update the height of the slider
-            this.cache.$container.css('height', pxToRem( this.cache.$lineBackground.height(), true) );
+            this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
+
+            //Save the width of the slider
+            this.options.width = this.options.width || this.cache.$container.innerWidth();
+
 
             /****************************************************
             Append grid with ticks and optional labels
             ****************************************************/
-            if (this.options.grid)
-                this.cache.$grid = $span('grid', this.cache.$container);
-
             //Adjust top-position if no marker is displayed
             if (!this.options.showMinMax && !this.options.showFromTo)
                 this.cache.$container.addClass("no-marker");
@@ -782,18 +785,18 @@
             if (this.options.hasPin)
                 this.cache.$container.addClass("has-pin");
 
-            //Append buttons
-            function getButton( id ){
-                return $.type( id ) === 'string' ? $('#' +  id ) : id;
-            }
-            this.options.buttons.value = this.options.buttons.value || {};
-            this.options.buttons.from = this.options.buttons.from || {};
-            this.options.buttons.to   = this.options.buttons.to   || {};
-            $.each( this.options.buttonOptions, function( id ){
-                _this.cache.buttons.value[ id ] = getButton( _this.options.buttons.value[ id ] );
-                _this.cache.buttons.from[ id ]  = getButton( _this.options.buttons.from[ id ] );
-                _this.cache.buttons.to[ id ]    = getButton( _this.options.buttons.to  [ id ] );
-            });
+//REMOVED IN V6            //Append buttons
+//REMOVED IN V6            function getButton( id ){
+//REMOVED IN V6                return $.type( id ) === 'string' ? $('#' +  id ) : id;
+//REMOVED IN V6            }
+//REMOVED IN V6            this.options.buttons.value = this.options.buttons.value || {};
+//REMOVED IN V6            this.options.buttons.from = this.options.buttons.from || {};
+//REMOVED IN V6            this.options.buttons.to   = this.options.buttons.to   || {};
+//REMOVED IN V6            $.each( this.options.buttonOptions, function( id ){
+//REMOVED IN V6                _this.cache.buttons.value[ id ] = getButton( _this.options.buttons.value[ id ] );
+//REMOVED IN V6                _this.cache.buttons.from[ id ]  = getButton( _this.options.buttons.from[ id ] );
+//REMOVED IN V6                _this.cache.buttons.to[ id ]    = getButton( _this.options.buttons.to  [ id ] );
+//REMOVED IN V6            });
 
             //Append grid(s)
             this.$currentGridContainer = null;
@@ -823,15 +826,15 @@
         remove
         *******************************************************************/
         remove: function () {
-            var _this = this;
-            //************************************************
-            function offEvents( $elem, eventNames ){
-                if (!$elem) return;
-                $.each( eventNames.split(' '), function( index, eventName ){
-                    $elem.off( eventName + ".irs_" + _this.pluginCount );
-                });
-            }
-            //************************************************
+//REMOVED IN V6            var _this = this;
+//REMOVED IN V6            //************************************************
+//REMOVED IN V6            function offEvents( $elem, eventNames ){
+//REMOVED IN V6                if (!$elem) return;
+//REMOVED IN V6                $.each( eventNames.split(' '), function( index, eventName ){
+//REMOVED IN V6                    $elem.off( eventName + ".irs_" + _this.pluginCount );
+//REMOVED IN V6                });
+//REMOVED IN V6            }
+//REMOVED IN V6            //************************************************
 
             if (this.cache.$outerContainer){
                 this.cache.$outerContainer.remove();
@@ -844,555 +847,16 @@
 
             this.eachHandle('remove');
 
-            //Unbind click on buttons
-            $.each( this.cache.buttons, function( valueOrToOrFrom, buttonRecord ){
-                $.each( buttonRecord, function( id, $btn ){
-                    offEvents( $btn, 'mousedown mouseup mouseleave click' );
-                });
-            });
+//REMOVED IN V6            //Unbind click on buttons
+//REMOVED IN V6            $.each( this.cache.buttons, function( valueOrToOrFrom, buttonRecord ){
+//REMOVED IN V6                $.each( buttonRecord, function( id, $btn ){
+//REMOVED IN V6                    offEvents( $btn, 'mousedown mouseup mouseleave click' );
+//REMOVED IN V6                });
+//REMOVED IN V6            });
         },
 
 
-        /*******************************************************************
-        bindEvents
-        *******************************************************************/
-        bindEvents: function () {
-            var _this = this;
-            //*******************************************************************
-            function addEvents( $elem, eventNames, func, param ){
-                if (!$elem) return;
-                func = param ? $.proxy( func, _this, param) : $.proxy( func, _this );
 
-                $.each( eventNames.split(' '), function( index, eventName ){
-                    $elem.off( eventName + ".irs_" + _this.pluginCount,  func );
-                    $elem.on ( eventName + ".irs_" + _this.pluginCount,  func );
-                });
-                return $elem;
-            }
-            //*******************************************************************
-
-            /*
-            Add tap/press-events to the container
-            Depending on whether the slider is normal or with fixed handle the
-            event for 'press' and/or 'pressup/tap' are different
-            The difference is necessary to prevent dragging a label in fixed-mode
-            resulting in a click-on-label event
-            */
-            if (this.options.isFixed)
-                addEvents( this.cache.$container, 'tap pressup', this.onTap );
-            else {
-                addEvents( this.cache.$container, 'pressup',   this.currentHandleBlur );
-                addEvents( this.cache.$container, 'tap press', this.onTap )
-                    .data('hammer').get('press').set({time: 1});
-            }
-
-            var $panElement = this.options.isFixed ? this.cache.$fullWidthContainer : this.cache.$container;
-            addEvents( $panElement, 'panstart',         this.onPanstart );
-            addEvents( $panElement, 'panleft panright', this.onPan      );
-            addEvents( $panElement, 'panend pancancel', this.onPanend   );
-
-            $panElement.data('hammer').get('pan').set({threshold: 1});
-
-            //Add onResize to the container
-            if (this.options.resizable){
-                if (this.options.isFixed)
-                    this.cache.$outerContainer.resize( this.events.containerOnResize );
-                else
-                    this.cache.$container.resize( this.events.containerOnResize );
-            }
-
-            //Add horizontal sliding with mousewheel
-            if (this.options.mousewheel)
-                addEvents(
-                    this.options.handleFixed ? this.cache.$outerContainer : this.cache.$container.parent(),
-                    'mousewheel',
-                    this.mousewheel
-                );
-
-            //Add keyboard events to the line
-            addEvents( this.cache.$line, "keydown", this.key );
-
-            //Bind click on buttons
-            $.each( this.cache.buttons, function( fromOrTo, buttonRecord ){
-                $.each( buttonRecord, function( id, $btn ){
-                    var options = $.extend({handleId: fromOrTo}, _this.options.buttonOptions[id]);
-                    addEvents( $btn, 'mousedown',  _this.startRepeatingClick                         );
-                    addEvents( $btn, 'mouseup',    _this.endRepeatingClick                           );
-                    addEvents( $btn, 'mouseleave', _this.endRepeatingClick,                  true    );
-                    addEvents( $btn, 'click',      _this.moveByButtonOrKeyboardOrMouseWheel, options );
-
-                    if ( $btn && $btn.autoclickWhilePressed && options.delta && (options.delta != 99) && (!$btn.data('auto-click-when-pressed-added')) ){
-                        $btn.data('auto-click-when-pressed-added', true);
-                        $btn.autoclickWhilePressed();
-                    }
-
-                });
-            });
-        },
-
-
-        /*******************************************************************
-        ********************************************************************
-        EVENTS
-        ********************************************************************
-        *******************************************************************/
-
-        /*******************************************************************
-        containerOnResize
-        Call parentOnResize when the slider is finish building and the container is resized
-        *******************************************************************/
-        containerOnResize: function(){
-            if (this.initializing || !this.isBuild)
-                return;
-
-            this.parentOnResize();
-        },
-
-
-        /*******************************************************************
-        parentOnResize
-        Call checkContainerDimentions when the container is resized.
-        Prevent multi updates by setting delay of 200ms
-        *******************************************************************/
-        parentOnResize: function(){
-            //Remove resize-event from parent if it isn't a resizable slider
-            if (!this.options.resizable && this.parentOnResizeAdded && this.cache.$parent){
-                this.cache.$parent.removeResize( this.events.parentOnResize );
-                this.parentOnResizeAdded = null;
-            }
-
-            //Clear any previous added timeout
-            if (this.resizeTimeoutId)
-                window.clearTimeout(this.resizeTimeoutId);
-            this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
-        },
-
-        /*******************************************************************
-        getDimentions
-        Get width and left-position of different slider elements
-        *******************************************************************/
-        getDimentions: function(){
-            var result = {};
-            result.containerWidth    = Math.max(0, this.cache.$container.innerWidth()) || this.dimentions.containerWidth;
-            result.containerWidthRem = pxToRem(result.containerWidth);
-            if (this.options.isFixed)
-                result.outerContainerWidthRem = pxToRem( this.cache.$outerContainer.innerWidth() );
-            return result;
-        },
-
-        /*******************************************************************
-        checkContainerDimentions
-        Get width and left-position and redraw the slider
-        *******************************************************************/
-        checkContainerDimentions: function(){
-            var updateSlider = false;
-
-            //Get dimentions of the slider containers
-            this.dimentions = this.getDimentions();
-
-            if (!this.initializing && this.isBuild){
-                //Update the slider if the width has changed
-                if (this.dimentions.containerWidthRem && objectsAreDifferent( this.dimentions, this.dimentions_old))
-                    updateSlider = true;
-
-                    //Check if the grid of a resizable slider has changed
-                    if (this.options.resizable){
-                        var _this = this,
-                            rebuild = false,
-                            newGridOptions = this.getGridOptions(),
-                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
-
-                        $.each( idList, function( index, id ){
-                            rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
-                        });
-
-                        if (rebuild){
-                            this.update();
-                            return;
-                        }
-                    }
-            }
-            else {
-                //Reset timeout and try to build the slider
-                if (this.checkContainerDimentions_TimeoutId){
-                    window.clearTimeout(this.checkContainerDimentions_TimeoutId);
-                    this.checkContainerDimentions_TimeoutId = null;
-                }
-
-                if (this.dimentions.containerWidthRem){
-                    this.build();
-                    updateSlider = true;
-                }
-                else {
-                    // if this.cache.$container has a parent-element with no-width => add ONE resize-event on the parent to detect when it changes it width e.q. is added to the DOM or made visible
-                    // else set timeout to check dimention of the container
-                    this.cache.$parent = this.cache.$container.parent();
-
-                    if (this.checkParentResize && this.cache.$parent.length){
-                        this.checkParentResize = false;
-                        this.parentOnResizeAdded = true;
-                        this.cache.$parent.resize( this.events.parentOnResize );
-                    }
-                    else
-                        this.checkContainerDimentions_TimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
-                }
-
-            }
-
-            //Update slider
-            if (updateSlider){
-                this.dimentions_old = $.extend({}, this.dimentions);
-                this.updateHandlesAndLines();
-            }
-        },
-
-        /*******************************************************************
-        onFontSizeChange
-        Called when the font-size of the browser is changed
-        *******************************************************************/
-        onFontSizeChange: function( event, fontSize ){
-            onFontSizeChange( event, fontSize );
-            if (this.htmlFontSize != htmlFontSize){
-                this.htmlFontSize = htmlFontSize;
-                if (this.options.resizable)
-                    this.update();
-                else
-                    this.dimentions = this.getDimentions();
-            }
-        },
-
-        /*******************************************************************
-        KEY, WHEEL AND BUTTON EVENTS
-        *******************************************************************/
-        /*******************************************************************
-        startRepeatingClick
-        *******************************************************************/
-        startRepeatingClick: function () {
-            this.isRepeatingClick = true;
-        },
-
-        /*******************************************************************
-        endRepeatingClick
-        *******************************************************************/
-        endRepeatingClick: function (callOnChange) {
-            this.isRepeatingClick = false;
-            if (callOnChange)
-                this.onChange();
-        },
-
-        /*******************************************************************
-        key
-        Event keydown
-        *******************************************************************/
-        key: function(event) {
-            if (event.altKey || event.metaKey) return;
-
-            var options;
-
-            switch (event.which) {
-                case 83: // W
-                case 65: // A
-                case 40: // DOWN
-                case 37: // LEFT
-                    options = {delta: 1, shiftDelta: 2, ctrlShiftDelta: 3, sign: -1};
-                    break;
-                case 87: // S
-                case 68: // D
-                case 38: // UP
-                case 39: // RIGHT
-                    options = {delta: 1, shiftDelta: 2, ctrlShiftDelta: 3, sign: +1};
-                    break;
-                case 33: // page up
-                    options = {delta: 3, shiftDelta: 99, sign: -1};
-                    break;
-                case 34: // page down
-                    options = {delta: 3, shiftDelta: 99, sign: +1};
-                    break;
-                case 35: // end
-                    options = {delta: 99, sign: +1};
-                    break;
-                case 36: // home
-                    options  = {delta: 99, sign: -1};
-                    break;
-                default:
-                    options = {delta: 0};
-            }
-
-            if (options.delta)
-                return this.moveByButtonOrKeyboardOrMouseWheel( options, event );
-        },
-
-        /*******************************************************************
-        mousewheel
-        *******************************************************************/
-        mousewheel: function( event, delta ){
-            return this.moveByButtonOrKeyboardOrMouseWheel({
-                delta         : 1,
-                shiftDelta    : 2,
-                ctrlShiftDelta: 3,
-                sign          : delta
-
-            }, event );
-        },
-
-        /*******************************************************************
-        moveByButtonOrKeyboardOrMouseWheel
-        options = { sign, delta, shiftDelta, ctrlShiftDelta, event }
-        *******************************************************************/
-        moveByButtonOrKeyboardOrMouseWheel: function( options, event ){
-
-            //*******************************************
-            function minOrMaxInList( findInMaxList, sliderValue, excludeSliderValue ){
-                var result = findInMaxList ? _this.options.max : _this.options.min,
-                    list   = findInMaxList ? sliderValue.maxList : sliderValue.minList;
-                $.each( list, function( index, listObj ){
-                    if (listObj.sliderValue !== excludeSliderValue)
-                        result = (findInMaxList ? Math.min : Math.max)( result, listObj.sliderValue.value );
-                });
-                return result;
-            }
-            //*******************************************
-
-            event.preventDefault();
-
-            /*
-            Setting delta:
-                +/-  1: step = this.options.step
-                +/-  2: step = this.options.keyboardShiftStepFactor * this.options.step
-                +/-  3: step = this.options.keyboardPageStepFactor * this.options.step
-                +/- 99: To the end/start
-            */
-            var delta = options.delta;
-
-            //If shift XOR ctrl is pressed..
-            if ((event.ctrlKey && !event.shiftKey) || (!event.ctrlKey && event.shiftKey))
-                delta = options.shiftDelta || delta;
-
-            //If shift AND ctrl is pressed..
-            if (event.ctrlKey && event.shiftKey)
-                delta = options.ctrlShiftDelta || options.shiftDelta || delta;
-
-            delta = options.sign*delta;
-
-            //Find handle and new value depending on type and direction
-            var handle =
-                    this.options.isFixed ? this.handles.fixed :
-                    this.options.isSingle ? this.handles.single :
-                    options.handleId && this.handles[options.handleId] ? this.handles[options.handleId] :
-                    delta < 0 ? this.handles.from :
-                    this.handles.to,
-                oldValue = handle.value.value,
-                newValue = oldValue;
-
-            switch (delta){
-                case   0: newValue = 0; break;
-                case -99: newValue = this.options.min; break;
-                case  99: newValue = this.options.max; break;
-                case  +1: newValue = oldValue + this.options.step; break;
-                case  -1: newValue = oldValue - this.options.step; break;
-                case  +2: newValue = oldValue + this.options.keyboardShiftStepFactor * this.options.step; break;
-                case  -2: newValue = oldValue - this.options.keyboardShiftStepFactor * this.options.step; break;
-                case  +3: newValue = oldValue + this.options.keyboardPageStepFactor * this.options.step; break;
-                case  -3: newValue = oldValue - this.options.keyboardPageStepFactor * this.options.step; break;
-            }
-
-            //If the slider has two handle and both handles are moved: Move euqal distance to keep the distance between them constant
-            if (!options.handleId && this.options.isDouble){
-                var _this = this;
-                //1: Find possible max delta for both from- and to-value
-                var fromValue = this.handles.from.value,
-                    toValue   = this.handles.to.value,
-                    deltaValue =
-                        (delta > 0 ? Math.min : Math.max)(
-                            newValue - oldValue,
-                            minOrMaxInList( delta > 0, fromValue, toValue   ) - fromValue.value, //Maximal new from-value minus current from-value
-                            minOrMaxInList( delta > 0, toValue,   fromValue ) - toValue.value //Maximal new to-value minus current to-value
-                        );
-
-                //2: Set the values without checking for intervalMin or intervalMax
-                fromValue.value += deltaValue;
-                toValue.value   += deltaValue;
-
-                //3: Check values incl. intervalMin and intervalMax
-                fromValue.update();
-                toValue.update();
-
-            }
-            else
-                //Update single/fixed handle
-                handle.value.setValue( newValue );
-
-
-            this.updateHandlesAndLines();
-
-            return true;
-        },
-
-
-        /*******************************************************************
-        TAP AND PAN EVENTS
-        *******************************************************************/
-        /*******************************************************************
-        updateMouse
-        Reset this.mouse based on mouse-position from mouseLeft
-        *******************************************************************/
-        updateMouse: function ( mouseLeft ) {
-            // this.mouse.valueOffset is set to the left-position of the slider incl scrolling
-            this.mouse.valueOffset = this.cache.$innerContainer.get(0).getBoundingClientRect().left;
-            //this.mouse.valueRange is set to width of the slider
-            this.mouse.valueRange = this.dimentions.containerWidth;
-            this.mouse.percentOffset = 0;
-            this.mouse.setValue( mouseLeft );
-        },
-
-        /*******************************************************************
-        onTap
-        Called when tap and press/pressup on the slider (line and grid)
-        *******************************************************************/
-        onTap: function(event) {
-            var _this = this,
-                percent = NaN, // = the percent to set this.currentHandle
-                elem    = event.gesture.target;
-
-            event.preventDefault();
-            event.stopImmediatePropagation();
-
-            this.currentHandleBlur();
-
-            //First check if the tap was on a handle or the marker of a handler
-            if (!this.options.isFixed)
-                $.each( this.handles, function( id, handle ){
-                    if ( handle.$handle &&
-                         (  (handle.$handle.get(0) == elem) ||
-                            (handle.marker && handle.marker.$text && (handle.marker.$text.get(0) == elem))
-                         )
-                        ){
-                        _this.currentHandle = handle;
-                        percent = handle.value.percent;
-                        return true;
-                    }
-                });
-
-            //If not on a handle: Test if the tap was on a label
-            if (window.isNaN(percent))
-                while (window.isNaN(percent) && !!elem && elem.getAttribute){
-                    percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
-                    elem = elem.parentNode;
-                }
-
-            //If not on a handle and not on a label: Find percent according to mouse-position
-            if (window.isNaN(percent)){
-                var mouseLeft = getEventLeft( event );
-                if (this.options.isFixed){
-                    mouseLeft = mouseLeft - this.cache.$outerContainer.offset().left - parseFloat( this.cache.$container.css('left') );
-                    percent = 100 * mouseLeft / this.dimentions.containerWidth;
-                }
-                else {
-                    this.updateMouse( mouseLeft );
-                    percent = this.mouse.percent;
-                }
-            }
-
-            //Find this.currentHandle = the handle to move by pan-events
-            if (!this.currentHandle){
-                if (this.options.isFixed)
-                    this.currentHandle = this.handles.fixed;
-                else if (this.options.isSingle)
-                    this.currentHandle = this.handles.single;
-                else {
-                    //Find the nearest of from- and to-handle
-                    this.currentHandle =
-                        percent >= 0.5*(this.handles.from.value.percent + this.handles.to.value.percent) ?
-                        this.handles.to :
-                        this.handles.from;
-
-                    //Check for special case:
-                    //If tap between from- and to-handle AND the nearest handle is at its max (from-hande) or min (to-handle) =>
-                    //Switch to the other handle if the other isn't at min/max
-                    var fromAtMax = this.handles.from.value.value == this.options.fromMax,
-                        toAtMin   = this.handles.to.value.value   == this.options.toMin;
-                    if ((percent > this.handles.from.value.percent) && (percent < this.handles.to.value.percent))
-                        if (
-                             ( (this.currentHandle.id == 'from') && fromAtMax && !toAtMin) ||
-                             ( (this.currentHandle.id == 'to')   && toAtMin && !fromAtMax  )
-                            )
-                            this.currentHandle = this.currentHandle.id == 'from' ? this.handles.to : this.handles.from;
-                }
-            }
-
-            //Update handle and marker with class=".. hover" if it is a press-event
-            if (event.type == 'press')
-                this.currentHandle.onFocus();
-
-            //Update the handle with the new percent
-            this.currentHandle.value.setPercent( percent );
-            this.updateHandlesAndLines();
-            this.cache.$line.trigger("focus");
-
-
-
-        },
-
-        /*******************************************************************
-        onPanstart
-        When the slider or any of the handle is beeing panned
-        *******************************************************************/
-        onPanstart: function( event ){
-            if (this.options.isFixed)
-                this.currentHandle = this.handles.fixed;
-
-            if (this.currentHandle){
-                var mouseLeft = getEventLeft(event);
-
-                //Save initial mouse position to calc reverse mouse movment
-                if (this.options.isFixed)
-                    this.options.mouseLeftStart = mouseLeft;
-
-                //Updates this.mouse with corrected mouseLeft
-                this.updateMouse( mouseLeft );
-                //Add the different between the mouse-position (%) and the percent-value of the handle as percentOffset
-                //Now this.mouse.getPercent() => 'true' new percent-value for the handle
-                this.mouse.percentOffset = this.currentHandle.value.percent - this.mouse.percent;
-                this.mouse.update();
-                this.cache.$line.trigger("focus");
-            }
-        },
-
-        /*******************************************************************
-        onPan
-        Called when a handle is moved/panned
-        *******************************************************************/
-        onPan: function( event ){
-            if (!this.currentHandle) return;
-
-            var mouseLeft = getEventLeft( event );
-
-            if (this.options.isFixed)
-                //Convert direction of mouse moving around this.options.mouseLeftStart
-                mouseLeft = this.options.mouseLeftStart - (mouseLeft - this.options.mouseLeftStart);
-
-            //Set position of mouse
-            this.mouse.setValue( mouseLeft );
-
-            //Set new position of handle being dragged
-            var oldPercent = this.currentHandle.value.percent;
-            this.currentHandle.value.setPercent( this.mouse.percent );
-
-            if (oldPercent != this.currentHandle.value.percent){
-                this.cache.$container.addClass('dragging');
-                this.updateHandlesAndLines();
-            }
-
-        },
-
-        /*******************************************************************
-        onPanend
-        Called when a dragging of a handle is stopped
-        *******************************************************************/
-        onPanend: function( /*event*/ ){
-            this.cache.$container.removeClass('dragging');
-            this.currentHandleBlur();
-        },
 
 
         /*******************************************************************
@@ -1461,10 +925,10 @@
             //Special case for fixed-mode: Keep the handle centered in container
             if (this.options.isFixed){
                 var containerLeft =
-                        -1.0 * this.dimentions.containerWidthRem * this.handles.fixed.value.percent/100 +
-                         0.5 * this.dimentions.outerContainerWidthRem;
+                        -1.0 * this.dimentions.containerWidth * this.handles.fixed.value.percent/100 +
+                         0.5 * this.dimentions.outerContainerWidth;
 
-                this.cache.$container.css('left', toFixed(containerLeft) + 'rem');
+                this.cache.$container.css('left', toFixed(containerLeft) + 'px');
             }
 
 
@@ -1475,144 +939,6 @@
 
         },
 
-
-        /*******************************************************************
-        ********************************************************************
-        SET VALUES (TO, FROM, PIN ETC.)
-        ********************************************************************
-        *******************************************************************/
-
-        /*******************************************************************
-        setAnyValue
-        *******************************************************************/
-        setAnyValue: function( id, value ){
-            if (this.handles[id]){
-                this.handles[id].value.setValue( value );
-
-                this.updateHandlesAndLines();
-                this.onChange();
-            }
-        },
-
-        /*******************************************************************
-        setValue, setFromValue, setToValue
-        *******************************************************************/
-        setValue    : function( value ) {this.setAnyValue( this.options.singleHandleId, value );},
-        setFromValue: function( value ) { this.setAnyValue( 'from',   value ); },
-        setToValue  : function( value ) { this.setAnyValue( 'to',     value ); },
-
-        /*******************************************************************
-        setPin
-        *******************************************************************/
-        setPin: function( value, color, icon ) {
-            if (!this.options.hasPin) return;
-            if (value !== null)
-                this.handles.pin.value.setValue( value, true );
-
-            this.options.pinColor = color || this.options.pinColor || 'black';
-
-            var oldIcon = this.options.pinIcon || '';
-            this.options.pinIcon = icon || this.options.pinIcon || 'fa-map-marker';
-
-            this.handles.pin.$handle
-                .css('color', this.options.pinColor)
-                .removeClass( oldIcon )
-                .addClass( this.options.pinIcon );
-
-            this.updateHandlesAndLines();
-        },
-
-
-        /*******************************************************************
-        ********************************************************************
-        CALLBACK
-        ********************************************************************
-        *******************************************************************/
-
-        /*******************************************************************
-        updateResult
-        *******************************************************************/
-        updateResult: function() {
-            var _this = this,
-                singleHandleId = this.options.singleHandleId;
-
-            $.each( ['min', 'from', singleHandleId, 'to', 'max'], function( index, id ){
-                var resultId = (id == singleHandleId) ? 'value' : id; //Using result.value for single-slider (incl fixed)
-                if (_this.handles[id]){
-                    _this.result[resultId]           = _this.handles[id].value.value;
-                    _this.result[resultId+'Percent'] = _this.handles[id].value.percent;
-                }
-            });
-        },
-
-
-        /*******************************************************************
-        adjustResult - adjust this.result before onCreate, onChanging,.. is called
-        *******************************************************************/
-        adjustResult: function(){
-            //Nothing here but desencing class can overwrite it
-        },
-
-        /*******************************************************************
-        preOnChange - Called before onChange
-        *******************************************************************/
-        preOnChange: function( /* result */ ){
-            //Nothing here but desencing class can overwrite it
-        },
-
-        /*******************************************************************
-        preOnChanging - Called before onChanging
-        *******************************************************************/
-        preOnChanging: function( /* result */ ){
-            //Nothing here but desencing class can overwrite it
-        },
-
-        /*******************************************************************
-        on Call the callback-function set by options.onID
-        *******************************************************************/
-        on: function( id ){
-            if (this.callback[id]){
-                this.adjustResult();
-                this.callback[id](this.result);
-            }
-        },
-
-        /*******************************************************************
-        onChange
-        *******************************************************************/
-        onChange: function(){
-            this.updateResult();
-            if ( this.callback.change && objectsAreDifferent(this.result, this.lastResult) ){
-                this.adjustResult();
-                this.preOnChange( this.result );
-                this.on('change');
-                this.lastResult = $.extend({}, this.result);
-            }
-        },
-
-        /*******************************************************************
-        onChanging
-
-        *******************************************************************/
-        onChanging: function(){
-            //If it is dragging and onChangeOnDragging == false => set timeout to call onChange after XX ms if the handle hasn't moved
-            if (this.currentHandle && !this.options.onChangeOnDragging && this.options.onChangeDelay){
-                if (this.onChangeDelayTimeout)
-                    window.clearTimeout(this.onChangeDelayTimeout);
-                var _this = this;
-                this.onChangeDelayTimeout =
-                    window.setTimeout(
-                        function () { _this.onChange(); },
-                        this.options.onChangeDelay
-                    );
-            }
-
-            if ( this.options.onChangeOnDragging || (!this.isRepeatingClick && !this.currentHandle) )
-                this.onChange();
-            this.updateResult();
-            this.preOnChanging( this.result );
-            this.on('changing');
-        },
 
 
         /*******************************************************************
@@ -1650,21 +976,92 @@
         *******************************************************************/
 
         /*******************************************************************
+        getTextWidth
+        Get width of value as text OR max width of all values in array of value
+        *******************************************************************/
+        getTextWidth: function( value, options = {} ){
+            var ctx = this.cache.ctx,
+                ctx_font = ctx.font,
+                valueList = $.isArray( value ) ? value : [value],
+                result = 0;
+
+            if (options.italic)
+                ctx.font = 'italic ' + ctx.font;
+            if (options.bold)
+                ctx.font = 'bold ' + ctx.font;
+
+            valueList.forEach( function(txt){
+                result = Math.max( result, ctx.measureText(txt).width );
+            });
+
+            ctx.font = ctx_font;
+
+            return result;
+        },
+
+        /*******************************************************************
         appendGridContainer
         *******************************************************************/
-        appendGridContainer: function(){
+        appendGridContainer: function( options = {} ){
+            //options.labelBetweenTicks = true => special version where the labels are placed up and between the ticks
+            this.options.labelBetweenTicks = !!options.labelBetweenTicks;
+
+            var $newGrid = $('<span class="grid"></span>'),
+                $newCanvas =
+                    $('<canvas/>')
+                        .addClass('grid-canvas')
+                        .appendTo(this.cache.$container),
+                size = this.options.size,
+                ctx = this.cache.ctx = $newCanvas.get(0).getContext("2d"),
+                canvasMargin = this.cache.canvasMargin = Math.ceil( this.getTextWidth([this._valueToText(this.options.min), this._valueToText(this.options.max)] ) ),
+                canvasWidth = this.options.width + 2 * canvasMargin,
+                canvasHeight = this.options.labelBetweenTicks ?
+                                Math.max(size.majorTickLength, size.fontSize) :
+                                size.majorTickLength + size.labelHeight;
+
+            $newCanvas
+                .css('left', '-'+canvasMargin+'px')
+                .attr('width', canvasWidth)
+                .attr('height', canvasHeight);
+
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.translate(0.5, 0.5);
+            ctx.lineWidth    = 1;
+            ctx.textAlign    = "center";
+            ctx.textBaseline = "top";       //"bottom" or "middle" or "alphabetic" or "hanging"
+
+            ctx.strokeStyle = this.options.majorColor;
+            ctx.font = size.fontSize + 'px Arial';
+
+            if (this.options.labelClickable && !this.options.disable && !this.options.readOnly){
+                this.canvasId = this.canvasId || 0;
+                this.canvasId++;
+                $newCanvas.data('canvasId', this.canvasId);
+                this.canvasLabels = this.canvasLabels || {};
+                this.canvasLabels[this.canvasId] = [];
+            }
+
             if (this.$currentGridContainer){
                 this.totalGridContainerTop += this.$currentGridContainer.height();
-                this.$currentGridContainer =
-                    $('<span class="grid"></span>').insertAfter( this.$currentGridContainer );
-                this.$currentGridContainer.css('top', pxToRem( this.totalGridContainerTop, true) );
+                this.$currentGridContainer = $newGrid.insertAfter( this.$currentGridContainer );
+                this.$currentCanvas = $newCanvas.insertAfter( this.$currentGridContainer );
+                this.$currentGridContainer.css('top', this.totalGridContainerTop+'px' );
             }
             else {
-                this.$currentGridContainer = this.cache.$grid;
+                this.$currentGridContainer = $newGrid.appendTo(this.cache.$container);
+                this.$currentCanvas = $newCanvas.appendTo(this.cache.$container);
                 this.totalGridContainerTop = this.$currentGridContainer.position().top;
             }
 
             this.cache.$grid = this.cache.$container.find(".grid");
+
+
+            //Special case: If the labels for the current grid shall be placed between the ticks instead of under..
+            if (this.options.labelBetweenTicks){
+                this.$currentGridContainer.addClass("label-between-ticks");
+            }
+
+
             return this.$currentGridContainer;
         },
 
@@ -1672,22 +1069,41 @@
         /*******************************************************************
         appendTick
         *******************************************************************/
-        appendTick: function( left, options ){
+        appendTick: function( leftPercent, options ){
             if (!this.$currentGridContainer) return;
 
             options = $.extend( {minor: false, color: ''}, options );
 
-            var result = document.createElement("span");
-//            result.className = "grid-pol" + (options.minor ? ' minor' : '');
-            result.className = "grid-pol" + (options.minor ? '' : ' major');
-            result.style.left = left + '%';
+//REMOVED IN V6            var result = document.createElement("span");
+//REMOVED IN V6            result.className = "grid-pol" + (options.minor ? '' : ' major');
+//REMOVED IN V6            result.style.left = leftPercent + '%';
+//REMOVED IN V6
+//REMOVED IN V6            if (options.color)
+//REMOVED IN V6                result.style.backgroundColor = options.color;
+//REMOVED IN V6
+//REMOVED IN V6            this.currentGridContainer.appendChild( result );
 
-            if (options.color)
-                result.style.backgroundColor = options.color;
+            var left = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+                ctx  = this.cache.ctx,
+                size = this.options.size,
+                length = options.minor ? size.minorTickLength : size.majorTickLength;
 
-            this.currentGridContainer.appendChild( result );
-            return result;
 
+            ctx.beginPath();
+
+            ctx.shadowColor   = 'rgba(255, 255, 255, .75)';
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 0;
+            ctx.lineWidth     = 1;
+            ctx.strokeStyle   = options.minor ? this.options.minorColor : this.options.majorColor;
+            ctx.moveTo(left, 0);
+            ctx.lineTo(left, length );
+            ctx.stroke();
+
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+//REMOVED IN V6            return result;
         },
 
         /*******************************************************************
@@ -1701,7 +1117,7 @@
         /*******************************************************************
         appendLabel
         *******************************************************************/
-        appendLabel: function( left, value, options ){
+        appendLabel: function( leftPercent, value, options ){
             if (!this.$currentGridContainer) return;
 
             options = $.extend( {color: ''}, options );
@@ -1709,96 +1125,113 @@
             //Check if the value for the label is a selectable one
             options.labelClickable = options.labelClickable &&  ((value - this.options.stepOffset) % this.options.step) === 0;
 
-            var text = this._valueToText( value ),
-                outer = document.createElement("div"),
-                result = document.createElement("div"),
-                className = 'grid-label';
+            var text = this._valueToText( value );
+//REMOVED IN V6            var outer = document.createElement("div"),
+//REMOVED IN V6                result = document.createElement("div"),
+//REMOVED IN V6                className = 'grid-label';
+//REMOVED IN V6
+//REMOVED IN V6            outer.className = 'grid-label-outer';
+//REMOVED IN V6            outer.style.left = leftPercent+'%';
+//REMOVED IN V6            outer.appendChild(result);
+//REMOVED IN V6
+//REMOVED IN V6            if (options.minor)
+//REMOVED IN V6                className += ' minor';
+//REMOVED IN V6            if (options.italic)
+//REMOVED IN V6                className += ' italic';
+//REMOVED IN V6            if (options.color)
+//REMOVED IN V6                result.style.color = options.color;
+//REMOVED IN V6
+//REMOVED IN V6            //Create inner-span with the text
+//REMOVED IN V6            var inner = document.createElement("span"),
+//REMOVED IN V6                innerClassName = 'grid-label-text';
+//REMOVED IN V6            inner.innerHTML = text;
+//REMOVED IN V6
+//REMOVED IN V6            if (this.options.labelColorRec[value]){
+//REMOVED IN V6                var textOptions = this.options.labelColorRec[value];
+//REMOVED IN V6
+//REMOVED IN V6                innerClassName += ' frame';
+//REMOVED IN V6                if (textOptions.className)
+//REMOVED IN V6                    innerClassName += ' '+textOptions.className;
+//REMOVED IN V6                if (textOptions.color)
+//REMOVED IN V6                    inner.style.color = textOptions.color;
+//REMOVED IN V6                if (textOptions.backgroundColor)
+//REMOVED IN V6                    inner.style.backgroundColor = textOptions.backgroundColor;
+//REMOVED IN V6            }
+//REMOVED IN V6
+//REMOVED IN V6            inner.className = innerClassName;
+//REMOVED IN V6            result.appendChild(inner);
+//REMOVED IN V6
+//REMOVED IN V6            if (options.labelClickable && !this.options.disable && !this.options.readOnly){
+//REMOVED IN V6                //Can be used later: outer.setAttribute('data-base-slider-value', value);
+//REMOVED IN V6                outer.setAttribute('data-base-slider-percent', outer.style.left);
+//REMOVED IN V6                className += ' clickable';
+//REMOVED IN V6                if (this.options.labelClickableFullWidth)
+//REMOVED IN V6                    result.style.width = this.options.majorTickDistancePx +'px';
+//REMOVED IN V6
+//REMOVED IN V6            }
+//REMOVED IN V6
+//REMOVED IN V6            result.className = className;
+//REMOVED IN V6            this.currentGridContainer.appendChild( outer );
 
-            outer.className = 'grid-label-outer';
-            outer.style.left  = left+'%';
-            outer.appendChild(result);
+            var size   = this.options.size,
+                ctx    = this.cache.ctx,
+                left   = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+                textWidth = this.getTextWidth(text),
+                top, width, height, boxLeft, textTop;
 
-            if (options.minor)
-                className += ' minor';
-            if (options.italic)
-                className += ' italic';
-            if (options.color)
-                result.style.color = options.color;
+            if (this.options.labelBetweenTicks){
+                //Special case where the labels are placed up between the ticks
+                top     = 0;
+                textTop = 0;
+                width   = textWidth;
+                height  = size.fontSize;
+            }
+            else {
+                top     = size.majorTickLength;
+                textTop = top + size.borderWidth + size.textPadding;
+                width   = size.borderWidth + size.textPadding + textWidth + size.textPadding + size.borderWidth,
+                height  = size.labelHeight;
+            }
+            boxLeft = left - width/2;
 
-            //Create inner-span with the text
-            var inner = document.createElement("span"),
-                innerClassName = 'grid-label-text';
-            inner.innerHTML = text;
+            //Find bg-color and text-color
+            var color = options.minor ? this.options.minorColor : this.options.majorColor,
+                textColor = color,
+                labelColorRec = this.options.labelColorRec[value],
+                canvasLabels = this.canvasLabels[this.canvasId];
 
-            if (this.options.labelColorRec[value]){
-                var textOptions = this.options.labelColorRec[value];
+            if (labelColorRec){
+                //Label with individual background- and text-color
+                var bgColor   = labelColorRec.backgroundColor;
+                textColor = labelColorRec.color;
 
-                innerClassName += ' frame';
-                if (textOptions.className)
-                    innerClassName += ' '+textOptions.className;
-                if (textOptions.color)
-                    inner.style.color = textOptions.color;
-                if (textOptions.backgroundColor)
-                    inner.style.backgroundColor = textOptions.backgroundColor;
+                //Draw border and background (if any)
+                ctx.fillStyle = color;
+                ctx.fillRect(boxLeft, top, width, height);
+                ctx.fillStyle = bgColor;
+ctx.beginPath();
+                ctx.fillRect(boxLeft + size.borderWidth, top + size.borderWidth, width - 2*size.borderWidth, height - 2*size.borderWidth);
+ctx.stroke();
             }
 
-            inner.className = innerClassName;
-            result.appendChild(inner);
+            //ctx.fillStyle = 'pink';                     //Only test
+            //ctx.fillRect(boxLeft, top, width, height);  //Only test
 
-            if (options.labelClickable && !this.options.disable && !this.options.readOnly){
-                //Can be used later: outer.setAttribute('data-base-slider-value', value);
-                outer.setAttribute('data-base-slider-percent', outer.style.left);
-                className += ' clickable';
-                if (this.options.labelClickableFullWidth)
-                    result.style.width = this.options.majorTickDistanceRem +'rem';
+            if (options.labelClickable && !this.options.disable && !this.options.readOnly)
+                canvasLabels.push( {top: top, left: boxLeft, right: boxLeft+width, bottom: top+height, percent: leftPercent} );
 
-            }
+            //Draw the text
+            var ctx_font = ctx.font;
+            if (!options.minor)
+                ctx.font = 'bold ' + ctx.font;
+            ctx.fillStyle = textColor;
 
-            result.className = className;
-            this.currentGridContainer.appendChild( outer );
-            return result;
-        },
+ctx.beginPath();
+            ctx.fillText(text, left, textTop);
+ctx.stroke();
 
-
-        /*******************************************************************
-        getTextWidth
-        Get width of value as text OR max width of all values in array of value
-        *******************************************************************/
-        getTextWidth: function( value, options ){
-            var _this = this;
-            if ($.isArray( value )){
-                var html = '';
-                $.each( value, function(index, oneValue ){
-                    html += _this._valueToText( oneValue ) + '<br>';
-                });
-                return this.getDecorateTextWidth( html, options );
-            }
-            else
-                return this.getDecorateTextWidth( this._valueToText( value ) , options );
-        },
-
-        /*******************************************************************
-        getDecorateTextWidth
-        *******************************************************************/
-        getDecorateTextWidth: function( html, options, factor, floor ){
-            var newClassName = 'grid-label';
-            if (options){
-                if (options.minor)
-                    newClassName += ' minor';
-                if (options.italic)
-                    newClassName += ' italic';
-            }
-            if (this.textElement.className != newClassName )
-                this.textElement.className = newClassName;
-            this.textElement.innerHTML = html;
-
-            var result = parseFloat( this.textElement.offsetWidth );
-            if (factor)
-                result = factor*result;
-            if (floor)
-                result = Math.floor(result);
-
-            return pxToRem( result );
+            ctx.font = ctx_font;
+//REMOVED IN V6            return result;
         },
 
 
@@ -1823,8 +1256,8 @@
         preAppendGrid and postAppendGrid
         must be called as first and last when creating a grid - used if a new appendStandardGrid is used
         *******************************************************************/
-        preAppendGrid: function(){
-            this.appendGridContainer();
+        preAppendGrid: function( options = {} ){
+            this.appendGridContainer( options );
             //The DOM-version of this.$currentGridContainer
             this.currentGridContainer = this.$currentGridContainer.get(0);
 
@@ -1843,7 +1276,7 @@
             this.$currentGridContainerMarker.remove();
 
             //Update the height of the slider
-            this.cache.$container.css('height', pxToRem( this.totalGridContainerTop + this.$currentGridContainer.height(), true) );
+            this.cache.$container.css('height', (this.totalGridContainerTop + this.$currentGridContainer.height())+'px' );
 
         },
 
@@ -1857,12 +1290,12 @@
                 result = {},
                 gridDistanceIndex = 0;
 
-            result.gridContainerWidthRem = pxToRem( this.cache.$grid.outerWidth(false) );
+            result.gridContainerWidth = this.cache.$grid.outerWidth(false);
             result.gridDistanceStep = o.gridDistances[gridDistanceIndex]; // = number of steps between each tick
-            result.stepRem = o.step * result.gridContainerWidthRem / o.range / o.majorTicksFactor;
+            result.stepPx = o.step * result.gridContainerWidth / o.range / o.majorTicksFactor;
 
             //Increse grid-distance until the space between two ticks are more than 4px
-            while ( (result.stepRem*result.gridDistanceStep) <= o.minDistanceRem){
+            while ( (result.stepPx*result.gridDistanceStep) <= o.minDistance){
                 gridDistanceIndex++;
                 if (gridDistanceIndex < o.gridDistances.length)
                     result.gridDistanceStep = o.gridDistances[gridDistanceIndex];
@@ -1871,10 +1304,10 @@
             }
 
             result.tickDistanceNum = result.gridDistanceStep * o.step;          //The numerical distance between each ticks
-            result.tickDistanceRem = result.gridDistanceStep * result.stepRem;  //The rem distance between each ticks
+            result.tickDistancePx  = result.gridDistanceStep * result.stepPx;   //The px distance between each ticks
 
-            if (o.maxLabelWidthRem)
-                result.maxLabelWidthRem = o.maxLabelWidthRem;
+            if (o.maxLabelWidth)
+                result.maxLabelWidth = o.maxLabelWidth;
             else {
                 //Find widest label
                 var value = o.min,
@@ -1889,7 +1322,7 @@
                     }
                     value += step;
                 }
-                result.maxLabelWidthRem = this.getTextWidth( valueList ) + o.minDistanceRem; //Adding min space between text/labels
+                result.maxLabelWidth = this.getTextWidth() + o.minDistance; //Adding min space between text/labels
             }
 
             //Calculate automatic distances between major ticks
@@ -1898,7 +1331,7 @@
                 //Find ticks between each major tick
                 gridDistanceIndex = 0;
                 majorTicks = o.gridDistances[gridDistanceIndex];
-                while (majorTicks * result.tickDistanceRem < result.maxLabelWidthRem){
+                while (majorTicks * result.tickDistancePx < result.maxLabelWidth){
                     gridDistanceIndex++;
                     if (gridDistanceIndex < o.gridDistances.length)
                         majorTicks = o.gridDistances[gridDistanceIndex];
@@ -1907,8 +1340,8 @@
                 }
             }
 
-            result.majorTickDistanceNum = result.tickDistanceNum*majorTicks;
-            result.majorTickDistanceRem = result.tickDistanceRem*majorTicks;
+            result.majorTickDistanceNum = result.tickDistanceNum * majorTicks;
+            result.majorTickDistancePx  = result.tickDistancePx  * majorTicks;
 
             return result;
         },
@@ -1934,6 +1367,7 @@
                 step  = 1,
                 valueP, valueOffset;
 
+  //          this.cache.ctx.beginPath();
             while (value <= o.max){
                 valueOffset = (value - o.majorTicksOffset)*o.majorTicksFactor;
                 if (valueOffset % o.tickDistanceNum === 0){
@@ -1951,6 +1385,7 @@
                 }
                 value += step;
             }
+//            this.cache.ctx.stroke();
 
             //Append colors on the grid
             if (this.options.gridColors)
@@ -2003,54 +1438,6 @@
         },
 
 
-        /*******************************************************************
-        ********************************************************************
-        PUBLIC METHODS
-        ********************************************************************
-        *******************************************************************/
-
-        /*******************************************************************
-        update
-        *******************************************************************/
-        update: function (options) {
-
-            if (!this.input || this.initializing) return;
-
-            //Save result in options
-            this.updateResult();
-            this.options.value = this.result.value;
-            this.options.from  = this.result.from;
-            this.options.to    = this.result.to;
-
-            this.options = $.extend(this.options, options || {});
-
-            this.remove();
-            this.init();
-
-            this.on('update');
-        },
-
-        /*******************************************************************
-        reset
-        *******************************************************************/
-        reset: function () {
-            if (!this.input) return;
-            this.update();
-        },
-
-        /*******************************************************************
-        destroy
-        *******************************************************************/
-        destroy: function () {
-            if (!this.input) return;
-
-            this.cache.$input.prop("readonly", false);
-            $.data(this.input, "baseSlider", null);
-
-            this.remove();
-            this.input = null;
-            this.options = null;
-        }
     }; //end of BaseSlider.prototype
 
 

@@ -17,37 +17,29 @@ The scss is divided in two parts: First the common part equal for all types and 
 //BOURBON - http://bourbon.io version 5
 @import "../bower_components/bourbon/core/bourbon";
 
-@function myRem($pxval) {
-  $base: 16;
-  $em-base: 16px;
-  @return ($pxval / $em-base) * 1rem;
-}
-
-
 //'Global' variables
 $border-color    : rgb(175,179,187);
 $shadow-color    : rgb(175,179,187);
 $background-color: rgb(209,214,224);
 
-$border-width-px: 1px;
-$border-width   : myRem($border-width-px);
+$border-width   : 1px;
 $border         : $border-width solid $border-color;
 $border-black   : $border-width solid black;
 
 $border-color_hover: #007bff;
 
 //marker = small boxes over min- and max and from- and to-handle
-$marker-top               : myRem(0px);
-$marker-font-size         : myRem(10px);
+$marker-top               : 0px;
+$marker-font-size         : 10px;
 $marker-line-height       : 1.333;
-$marker-top-bottom-padding: myRem(1px);
-$marker-left-right-padding: myRem(5px);
-$marker-stick-height      : myRem(3px);
+$marker-top-bottom-padding: 1px;
+$marker-left-right-padding: 5px;
+$marker-stick-height      : 3px;
 
 $marker-height            : $border-width + $marker-top-bottom-padding + $marker-font-size*$marker-line-height + $marker-top-bottom-padding + $border-width + $marker-stick-height;
 
 $marker-padding         : $marker-top-bottom-padding $marker-left-right-padding;
-$marker-border-radius   : myRem(4px);
+$marker-border-radius   : 4px;
 
 
 //handle
@@ -55,14 +47,13 @@ $handle-top          : $marker-top + $marker-height;
 $handle-top-no-marker: $marker-top;
 
 //The line
-$line-height-px     : 6px;
-$line-height        : myRem($line-height-px);
+$line-height        : 6px;
 
-$line-border-radius : myRem(2px);
+$line-border-radius : 2px;
 
 //The line when it is a range-slider
 $range-line-top          : $marker-height;
-$range-line-top-no-marker: myRem(0px);
+$range-line-top-no-marker: 0px;
 
 //Special: Pin marking a value
 $pin-height    : 48 / 28 * $line-height;  //The height of the pin used to mark the range-value. Calculated to fit with width=$line-height
@@ -72,18 +63,16 @@ $range-value-line-top: $marker-height;
 
 
 //Ticks and text on grids
-$tick-width       : myRem(1px);
+$tick-width       : 1px;
 $tick-height-minor: $line-height;
 $tick-height      : 1.5 * $tick-height-minor;
-$label-font-size  : myRem(10px);
-$margin           : myRem(2px);
+$label-font-size  : 10px;
+$margin           : 2px;
 
 $text-padding    : $line-border-radius;
 
-$label-inner-height: $label-font-size;
-$label-height      : $border-width + $text-padding + $label-inner-height + $text-padding + $border-width;
+$label-height    : $border-width + $text-padding + $label-font-size + $text-padding + $border-width;
 
-$label-between-ticks-height: $label-inner-height;
 
 $box-shadow: 1px 1px 1px 0px rgba(255,255,255,0.75), -1px 1px 1px 0px rgba(255,255,255,0.75);
 
@@ -171,8 +160,8 @@ COMMON STYLE
 
         height     : $pin-height !important;
         margin-top : $pin-margin-top;
-        width      : 1rem;
-        margin-left: -0.5rem; //To center
+        width      : 16px;
+        margin-left: -8px; //To center
 
         font-size : $pin-height;
         text-align: center;
@@ -258,6 +247,12 @@ COMMON STYLE
 
 //**************************************
 
+.grid-canvas {
+    position: absolute;
+    bottom  : 0;
+    z-index : 3;
+    cursor  : default;
+}
 
 .grid {
     position: absolute;
@@ -267,88 +262,85 @@ COMMON STYLE
     width   : 100%;
     height  : $tick-height + $label-height;
     cursor  : default;
-    .grid-pol {
-        position  : absolute;
-        z-index   : 2;
-        top       : 0;
-        left      : 0;
-        width     : $tick-width;
-        height    : $tick-height-minor;
-        background: #555555;
-        box-shadow: $box-shadow;
-        &.major {
-            height    : $tick-height;
-            background: black;
-        }
-    }
-
-    .grid-label-outer {
-        position: absolute;
-        z-index : 2;
-        top     : $tick-height;
-        height  : $label-height;
-
-        .grid-label {
-            box-sizing : border-box;
-            width      : 100%;
-            height     : 100%;
-            margin-left: -50%;
-            padding    : 0;
-
-            .grid-label-text {
-                cursor       : inherit;
-                display      : inline-block;
-                box-sizing   : border-box;
-                line-height  : 1;
-                height       : 100%;
-                padding      : $text-padding;
-                border       : $border-width solid transparent;
-                border-radius: $marker-border-radius;
-
-                &.frame {
-                    border-color: $border-color;
-                }
-            }
-        }
-    }
+//REMOVED IN V6    .grid-pol {
+//REMOVED IN V6        position  : absolute;
+//REMOVED IN V6        z-index   : 2;
+//REMOVED IN V6        top       : 0;
+//REMOVED IN V6        left      : 0;
+//REMOVED IN V6        width     : $tick-width;
+//REMOVED IN V6        height    : $tick-height-minor;
+//REMOVED IN V6        background: #555555;
+//REMOVED IN V6        box-shadow: $box-shadow;
+//REMOVED IN V6        &.major {
+//REMOVED IN V6            height    : $tick-height;
+//REMOVED IN V6            background: black;
+//REMOVED IN V6        }
+//REMOVED IN V6    }
+//REMOVED IN V6
+//REMOVED IN V6    .grid-label-outer {
+//REMOVED IN V6display: none;
+//REMOVED IN V6        position: absolute;
+//REMOVED IN V6        z-index : 2;
+//REMOVED IN V6        top     : $tick-height;
+//REMOVED IN V6        height  : $label-height;
+//REMOVED IN V6
+//REMOVED IN V6        .grid-label {
+//REMOVED IN V6            box-sizing : border-box;
+//REMOVED IN V6            width      : 100%;
+//REMOVED IN V6            height     : 100%;
+//REMOVED IN V6            margin-left: -50%;
+//REMOVED IN V6            padding    : 0;
+//REMOVED IN V6            .grid-label-text {
+//REMOVED IN V6                cursor       : inherit;
+//REMOVED IN V6                display      : inline-block;
+//REMOVED IN V6                box-sizing   : border-box;
+//REMOVED IN V6                line-height  : 1;
+//REMOVED IN V6                height       : 100%;
+//REMOVED IN V6                padding      : $text-padding;
+//REMOVED IN V6                border       : $border-width solid transparent;
+//REMOVED IN V6                border-radius: $marker-border-radius;
+//REMOVED IN V6
+//REMOVED IN V6                &.frame {
+//REMOVED IN V6                    border-color: $border-color;
+//REMOVED IN V6                }
+//REMOVED IN V6            }
+//REMOVED IN V6        }
+//REMOVED IN V6    }
 
     //Special version for grid.label-between-ticks
     &.label-between-ticks {
-        height: max($tick-height, $label-between-ticks-height);
-        .grid-label-outer {
-            top   : 0;
-            height: $label-between-ticks-height;
-
-            .grid-label {
-                .grid-label-text {
-                    padding      : 0;
-                    border-radius: 0;
-                    border       : 0;
-                }
-            }
-        }
+        height: max($tick-height, $label-font-size);
+//REMOVED IN V6        .grid-label-outer {
+//REMOVED IN V6            top   : 0;
+//REMOVED IN V6            height: $label-font-size;
+//REMOVED IN V6
+//REMOVED IN V6            .grid-label {
+//REMOVED IN V6                .grid-label-text {
+//REMOVED IN V6                    padding      : 0;
+//REMOVED IN V6                    border-radius: 0;
+//REMOVED IN V6                    border       : 0;
+//REMOVED IN V6                }
+//REMOVED IN V6            }
+//REMOVED IN V6        }
     }
 
-
-
-
-
-    //Text-style for grid-label outside .grid-label-outer to allow used with textElement in BaseSlider
-    .grid-label {
-        background-color: transparent;
-        left       : 0;
-        white-space: nowrap;
-        text-align : center;
-        font-family: Arial, sans-serif;
-
-        font-size  : $label-font-size;
-        line-height: 1;
-        font-weight: bold;
-        &.minor  { font-weight: normal; color: #555555;}
-        &.italic { font-style: italic; }
-
-        color : #000;
-    }
+//REMOVED IN V6    //Text-style for grid-label outside .grid-label-outer to allow used with textElement in BaseSlider
+//REMOVED IN V6    .grid-label {
+//REMOVED IN V6display: none;
+//REMOVED IN V6        background-color: transparent;
+//REMOVED IN V6        left       : 0;
+//REMOVED IN V6        white-space: nowrap;
+//REMOVED IN V6        text-align : center;
+//REMOVED IN V6        font-family: Arial, sans-serif;
+//REMOVED IN V6
+//REMOVED IN V6        font-size  : $label-font-size;
+//REMOVED IN V6        line-height: 1;
+//REMOVED IN V6        font-weight: bold;
+//REMOVED IN V6        &.minor  { font-weight: normal; color: #555555;}
+//REMOVED IN V6        &.italic { font-style: italic; }
+//REMOVED IN V6
+//REMOVED IN V6        color : #000;
+//REMOVED IN V6    }
 
     .grid-color {
         position: absolute;
@@ -385,10 +377,10 @@ COMMON STYLE
     }
 } //end of .grid
 
-//Special style for grid-label-text:hover when not dragging any handle
-html.mouse-hover .base-slider-container.active:not(.dragging) .grid-label.clickable:hover .grid-label-text {
-    border-color: $border-color_hover;
-}
+// HER> //Special style for grid-label-text:hover when not dragging any handle
+// HER> html.mouse-hover .base-slider-container.active:not(.dragging) .grid-label.clickable:hover .grid-label-text {
+// HER>     border-color: $border-color_hover;
+// HER> }
 
 .disabled {
     opacity: 0.4;
@@ -416,12 +408,12 @@ html.mouse-hover .base-slider-container.active:not(.dragging) .grid-label.clicka
 STYLE FOR SPECIFIC TYPE
 ***************************************************************/
 //Find the widest handle and use if as margin for all sliders
-$max-handle-width: 0rem;
+$max-handle-width: 1px;
 
 $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, range;
 
 @each $handle-type in $handle-type-list {
-    $handle-dim   : 24px; //=1.5rem
+    $handle-dim   : 24px;
     $img-width    : 16px;
     $img-height   : 24px;
 
@@ -490,7 +482,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     @if $handle-type == range {
         $img-width : 6px;
         $img-height: 6px;
-        $handle-dim: $line-height-px;
+        $handle-dim: $line-height;
 
         $handle-back-ground-image   : 'handle.range.from.svg';
         $handle-back-ground-image-to: 'handle.range.to.svg';
@@ -506,9 +498,9 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         $factor: $handle-dim / $img-width;
     }
 
-    $handle-width : myRem($img-width * $factor);
+    $handle-width : $img-width * $factor;
     $max-handle-width: max( $max-handle-width, $handle-width );
-    $handle-height: myRem($img-height * $factor);
+    $handle-height: $img-height * $factor;
 
     @if $line-top-relative-to-handle == null {
         $line-top-relative-to-handle: $handle-height/2 - $line-height/2;
