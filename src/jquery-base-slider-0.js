@@ -874,7 +874,6 @@
                 $newCanvas =
                     $('<canvas/>')
                         .addClass('grid-canvas')
-// HER>                         .appendTo(this.cache.$container),
                         .appendTo($newGrid),
                 size = this.options.size,
                 ctx = this.cache.ctx = $newCanvas.get(0).getContext("2d"),
@@ -909,12 +908,10 @@
             if (this.$currentGrid){
                 this.nextGridTop += this.$currentGrid.height();
                 this.$currentGrid = $newGrid.insertAfter( this.$currentGrid );
-//REMOVED IN V6                this.$currentCanvas = $newCanvas.insertAfter( this.$currentGrid );
                 this.$currentGrid.css('top', this.nextGridTop+'px' );
             }
             else {
                 this.$currentGrid = $newGrid.appendTo(this.cache.$container);
-//REMOVED IN V6                this.$currentCanvas = $newCanvas.appendTo(this.cache.$container);
                 this.nextGridTop = this.$currentGrid.position().top;
             }
 
@@ -924,8 +921,6 @@
             if (this.options.labelBetweenTicks){
                 this.$currentGrid.addClass("label-between-ticks");
             }
-
-//REMOVED IN V6            return this.$currentGrid;
         },
 
 
@@ -1030,6 +1025,8 @@
             var ctx_font = ctx.font;
             if (!options.minor)
                 ctx.font = 'bold ' + ctx.font;
+            if (options.italic)
+                ctx.font = 'italic ' + ctx.font;
             ctx.fillStyle = textColor;
 
             ctx.beginPath();
@@ -1046,7 +1043,6 @@
         appendGrid: function () {
             if (!this.options.grid) return;
             this.appendStandardGrid();
-//            this.appendStandardGrid();
         },
 
         /*******************************************************************
@@ -1064,22 +1060,11 @@
         *******************************************************************/
         preAppendGrid: function( options = {} ){
             this.appendGridContainer( options );
-
-//REMOVED IN V6            //The DOM-version of this.$currentGrid
-//REMOVED IN V6            this.currentGridContainer = this.$currentGrid.get(0);
-//REMOVED IN V6
-//REMOVED IN V6            //Save width in % and set in in px instead of %
-//REMOVED IN V6            this.currentGridContainerWidth = this.currentGridContainer.style.width;
-//REMOVED IN V6            this.$currentGrid.css('width', this.$currentGrid.width());
-//REMOVED IN V6            this.$currentGrid.width( this.$currentGrid.width() );
         },
+
         postAppendGrid: function(){
-
-//REMOVED IN V6            this.$currentGrid.css('width', this.currentGridContainerWidth );
-
             //Update the height of the slider
             this.cache.$container.css('height', (this.nextGridTop + this.$currentGrid.height())+'px' );
-
         },
 
 
@@ -1235,8 +1220,6 @@
                 }
             }
         },
-
-
     }; //end of BaseSlider.prototype
 
 
