@@ -19,14 +19,11 @@ The scss is divided in two parts: First the common part equal for all types and 
 
 //'Global' variables
 $border-color    : rgb(175,179,187);
-$shadow-color    : rgb(175,179,187);
 $background-color: rgb(209,214,224);
 
 $border-width   : 1px;
 $border         : $border-width solid $border-color;
 $border-black   : $border-width solid black;
-
-$border-color_hover: #007bff;
 
 //marker = small boxes over min- and max and from- and to-handle
 $marker-top               : 0px;
@@ -116,7 +113,7 @@ COMMON STYLE
         overflow  : hidden;
         outline   : none !important;
         box-sizing: content-box;        //Important as it makes the inner width = 100%
-        background-color: transparent; //$background-color;
+        background-color: transparent;
 
         border: $border;
         @include border-left-radius($line-border-radius);
@@ -233,16 +230,6 @@ COMMON STYLE
         }
     } //end of .marker-outer
 
-    //Style for :hover and .hover on markers
-    html.mouse-hover &.active {
-        .marker-outer:hover, .marker-outer.hover {
-            &.single-from-to.frame, &.min-max {
-                .marker-text {
-                    border-color: $border-color_hover;
-                }
-            }
-        }
-    }
 } //end of .base-slider-container
 
 //**************************************
@@ -262,85 +249,11 @@ COMMON STYLE
     width   : 100%;
     height  : $tick-height + $label-height;
     cursor  : default;
-//REMOVED IN V6    .grid-pol {
-//REMOVED IN V6        position  : absolute;
-//REMOVED IN V6        z-index   : 2;
-//REMOVED IN V6        top       : 0;
-//REMOVED IN V6        left      : 0;
-//REMOVED IN V6        width     : $tick-width;
-//REMOVED IN V6        height    : $tick-height-minor;
-//REMOVED IN V6        background: #555555;
-//REMOVED IN V6        box-shadow: $box-shadow;
-//REMOVED IN V6        &.major {
-//REMOVED IN V6            height    : $tick-height;
-//REMOVED IN V6            background: black;
-//REMOVED IN V6        }
-//REMOVED IN V6    }
-//REMOVED IN V6
-//REMOVED IN V6    .grid-label-outer {
-//REMOVED IN V6display: none;
-//REMOVED IN V6        position: absolute;
-//REMOVED IN V6        z-index : 2;
-//REMOVED IN V6        top     : $tick-height;
-//REMOVED IN V6        height  : $label-height;
-//REMOVED IN V6
-//REMOVED IN V6        .grid-label {
-//REMOVED IN V6            box-sizing : border-box;
-//REMOVED IN V6            width      : 100%;
-//REMOVED IN V6            height     : 100%;
-//REMOVED IN V6            margin-left: -50%;
-//REMOVED IN V6            padding    : 0;
-//REMOVED IN V6            .grid-label-text {
-//REMOVED IN V6                cursor       : inherit;
-//REMOVED IN V6                display      : inline-block;
-//REMOVED IN V6                box-sizing   : border-box;
-//REMOVED IN V6                line-height  : 1;
-//REMOVED IN V6                height       : 100%;
-//REMOVED IN V6                padding      : $text-padding;
-//REMOVED IN V6                border       : $border-width solid transparent;
-//REMOVED IN V6                border-radius: $marker-border-radius;
-//REMOVED IN V6
-//REMOVED IN V6                &.frame {
-//REMOVED IN V6                    border-color: $border-color;
-//REMOVED IN V6                }
-//REMOVED IN V6            }
-//REMOVED IN V6        }
-//REMOVED IN V6    }
 
     //Special version for grid.label-between-ticks
     &.label-between-ticks {
         height: max($tick-height, $label-font-size);
-//REMOVED IN V6        .grid-label-outer {
-//REMOVED IN V6            top   : 0;
-//REMOVED IN V6            height: $label-font-size;
-//REMOVED IN V6
-//REMOVED IN V6            .grid-label {
-//REMOVED IN V6                .grid-label-text {
-//REMOVED IN V6                    padding      : 0;
-//REMOVED IN V6                    border-radius: 0;
-//REMOVED IN V6                    border       : 0;
-//REMOVED IN V6                }
-//REMOVED IN V6            }
-//REMOVED IN V6        }
     }
-
-//REMOVED IN V6    //Text-style for grid-label outside .grid-label-outer to allow used with textElement in BaseSlider
-//REMOVED IN V6    .grid-label {
-//REMOVED IN V6display: none;
-//REMOVED IN V6        background-color: transparent;
-//REMOVED IN V6        left       : 0;
-//REMOVED IN V6        white-space: nowrap;
-//REMOVED IN V6        text-align : center;
-//REMOVED IN V6        font-family: Arial, sans-serif;
-//REMOVED IN V6
-//REMOVED IN V6        font-size  : $label-font-size;
-//REMOVED IN V6        line-height: 1;
-//REMOVED IN V6        font-weight: bold;
-//REMOVED IN V6        &.minor  { font-weight: normal; color: #555555;}
-//REMOVED IN V6        &.italic { font-style: italic; }
-//REMOVED IN V6
-//REMOVED IN V6        color : #000;
-//REMOVED IN V6    }
 
     .grid-color {
         position: absolute;
@@ -376,11 +289,6 @@ COMMON STYLE
         }
     }
 } //end of .grid
-
-// HER> //Special style for grid-label-text:hover when not dragging any handle
-// HER> html.mouse-hover .base-slider-container.active:not(.dragging) .grid-label.clickable:hover .grid-label-text {
-// HER>     border-color: $border-color_hover;
-// HER> }
 
 .disabled {
     opacity: 0.4;

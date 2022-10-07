@@ -28,7 +28,6 @@
         handleFixed : false,    // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
-//REMOVED IN V6        resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
         width         : 0,  // The total width of the slider (px)
@@ -114,7 +113,6 @@
         labelColors     : null, //Array of {value, color, backgroundColor} to set frame around and color, backgroundColor for the label and with value
 
         labelClickable         : true, //Allows click on labels to select value of label. If false a click on a label is equal to a click on the line (e.q. find nearest value
-//REMOVED IN V6        labelClickableFullWidth: true, //If true and options.labelClickable: true and the value of the label is selectable (with respect to options.step and options.stepOffset) the clickable width of the label is expanded to half the distance to the neighbour labels
 
         //Marker above handle
         showMinMax : false,    // Show min and max markers
@@ -138,46 +136,6 @@
         onChange          : null, // Is called when the value, from, or to  value are changed.
         onChangeOnDragging: true, // If false onChange-function is only called when dragging the sliding is finish.
         onChangeDelay     : 500,  // If onChangeOnDragging == false the callback-function is called when the slider has been on the same tick for onChangeDelay milliseconds
-
-
-//REMOVED IN V6        //Buttons
-//REMOVED IN V6        buttons      : {value:{}, from:{}, to:{} },
-//REMOVED IN V6        /*
-//REMOVED IN V6        JSON-record with id or buttons for first, previousPage, previousShift, previous, (now,) next, nextShift, nextPage and last value
-//REMOVED IN V6            options.buttons = {
-//REMOVED IN V6                value: {buttonList},
-//REMOVED IN V6                from : {buttonList},
-//REMOVED IN V6                to   : {buttonList}
-//REMOVED IN V6            }
-//REMOVED IN V6            {buttonList} = {
-//REMOVED IN V6                firstBtn        : element or string,
-//REMOVED IN V6                previousPageBtn : element or string,
-//REMOVED IN V6                previousShiftBtn: element or string,
-//REMOVED IN V6                previousBtn     : element or string,
-//REMOVED IN V6                nowBtn          : element or string,
-//REMOVED IN V6                nextBtn         : element or string,
-//REMOVED IN V6                nextShiftBtn    : element or string,
-//REMOVED IN V6                nextPageBtn     : element or string,
-//REMOVED IN V6                lastBtn         : element or string
-//REMOVED IN V6            }
-//REMOVED IN V6        */
-
-
-//REMOVED IN V6        /****************************************
-//REMOVED IN V6        Internal options
-//REMOVED IN V6        ****************************************/
-//REMOVED IN V6        //The standard button-ids are firstBtn, previousBtn, nowBtn, nextBtn, lastBtn with the following steps
-//REMOVED IN V6        buttonOptions: {
-//REMOVED IN V6            'firstBtn'        : { sign: -1, delta: 99 },
-//REMOVED IN V6            'previousPageBtn' : { sign: -1, delta:  3 },
-//REMOVED IN V6            'previousShiftBtn': { sign: -1, delta:  2 },
-//REMOVED IN V6            'previousBtn'     : { sign: -1, delta:  1 },
-//REMOVED IN V6            'nowBtn'          : { sign: +1, delta:  0 },
-//REMOVED IN V6            'nextBtn'         : { sign: +1, delta:  1 },
-//REMOVED IN V6            'nextShiftBtn'    : { sign: +1, delta:  2 },
-//REMOVED IN V6            'nextPageBtn'     : { sign: +1, delta:  3 },
-//REMOVED IN V6            'lastBtn'         : { sign: +1, delta: 99 }
-//REMOVED IN V6        },
 
         minDistance: 4 //Minimum distance between ticks and between labels
 
@@ -235,24 +193,6 @@
         this.currentHandle    = null;
         this.isRepeatingClick = false;
 
-
-// HER>         //Create element outside DOM used to calc width of text-elements
-// HER>         this.$outerTextElement =
-// HER>             $outerTextElement ||
-// HER>             $('<div/>')
-// HER>                 .addClass('grid')
-// HER>                 .css({ position: 'absolute', top: -10000, left: -10000 })
-// HER>                 .appendTo( $('body') );
-// HER>         $outerTextElement = this.$outerTextElement;
-// HER>
-// HER>         this.textElement =
-// HER>             textElement ||
-// HER>             $('<span/>')
-// HER>                 .addClass('grid-label')
-// HER>                 .appendTo( this.$outerTextElement )
-// HER>                 .get(0);
-// HER>         textElement = this.textElement;
-
         /*******************************************************************
         Set and adjust options that can't be changed by this.update(options)
         *******************************************************************/
@@ -289,22 +229,6 @@
         //Calc sizes
         size.labelHeight = size.borderWidth + size.textPadding + size.fontSize + size.textPadding + size.borderWidth;
 
-
-//REMOVED IN V6        /*******************************************************************
-//REMOVED IN V6        this.events contains event-functions and options
-//REMOVED IN V6        this.events.containerOnResize = called when the sizse of the container is changed
-//REMOVED IN V6        *******************************************************************/
-//REMOVED IN V6        this.events = {
-//REMOVED IN V6            containerOnResize: $.proxy( this.containerOnResize, this ),
-//REMOVED IN V6            parentOnResize   : $.proxy( this.parentOnResize, this )
-//REMOVED IN V6        };
-//REMOVED IN V6
-//REMOVED IN V6        //Create event-function to be called on resize of the window and the container (added in init)
-//REMOVED IN V6        if (this.options.resizable)
-//REMOVED IN V6            //Add resize-event to window
-//REMOVED IN V6            $(window).on('resize', this.events.containerOnResize );
-
-
         /*******************************************************************
         this.result = record with the current result from the slider
         this.lastResult = the last version of this.result provided to callback-functions
@@ -333,7 +257,6 @@
         *******************************************************************/
         this.cache = {
             $input : $(this.input),
-//REMOVED IN V6            buttons: { value:{}, from:{}, to:{} }
         };
 
         //Hide the input
@@ -785,19 +708,6 @@
             if (this.options.hasPin)
                 this.cache.$container.addClass("has-pin");
 
-//REMOVED IN V6            //Append buttons
-//REMOVED IN V6            function getButton( id ){
-//REMOVED IN V6                return $.type( id ) === 'string' ? $('#' +  id ) : id;
-//REMOVED IN V6            }
-//REMOVED IN V6            this.options.buttons.value = this.options.buttons.value || {};
-//REMOVED IN V6            this.options.buttons.from = this.options.buttons.from || {};
-//REMOVED IN V6            this.options.buttons.to   = this.options.buttons.to   || {};
-//REMOVED IN V6            $.each( this.options.buttonOptions, function( id ){
-//REMOVED IN V6                _this.cache.buttons.value[ id ] = getButton( _this.options.buttons.value[ id ] );
-//REMOVED IN V6                _this.cache.buttons.from[ id ]  = getButton( _this.options.buttons.from[ id ] );
-//REMOVED IN V6                _this.cache.buttons.to[ id ]    = getButton( _this.options.buttons.to  [ id ] );
-//REMOVED IN V6            });
-
             //Append grid(s)
             this.$currentGridContainer = null;
             if (this.options.grid)
@@ -826,16 +736,6 @@
         remove
         *******************************************************************/
         remove: function () {
-//REMOVED IN V6            var _this = this;
-//REMOVED IN V6            //************************************************
-//REMOVED IN V6            function offEvents( $elem, eventNames ){
-//REMOVED IN V6                if (!$elem) return;
-//REMOVED IN V6                $.each( eventNames.split(' '), function( index, eventName ){
-//REMOVED IN V6                    $elem.off( eventName + ".irs_" + _this.pluginCount );
-//REMOVED IN V6                });
-//REMOVED IN V6            }
-//REMOVED IN V6            //************************************************
-
             if (this.cache.$outerContainer){
                 this.cache.$outerContainer.remove();
                 this.cache.$outerContainer = null;
@@ -846,18 +746,7 @@
             }
 
             this.eachHandle('remove');
-
-//REMOVED IN V6            //Unbind click on buttons
-//REMOVED IN V6            $.each( this.cache.buttons, function( valueOrToOrFrom, buttonRecord ){
-//REMOVED IN V6                $.each( buttonRecord, function( id, $btn ){
-//REMOVED IN V6                    offEvents( $btn, 'mousedown mouseup mouseleave click' );
-//REMOVED IN V6                });
-//REMOVED IN V6            });
         },
-
-
-
-
 
         /*******************************************************************
         ********************************************************************
@@ -1074,15 +963,6 @@
 
             options = $.extend( {minor: false, color: ''}, options );
 
-//REMOVED IN V6            var result = document.createElement("span");
-//REMOVED IN V6            result.className = "grid-pol" + (options.minor ? '' : ' major');
-//REMOVED IN V6            result.style.left = leftPercent + '%';
-//REMOVED IN V6
-//REMOVED IN V6            if (options.color)
-//REMOVED IN V6                result.style.backgroundColor = options.color;
-//REMOVED IN V6
-//REMOVED IN V6            this.currentGridContainer.appendChild( result );
-
             var left = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
                 ctx  = this.cache.ctx,
                 size = this.options.size,
@@ -1102,9 +982,7 @@
 
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
-
-//REMOVED IN V6            return result;
-        },
+      },
 
         /*******************************************************************
         _valueToText
@@ -1125,55 +1003,8 @@
             //Check if the value for the label is a selectable one
             options.labelClickable = options.labelClickable &&  ((value - this.options.stepOffset) % this.options.step) === 0;
 
-            var text = this._valueToText( value );
-//REMOVED IN V6            var outer = document.createElement("div"),
-//REMOVED IN V6                result = document.createElement("div"),
-//REMOVED IN V6                className = 'grid-label';
-//REMOVED IN V6
-//REMOVED IN V6            outer.className = 'grid-label-outer';
-//REMOVED IN V6            outer.style.left = leftPercent+'%';
-//REMOVED IN V6            outer.appendChild(result);
-//REMOVED IN V6
-//REMOVED IN V6            if (options.minor)
-//REMOVED IN V6                className += ' minor';
-//REMOVED IN V6            if (options.italic)
-//REMOVED IN V6                className += ' italic';
-//REMOVED IN V6            if (options.color)
-//REMOVED IN V6                result.style.color = options.color;
-//REMOVED IN V6
-//REMOVED IN V6            //Create inner-span with the text
-//REMOVED IN V6            var inner = document.createElement("span"),
-//REMOVED IN V6                innerClassName = 'grid-label-text';
-//REMOVED IN V6            inner.innerHTML = text;
-//REMOVED IN V6
-//REMOVED IN V6            if (this.options.labelColorRec[value]){
-//REMOVED IN V6                var textOptions = this.options.labelColorRec[value];
-//REMOVED IN V6
-//REMOVED IN V6                innerClassName += ' frame';
-//REMOVED IN V6                if (textOptions.className)
-//REMOVED IN V6                    innerClassName += ' '+textOptions.className;
-//REMOVED IN V6                if (textOptions.color)
-//REMOVED IN V6                    inner.style.color = textOptions.color;
-//REMOVED IN V6                if (textOptions.backgroundColor)
-//REMOVED IN V6                    inner.style.backgroundColor = textOptions.backgroundColor;
-//REMOVED IN V6            }
-//REMOVED IN V6
-//REMOVED IN V6            inner.className = innerClassName;
-//REMOVED IN V6            result.appendChild(inner);
-//REMOVED IN V6
-//REMOVED IN V6            if (options.labelClickable && !this.options.disable && !this.options.readOnly){
-//REMOVED IN V6                //Can be used later: outer.setAttribute('data-base-slider-value', value);
-//REMOVED IN V6                outer.setAttribute('data-base-slider-percent', outer.style.left);
-//REMOVED IN V6                className += ' clickable';
-//REMOVED IN V6                if (this.options.labelClickableFullWidth)
-//REMOVED IN V6                    result.style.width = this.options.majorTickDistancePx +'px';
-//REMOVED IN V6
-//REMOVED IN V6            }
-//REMOVED IN V6
-//REMOVED IN V6            result.className = className;
-//REMOVED IN V6            this.currentGridContainer.appendChild( outer );
-
-            var size   = this.options.size,
+            var text = this._valueToText( value ),
+                size   = this.options.size,
                 ctx    = this.cache.ctx,
                 left   = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
                 textWidth = this.getTextWidth(text),
@@ -1209,9 +1040,10 @@
                 ctx.fillStyle = color;
                 ctx.fillRect(boxLeft, top, width, height);
                 ctx.fillStyle = bgColor;
-ctx.beginPath();
+
+                ctx.beginPath();
                 ctx.fillRect(boxLeft + size.borderWidth, top + size.borderWidth, width - 2*size.borderWidth, height - 2*size.borderWidth);
-ctx.stroke();
+                ctx.stroke();
             }
 
             //ctx.fillStyle = 'pink';                     //Only test
@@ -1226,12 +1058,11 @@ ctx.stroke();
                 ctx.font = 'bold ' + ctx.font;
             ctx.fillStyle = textColor;
 
-ctx.beginPath();
+            ctx.beginPath();
             ctx.fillText(text, left, textTop);
-ctx.stroke();
+            ctx.stroke();
 
             ctx.font = ctx_font;
-//REMOVED IN V6            return result;
         },
 
 

@@ -63,14 +63,6 @@ jquery-base-slider-events
 
             $panElement.data('hammer').get('pan').set({threshold: 1});
 
-//REMOVED IN V6            //Add onResize to the container
-//REMOVED IN V6            if (this.options.resizable){
-//REMOVED IN V6                if (this.options.isFixed)
-//REMOVED IN V6                    this.cache.$outerContainer.resize( this.events.containerOnResize );
-//REMOVED IN V6                else
-//REMOVED IN V6                    this.cache.$container.resize( this.events.containerOnResize );
-//REMOVED IN V6            }
-
             //Add horizontal sliding with mousewheel
             if (this.options.mousewheel)
                 addEvents(
@@ -81,23 +73,6 @@ jquery-base-slider-events
 
             //Add keyboard events to the line
             addEvents( this.cache.$line, "keydown", this.key );
-
-//REMOVED IN V6            //Bind click on buttons
-//REMOVED IN V6            $.each( this.cache.buttons, function( fromOrTo, buttonRecord ){
-//REMOVED IN V6                $.each( buttonRecord, function( id, $btn ){
-//REMOVED IN V6                    var options = $.extend({handleId: fromOrTo}, _this.options.buttonOptions[id]);
-//REMOVED IN V6                    addEvents( $btn, 'mousedown',  _this.startRepeatingClick                         );
-//REMOVED IN V6                    addEvents( $btn, 'mouseup',    _this.endRepeatingClick                           );
-//REMOVED IN V6                    addEvents( $btn, 'mouseleave', _this.endRepeatingClick,                  true    );
-//REMOVED IN V6                    addEvents( $btn, 'click',      _this.moveByButtonOrKeyboardOrMouseWheel, options );
-//REMOVED IN V6
-//REMOVED IN V6                    if ( $btn && $btn.autoclickWhilePressed && options.delta && (options.delta != 99) && (!$btn.data('auto-click-when-pressed-added')) ){
-//REMOVED IN V6                        $btn.data('auto-click-when-pressed-added', true);
-//REMOVED IN V6                        $btn.autoclickWhilePressed();
-//REMOVED IN V6                    }
-//REMOVED IN V6
-//REMOVED IN V6                });
-//REMOVED IN V6            });
         },
 
 
@@ -106,36 +81,6 @@ jquery-base-slider-events
         EVENTS
         ********************************************************************
         *******************************************************************/
-
-//REMOVED IN V6        /*******************************************************************
-//REMOVED IN V6        containerOnResize
-//REMOVED IN V6        Call parentOnResize when the slider is finish building and the container is resized
-//REMOVED IN V6        *******************************************************************/
-//REMOVED IN V6        containerOnResize: function(){
-//REMOVED IN V6            if (this.initializing || !this.isBuild)
-//REMOVED IN V6                return;
-//REMOVED IN V6
-//REMOVED IN V6            this.parentOnResize();
-//REMOVED IN V6        },
-
-
-//REMOVED IN V6        /*******************************************************************
-//REMOVED IN V6        parentOnResize
-//REMOVED IN V6        Call checkContainerDimentions when the container is resized.
-//REMOVED IN V6        Prevent multi updates by setting delay of 200ms
-//REMOVED IN V6        *******************************************************************/
-//REMOVED IN V6        parentOnResize: function(){
-//REMOVED IN V6            //Remove resize-event from parent if it isn't a resizable slider
-//REMOVED IN V6            if (!this.options.resizable && this.parentOnResizeAdded && this.cache.$parent){
-//REMOVED IN V6                this.cache.$parent.removeResize( this.events.parentOnResize );
-//REMOVED IN V6                this.parentOnResizeAdded = null;
-//REMOVED IN V6            }
-//REMOVED IN V6
-//REMOVED IN V6            //Clear any previous added timeout
-//REMOVED IN V6            if (this.resizeTimeoutId)
-//REMOVED IN V6                window.clearTimeout(this.resizeTimeoutId);
-//REMOVED IN V6            this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
-//REMOVED IN V6        },
 
         /*******************************************************************
         getDimentions
@@ -163,23 +108,6 @@ jquery-base-slider-events
                 //Update the slider if the width has changed
                 if (this.dimentions.containerWidth && ns.objectsAreDifferent( this.dimentions, this.dimentions_old))
                     updateSlider = true;
-
-//REMOVED IN V6                    //Check if the grid of a resizable slider has changed
-//REMOVED IN V6                    if (this.options.resizable){
-//REMOVED IN V6                        var _this = this,
-//REMOVED IN V6                            rebuild = false,
-//REMOVED IN V6                            newGridOptions = this.getGridOptions(),
-//REMOVED IN V6                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
-//REMOVED IN V6
-//REMOVED IN V6                        $.each( idList, function( index, id ){
-//REMOVED IN V6                            rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
-//REMOVED IN V6                        });
-//REMOVED IN V6
-//REMOVED IN V6                        if (rebuild){
-//REMOVED IN V6                            this.update();
-//REMOVED IN V6                            return;
-//REMOVED IN V6                        }
-//REMOVED IN V6                    }
             }
             else {
                 //Reset timeout and try to build the slider
@@ -219,21 +147,6 @@ jquery-base-slider-events
         /*******************************************************************
         KEY, WHEEL AND BUTTON EVENTS
         *******************************************************************/
-//REMOVED IN V6        /*******************************************************************
-//REMOVED IN V6        startRepeatingClick
-//REMOVED IN V6        *******************************************************************/
-//REMOVED IN V6        startRepeatingClick: function () {
-//REMOVED IN V6            this.isRepeatingClick = true;
-//REMOVED IN V6        },
-
-//REMOVED IN V6        /*******************************************************************
-//REMOVED IN V6        endRepeatingClick
-//REMOVED IN V6        *******************************************************************/
-//REMOVED IN V6        endRepeatingClick: function (callOnChange) {
-//REMOVED IN V6            this.isRepeatingClick = false;
-//REMOVED IN V6            if (callOnChange)
-//REMOVED IN V6                this.onChange();
-//REMOVED IN V6        },
 
         /*******************************************************************
         key
@@ -435,11 +348,6 @@ jquery-base-slider-events
 
             //If not on a handle: Test if the tap was on a label
             if (window.isNaN(percent)){
-//REMOVED IN V6                while (window.isNaN(percent) && !!elem && elem.getAttribute){
-//REMOVED IN V6                    percent = parseFloat( elem.getAttribute('data-base-slider-percent') );
-//REMOVED IN V6                    elem = elem.parentNode;
-//REMOVED IN V6                }
-
                 //Check if the tap was on a canvas
                 var canvasId = $(elem).data('canvasId');
                 if (canvasId){

@@ -128,8 +128,6 @@ COMMON STYLE
     .base-slider-container .marker-outer.single-from-to.frame .marker-text {
       background: white;
       border: 1px solid black; }
-  html.mouse-hover .base-slider-container.active .marker-outer:hover.single-from-to.frame .marker-text, html.mouse-hover .base-slider-container.active .marker-outer:hover.min-max .marker-text, html.mouse-hover .base-slider-container.active .marker-outer.hover.single-from-to.frame .marker-text, html.mouse-hover .base-slider-container.active .marker-outer.hover.min-max .marker-text {
-    border-color: #007bff; }
 
 .grid-canvas {
   position: absolute;
