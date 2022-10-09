@@ -844,7 +844,8 @@
         Get width of value as text OR max width of all values in array of value
         *******************************************************************/
         getTextWidth: function( value, options = {} ){
-            var ctx = this.cache.ctx,
+            var _this = this,
+                ctx = this.cache.ctx,
                 ctx_font = ctx.font,
                 valueList = $.isArray( value ) ? value : [value],
                 result = 0;
@@ -855,7 +856,7 @@
                 ctx.font = 'bold ' + ctx.font;
 
             valueList.forEach( function(txt){
-                result = Math.max( result, ctx.measureText(txt).width );
+                result = Math.max( result, ctx.measureText( _this._valueToText(txt) ).width );
             });
 
             ctx.font = ctx_font;
