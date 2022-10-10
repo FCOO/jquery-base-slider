@@ -115,7 +115,6 @@ jquery-base-slider-events
         containerOnResize: function(){
             if (this.initializing || !this.isBuild)
                 return;
-
             this.parentOnResize();
         },
 
@@ -161,25 +160,13 @@ jquery-base-slider-events
 
             if (!this.initializing && this.isBuild){
                 //Update the slider if the width has changed
-                if (this.dimentions.containerWidth && objectsAreDifferent( this.dimentions, this.dimentions_old))
+                if (this.dimentions.containerWidth && objectsAreDifferent( this.dimentions, this.dimentions_old)){
                     updateSlider = true;
 
-                    //Check if the grid of a resizable slider has changed
-                    if (this.options.resizable){
-                        var _this = this,
-                            rebuild = false,
-                            newGridOptions = this.getGridOptions(),
-                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
-
-                        $.each( idList, function( index, id ){
-                            rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
-                        });
-
-                        if (rebuild){
-                            this.update();
-                            return;
-                        }
-                    }
+                    //If it is a resizable slider :  Update it
+                    if (this.options.resizable)
+                        this.update();
+                }
             }
             else {
                 //Reset timeout and try to build the slider

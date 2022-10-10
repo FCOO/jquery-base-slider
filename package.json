@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "homepage": "https://github.com/FCOO/jquery-base-slider",
   "description": "package.json is only use for building the package. see bower.json for more info",
   "author": "Niels Holt nho@fcoo.dk",
