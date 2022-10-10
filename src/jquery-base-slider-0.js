@@ -204,10 +204,6 @@
             //Add resize-event to window
             $(window).on('resize', this.events.containerOnResize );
 
-// HER>         //Update slider when browser font-size is changed
-// HER>         $.onFontSizeChanged( this.onFontSizeChange, this );
-
-
         /*******************************************************************
         Adjust different sizes
         *******************************************************************/

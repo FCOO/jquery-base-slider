@@ -128,30 +128,6 @@ If `onChangeOnDragging == false` the different between `onChange` and `onChangin
 If `onChangeOnDragging == true` `onChange` and `onChanging` are called on every change and only on is needed 
 
 
-### Buttons
-| Option | Defaults | Type | Description |
-| :--: | :--: | :--: | :-- |
-| `buttons` | `null` | `JSON` |  | 
-#### Description
-JSON-record with id or buttons for first, previous, (now,) next, and last value
-    
-    options.buttons = {
-        value: {buttonList},
-        from : {buttonList},
-        to   : {buttonList}
-    }
-    {buttonList} = {
-        firstBtn        : element or string,
-        previousPageBtn : element or string,
-        previousShiftBtn: element or string,
-        previousBtn     : element or string,
-        nowBtn          : element or string,
-        nextBtn         : element or string,
-        nextShiftBtn    : element or string,
-        nextPageBtn     : element or string,
-        lastBtn         : element or string
-    }
-
 ## Methods
 
 	.adjustValue( value )			: Return value adjusted to fit with min, max, step, and stepOffset

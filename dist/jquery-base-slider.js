@@ -28,6 +28,7 @@
         handleFixed : false,    // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
+        resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
         width         : 0,  // The total width of the slider (px)
@@ -188,6 +189,20 @@
 
         this.options.singleHandleId =
             this.options.isSingle ? (this.options.handleFixed ? 'fixed' : 'single') : 'from-to';
+
+        /*******************************************************************
+        this.events contains event-functions and options
+        this.events.containerOnResize = called when the sizse of the container is changed
+        *******************************************************************/
+        this.events = {
+            containerOnResize: $.proxy( this.containerOnResize, this ),
+            parentOnResize   : $.proxy( this.parentOnResize, this )
+        };
+
+        //Create event-function to be called on resize of the window and the container (added in init)
+        if (this.options.resizable)
+            //Add resize-event to window
+            $(window).on('resize', this.events.containerOnResize );
 
         /*******************************************************************
         Adjust different sizes
@@ -667,10 +682,6 @@
             //Update the height of the slider
             this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
 
-            //Save the width of the slider
-            this.options.width = this.options.width || this.cache.$container.innerWidth();
-
-
             /****************************************************
             Append grid with ticks and optional labels
             ****************************************************/
@@ -879,7 +890,7 @@
                 size = this.options.size,
                 ctx = this.cache.ctx = $newCanvas.get(0).getContext("2d"),
                 canvasMargin = this.cache.canvasMargin = Math.ceil( this.getTextWidth([this._valueToText(this.options.min), this._valueToText(this.options.max)] ) ),
-                canvasWidth = this.options.width + 2 * canvasMargin,
+                canvasWidth = this.dimentions.containerWidth + 2 * canvasMargin,
                 canvasHeight = this.options.labelBetweenTicks ?
                                 Math.max(size.majorTickLength, size.fontSize) :
                                 size.majorTickLength + size.labelHeight;
@@ -933,7 +944,7 @@
 
             options = $.extend( {minor: false, color: ''}, options );
 
-            var left = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+            var left = this.cache.canvasMargin + (this.dimentions.containerWidth * leftPercent / 100),
                 ctx  = this.cache.ctx,
                 size = this.options.size,
                 length = options.minor ? size.minorTickLength : size.majorTickLength;
@@ -976,7 +987,7 @@
             var text = this._valueToText( value ),
                 size   = this.options.size,
                 ctx    = this.cache.ctx,
-                left   = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+                left   = this.cache.canvasMargin + (this.dimentions.containerWidth * leftPercent / 100),
                 textWidth = this.getTextWidth(text),
                 top, width, height, boxLeft, textTop;
 
@@ -1319,6 +1330,14 @@ jquery-base-slider-events
 
             $panElement.data('hammer').get('pan').set({threshold: 1});
 
+            //Add onResize to the container
+            if (this.options.resizable){
+                if (this.options.isFixed)
+                    this.cache.$outerContainer.resize( this.events.containerOnResize );
+                else
+                    this.cache.$container.resize( this.events.containerOnResize );
+            }
+
             //Add horizontal sliding with mousewheel
             if (this.options.mousewheel)
                 addEvents(
@@ -1337,6 +1356,35 @@ jquery-base-slider-events
         EVENTS
         ********************************************************************
         *******************************************************************/
+
+        /*******************************************************************
+        containerOnResize
+        Call parentOnResize when the slider is finish building and the container is resized
+        *******************************************************************/
+        containerOnResize: function(){
+            if (this.initializing || !this.isBuild)
+                return;
+
+            this.parentOnResize();
+        },
+
+        /*******************************************************************
+        parentOnResize
+        Call checkContainerDimentions when the container is resized.
+        Prevent multi updates by setting delay of 200ms
+        *******************************************************************/
+        parentOnResize: function(){
+            //Remove resize-event from parent if it isn't a resizable slider
+            if (!this.options.resizable && this.parentOnResizeAdded && this.cache.$parent){
+                this.cache.$parent.removeResize( this.events.parentOnResize );
+                this.parentOnResizeAdded = null;
+            }
+
+            //Clear any previous added timeout
+            if (this.resizeTimeoutId)
+                window.clearTimeout(this.resizeTimeoutId);
+            this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+        },
 
         /*******************************************************************
         getDimentions
@@ -1364,6 +1412,23 @@ jquery-base-slider-events
                 //Update the slider if the width has changed
                 if (this.dimentions.containerWidth && objectsAreDifferent( this.dimentions, this.dimentions_old))
                     updateSlider = true;
+
+                    //Check if the grid of a resizable slider has changed
+                    if (this.options.resizable){
+                        var _this = this,
+                            rebuild = false,
+                            newGridOptions = this.getGridOptions(),
+                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
+
+                        $.each( idList, function( index, id ){
+                            rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
+                        });
+
+                        if (rebuild){
+                            this.update();
+                            return;
+                        }
+                    }
             }
             else {
                 //Reset timeout and try to build the slider
