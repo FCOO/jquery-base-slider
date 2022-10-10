@@ -81,6 +81,14 @@ jquery-base-slider-events
 
             $panElement.data('hammer').get('pan').set({threshold: 1});
 
+            //Add onResize to the container
+            if (this.options.resizable){
+                if (this.options.isFixed)
+                    this.cache.$outerContainer.resize( this.events.containerOnResize );
+                else
+                    this.cache.$container.resize( this.events.containerOnResize );
+            }
+
             //Add horizontal sliding with mousewheel
             if (this.options.mousewheel)
                 addEvents(
@@ -99,6 +107,35 @@ jquery-base-slider-events
         EVENTS
         ********************************************************************
         *******************************************************************/
+
+        /*******************************************************************
+        containerOnResize
+        Call parentOnResize when the slider is finish building and the container is resized
+        *******************************************************************/
+        containerOnResize: function(){
+            if (this.initializing || !this.isBuild)
+                return;
+
+            this.parentOnResize();
+        },
+
+        /*******************************************************************
+        parentOnResize
+        Call checkContainerDimentions when the container is resized.
+        Prevent multi updates by setting delay of 200ms
+        *******************************************************************/
+        parentOnResize: function(){
+            //Remove resize-event from parent if it isn't a resizable slider
+            if (!this.options.resizable && this.parentOnResizeAdded && this.cache.$parent){
+                this.cache.$parent.removeResize( this.events.parentOnResize );
+                this.parentOnResizeAdded = null;
+            }
+
+            //Clear any previous added timeout
+            if (this.resizeTimeoutId)
+                window.clearTimeout(this.resizeTimeoutId);
+            this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+        },
 
         /*******************************************************************
         getDimentions
@@ -126,6 +163,23 @@ jquery-base-slider-events
                 //Update the slider if the width has changed
                 if (this.dimentions.containerWidth && objectsAreDifferent( this.dimentions, this.dimentions_old))
                     updateSlider = true;
+
+                    //Check if the grid of a resizable slider has changed
+                    if (this.options.resizable){
+                        var _this = this,
+                            rebuild = false,
+                            newGridOptions = this.getGridOptions(),
+                            idList = ['gridDistanceStep', 'majorTickDistanceNum']; //List of options-id to compare for changes
+
+                        $.each( idList, function( index, id ){
+                            rebuild = rebuild || (newGridOptions[id] != _this.gridOptions[id]);
+                        });
+
+                        if (rebuild){
+                            this.update();
+                            return;
+                        }
+                    }
             }
             else {
                 //Reset timeout and try to build the slider

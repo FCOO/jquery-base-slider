@@ -28,6 +28,7 @@
         handleFixed : false,    // Special version where the slider is fixed and the grid are moved left or right to select value. handle is set to "single"
                                 // A value for options.width OR options.valueDistances must be provided
         mousewheel  : true,     // Adds mousewheel-event to the parent-element of the slider. Works best if the parent-element only contains the slider and has a fixed height and width
+        resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
         width         : 0,  // The total width of the slider (px)
@@ -188,6 +189,24 @@
 
         this.options.singleHandleId =
             this.options.isSingle ? (this.options.handleFixed ? 'fixed' : 'single') : 'from-to';
+
+        /*******************************************************************
+        this.events contains event-functions and options
+        this.events.containerOnResize = called when the sizse of the container is changed
+        *******************************************************************/
+        this.events = {
+            containerOnResize: $.proxy( this.containerOnResize, this ),
+            parentOnResize   : $.proxy( this.parentOnResize, this )
+        };
+
+        //Create event-function to be called on resize of the window and the container (added in init)
+        if (this.options.resizable)
+            //Add resize-event to window
+            $(window).on('resize', this.events.containerOnResize );
+
+// HER>         //Update slider when browser font-size is changed
+// HER>         $.onFontSizeChanged( this.onFontSizeChange, this );
+
 
         /*******************************************************************
         Adjust different sizes
@@ -667,10 +686,6 @@
             //Update the height of the slider
             this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
 
-            //Save the width of the slider
-            this.options.width = this.options.width || this.cache.$container.innerWidth();
-
-
             /****************************************************
             Append grid with ticks and optional labels
             ****************************************************/
@@ -879,7 +894,7 @@
                 size = this.options.size,
                 ctx = this.cache.ctx = $newCanvas.get(0).getContext("2d"),
                 canvasMargin = this.cache.canvasMargin = Math.ceil( this.getTextWidth([this._valueToText(this.options.min), this._valueToText(this.options.max)] ) ),
-                canvasWidth = this.options.width + 2 * canvasMargin,
+                canvasWidth = this.dimentions.containerWidth + 2 * canvasMargin,
                 canvasHeight = this.options.labelBetweenTicks ?
                                 Math.max(size.majorTickLength, size.fontSize) :
                                 size.majorTickLength + size.labelHeight;
@@ -933,7 +948,7 @@
 
             options = $.extend( {minor: false, color: ''}, options );
 
-            var left = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+            var left = this.cache.canvasMargin + (this.dimentions.containerWidth * leftPercent / 100),
                 ctx  = this.cache.ctx,
                 size = this.options.size,
                 length = options.minor ? size.minorTickLength : size.majorTickLength;
@@ -976,7 +991,7 @@
             var text = this._valueToText( value ),
                 size   = this.options.size,
                 ctx    = this.cache.ctx,
-                left   = this.cache.canvasMargin + (this.options.width * leftPercent / 100),
+                left   = this.cache.canvasMargin + (this.dimentions.containerWidth * leftPercent / 100),
                 textWidth = this.getTextWidth(text),
                 top, width, height, boxLeft, textTop;
 

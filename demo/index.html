@@ -19,9 +19,9 @@
             margin-bottom   : 1rem;
         }
 
-//REMOVED IN V6        .slider-container.resizable {
-//REMOVED IN V6            width  : 80% !important;
-//REMOVED IN V6        }
+        .slider-container.resizable {
+            width  : 80% !important;
+        }
 
         .date-box {
             display : inline-block;
@@ -86,12 +86,12 @@
  -->
 
     <div style="position: relative; width:100%; _display:none">
-        <div class="slider-container _resizable">
+        <div class="slider-container resizable">
             <div class="code-container" id="options_01"></div><hr>
             <input type="text" id="example_01"/>
         </div>
 
-        <div class="slider-container _resizable">
+        <div class="slider-container resizable">
             <div class="code-container" id="options_02"></div><hr>
             <input type="text" id="example_02"/>
         </div>
@@ -186,7 +186,7 @@
         //Fixed slider
         var range = 1000; //400
         createDemoSlider( '01', 'Fixed handler', {
-            handleFixed: true, width: 3*range, min:-range, max:range, value:0, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            handleFixed: true, resizable: true, width: 3*range, min:-range, max:range, value:0, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
 
@@ -194,7 +194,7 @@
         //Ex #2
         var slider =
         createDemoSlider( '02', 'Normal', {
-            handle:'down', _resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, 
+            handle:'down', resizable: true, min:-10000, max:100000, value: 20000, majorTicksOffset:3000, step:1000, stepOffset:0, grid:true, showLineColor:false, mousewheel: true, pinValue: 50000, pinColor:'red', showMinMax: true, 
             ticksOnLine: true,
             markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
         })
