@@ -1121,7 +1121,7 @@
                     }
                     value += step;
                 }
-                result.maxLabelWidth = this.getTextWidth() + o.minDistance; //Adding min space between text/labels
+                result.maxLabelWidth = this.getTextWidth( valueList ) + o.minDistance; //Adding min space between text/labels
             }
 
             //Calculate automatic distances between major ticks
