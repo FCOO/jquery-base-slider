@@ -31,7 +31,8 @@ COMMON STYLE
   position: relative;
   display: block;
   user-select: none;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  overflow: hidden; }
   .base-slider-container .line-background {
     position: absolute;
     display: block;

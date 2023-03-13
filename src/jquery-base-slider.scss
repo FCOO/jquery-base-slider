@@ -94,6 +94,7 @@ COMMON STYLE
     display    : block;
     user-select: none;
     box-sizing : border-box;
+    overflow   : hidden;
 
     //width and margin of .base-slider-container is set after the widest handle is found
     .line-background {
