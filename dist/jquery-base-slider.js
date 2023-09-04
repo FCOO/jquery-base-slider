@@ -31,8 +31,9 @@
         resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
-        width         : 0,  // The total width of the slider (px)
-        valueDistances: 3,  // The distance between each value on the slider (px). Width will be valueDistances*( max - min )
+        width         : 0,      // The total width of the slider (px)
+        valueDistances: 3,      // The distance between each value on the slider (px). Width will be valueDistances*( max - min )
+        useParentWidth: false,  //If true the slider try using the width of the parent of the container. Useful if the container is hidden when the slider is created
 
         //Ranges and value
         min  : 0,           // Set slider minimum value
@@ -1389,9 +1390,22 @@ jquery-base-slider-events
         getDimentions
         Get width and left-position of different slider elements
         *******************************************************************/
+        _getAnyWidth: function( $elem ){
+            var width = 0;
+            while ($elem && $elem.length){
+                width = $elem.innerWidth();
+                if (width || !this.options.useParentWidth)
+                    $elem = null;
+                else
+                    $elem = $elem.parent();
+                }
+            return Math.max(0, width);
+        },
+
         getDimentions: function(){
             var result = {};
-            result.containerWidth    = Math.max(0, this.cache.$container.innerWidth()) || this.dimentions.containerWidth;
+            result.containerWidth = this._getAnyWidth(this.cache.$container) || this.dimentions.containerWidth;
+
             if (this.options.isFixed)
                 result.outerContainerWidth = this.cache.$outerContainer.innerWidth();
             return result;

@@ -31,8 +31,9 @@
         resizable   : false,    //If true the container of the slider can be resized and the grid will automatic redraw to adjust number of ticks and labels to the new width
 
         //Dimensions (only for options.handleFixed: true)
-        width         : 0,  // The total width of the slider (px)
-        valueDistances: 3,  // The distance between each value on the slider (px). Width will be valueDistances*( max - min )
+        width         : 0,      // The total width of the slider (px)
+        valueDistances: 3,      // The distance between each value on the slider (px). Width will be valueDistances*( max - min )
+        useParentWidth: false,  //If true the slider try using the width of the parent of the container. Useful if the container is hidden when the slider is created
 
         //Ranges and value
         min  : 0,           // Set slider minimum value

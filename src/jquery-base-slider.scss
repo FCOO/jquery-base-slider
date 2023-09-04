@@ -14,6 +14,8 @@ The type is set by adding the same class-name to the outer <span> eq. <span clas
 The scss is divided in two parts: First the common part equal for all types and then a specified part for the different types
 
 ************************************************/
+@use "sass:math";
+
 //BOURBON - http://bourbon.io version 5
 @import "../bower_components/bourbon/core/bourbon";
 
@@ -53,7 +55,7 @@ $range-line-top          : $marker-height;
 $range-line-top-no-marker: 0px;
 
 //Special: Pin marking a value
-$pin-height    : 48 / 28 * $line-height;  //The height of the pin used to mark the range-value. Calculated to fit with width=$line-height
+$pin-height    :  math.div(48, 28) * $line-height;  //The height of the pin used to mark the range-value. Calculated to fit with width=$line-height
 $pin-margin-top: -0.8 * $pin-height;
 
 $range-value-line-top: $marker-height;
@@ -273,8 +275,8 @@ COMMON STYLE
             width: 0;
             height: 0;
             border: 0 solid transparent;
-            border-bottom-width: $tick-height / 2;
-            border-top-width: $tick-height / 2;
+            border-bottom-width: math.div($tick-height , 2);
+            border-top-width: math.div($tick-height , 2);
             border-left: $tick-height solid black;
         }
         &.lt-min {
@@ -283,8 +285,8 @@ COMMON STYLE
             width: 0;
             height: 0;
             border: 0 solid transparent;
-            border-top-width: $tick-height / 2;
-            border-bottom-width: $tick-height / 2;
+            border-top-width: math.div($tick-height , 2);
+            border-bottom-width: math.div($tick-height , 2);
             border-right: $tick-height solid black;
         }
     }
@@ -401,9 +403,9 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
     $factor: 0;
     @if $img-height > $img-width {
-        $factor: $handle-dim / $img-height;
+        $factor: math.div($handle-dim , $img-height);
     } @else {
-        $factor: $handle-dim / $img-width;
+        $factor: math.div($handle-dim , $img-width);
     }
 
     $handle-width : $img-width * $factor;
@@ -411,7 +413,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     $handle-height: $img-height * $factor;
 
     @if $line-top-relative-to-handle == null {
-        $line-top-relative-to-handle: $handle-height/2 - $line-height/2;
+        $line-top-relative-to-handle: math.div($handle-height , 2) - math.div($line-height , 2);
     }
 
     @if $grid-top == null {
@@ -521,6 +523,6 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 //Adding style depending on $max-handle-width
 .base-slider-container {
     width       : calc(100% - #{$max-handle-width});
-    margin-left : $max-handle-width/2;
-    margin-right: $max-handle-width/2;
+    margin-left : math.div($max-handle-width , 2);
+    margin-right: math.div($max-handle-width , 2);
 }

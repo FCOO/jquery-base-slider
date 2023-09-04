@@ -1,6 +1,6 @@
 {
   "name": "jquery-base-slider",
-  "version": "6.0.7",
+  "version": "6.1.0",
   "homepage": "https://github.com/FCOO/jquery-base-slider",
   "description": "package.json is only use for building the package. see bower.json for more info",
   "author": "Niels Holt nho@fcoo.dk",
@@ -11,6 +11,6 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "grunt-fcoo-grunt-plugin": "^6.3.0"
+    "grunt-fcoo-grunt-plugin": "^6.4.0"
   }
 }

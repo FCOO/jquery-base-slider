@@ -140,9 +140,22 @@ jquery-base-slider-events
         getDimentions
         Get width and left-position of different slider elements
         *******************************************************************/
+        _getAnyWidth: function( $elem ){
+            var width = 0;
+            while ($elem && $elem.length){
+                width = $elem.innerWidth();
+                if (width || !this.options.useParentWidth)
+                    $elem = null;
+                else
+                    $elem = $elem.parent();
+                }
+            return Math.max(0, width);
+        },
+
         getDimentions: function(){
             var result = {};
-            result.containerWidth    = Math.max(0, this.cache.$container.innerWidth()) || this.dimentions.containerWidth;
+            result.containerWidth = this._getAnyWidth(this.cache.$container) || this.dimentions.containerWidth;
+
             if (this.options.isFixed)
                 result.outerContainerWidth = this.cache.$outerContainer.innerWidth();
             return result;
