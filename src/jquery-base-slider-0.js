@@ -72,14 +72,16 @@
         keyboardPageStepFactor : 20, //Step-factor when pressing pgUp or PgDn
 
         //Slide-line
-        lineBackgroundColor: '#d1d6e0', //The bakground color of the line
-
+        showLine           : true,  //If false the line with the handle is hidden
         showLineColor      : true,
         lineColor          : '#428BCA', //The color of the line left of the handle (single) or between the two handles (double)
+        lineBackgroundColor: '#d1d6e0', //The bakground color of the line
+        lineColors         : null, //[][{from, to, color}] Static colors for the line
 
         showImpactLineColor   : false, // The line on a double slider is coloured as green-[handle]-yellow-[handle]-red
         impactLineColors      : {green: "green", yellow: "yellow", red: "red"}, //The line colors used when showImpactLineColor: true
         reverseImpactLineColor: false, // The line on a double slider is colored as red-[handle]-yellow-[handle]-green. Must have showImpactLineColor: true
+
 
         //Size
         sizeFactor: 1, //Factor to re-size default sizes
@@ -647,38 +649,41 @@
                 return result; //Only last added
             }
 
-            //1. double-handle with impact- or reverse-impact-colors
-            if (this.options.isDouble && this.options.showImpactLineColor){
-                appendLineColor( true, true, true );
-                this.setImpactLineColors();
-            }
-            else
-                //2. Add static colors given by options.lineColors
-                if (this.options.lineColors){
-                    var from = this.options.min,
-                        to = from,
-                        fromPercent,
-                        toPercent,
-                        sliderValue = ns.sliderValue({slider: this});
-                    $.each(this.options.lineColors, function( index, fromToColor ){
-                        from = fromToColor.from === undefined ? to : fromToColor.from;
-                        to = fromToColor.to === undefined ? _this.options.max : fromToColor.to;
-                        fromPercent = sliderValue.setValue( from ).getPercent();
-                        toPercent = sliderValue.setValue( to ).getPercent();
-                        $span('line-color', _this.cache.$line)
-                            .css({
-                                'left'              : fromPercent + '%',
-                                'width'             : (toPercent-fromPercent) + '%',
-                                'background-color'  : fromToColor.color
-                            });
-                    });
+            if (this.options.showLine){
+                //1. double-handle with impact- or reverse-impact-colors
+                if (this.options.isDouble && this.options.showImpactLineColor){
+                    appendLineColor( true, true, true );
+                    this.setImpactLineColors();
                 }
                 else
-                    //3. Normal line-color to the left of handle (single) or between handles (double)
-                    if (this.options.showLineColor)
-                        appendLineColor( this.options.isSingle, this.options.isDouble, false )
-                            .css('background-color', this.options.lineColor);
-
+                    //2. Add static colors given by options.lineColors
+                    if (this.options.lineColors){
+                        var from = this.options.min,
+                            to = from,
+                            fromPercent,
+                            toPercent,
+                            sliderValue = ns.sliderValue({slider: this});
+                        $.each(this.options.lineColors, function( index, fromToColor ){
+                            from = fromToColor.from === undefined ? to : fromToColor.from;
+                            to = fromToColor.to === undefined ? _this.options.max : fromToColor.to;
+                            fromPercent = sliderValue.setValue( from ).getPercent();
+                            toPercent = sliderValue.setValue( to ).getPercent();
+                            $span('line-color', _this.cache.$line)
+                                .css({
+                                    'left'              : fromPercent + '%',
+                                    'width'             : (toPercent-fromPercent) + '%',
+                                    'background-color'  : fromToColor.color
+                                });
+                        });
+                    }
+                    else
+                        //3. Normal line-color to the left of handle (single) or between handles (double)
+                        if (this.options.showLineColor)
+                            appendLineColor( this.options.isSingle, this.options.isDouble, false )
+                                .css('background-color', this.options.lineColor);
+            }
+            else
+                this.cache.$line.css("visibility", "hidden");
 
             //Update the height of the slider
             this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
