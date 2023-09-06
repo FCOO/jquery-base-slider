@@ -221,13 +221,15 @@ COMMON STYLE
 STYLE FOR SPECIFIC TYPE
 ***************************************************************/
 .base-slider-container.horizontal {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.horizontal .line-background {
-  height: 44.33px;
 }
 .base-slider-container.horizontal .line {
   top: 29.33px;
@@ -269,13 +271,15 @@ html.mouse-hover .base-slider-container.horizontal.active .handle:hover, html.mo
 }
 
 .base-slider-container.vertical {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.vertical .line-background {
-  height: 36.33px;
 }
 .base-slider-container.vertical .line {
   top: 25.33px;
@@ -317,13 +321,15 @@ html.mouse-hover .base-slider-container.vertical.active .handle:hover, html.mous
 }
 
 .base-slider-container.down {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.down .line-background {
-  height: 44.33px;
 }
 .base-slider-container.down .line {
   top: 29.33px;
@@ -365,13 +371,15 @@ html.mouse-hover .base-slider-container.down.active .handle:hover, html.mouse-ho
 }
 
 .base-slider-container.up {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.up .line-background {
-  height: 44.33px;
 }
 .base-slider-container.up .line {
   top: 29.33px;
@@ -413,13 +421,15 @@ html.mouse-hover .base-slider-container.up.active .handle:hover, html.mouse-hove
 }
 
 .base-slider-container.right {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.right .line-background {
-  height: 36.33px;
 }
 .base-slider-container.right .line {
   top: 25.33px;
@@ -461,13 +471,15 @@ html.mouse-hover .base-slider-container.right.active .handle:hover, html.mouse-h
 }
 
 .base-slider-container.left {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.left .line-background {
-  height: 36.33px;
 }
 .base-slider-container.left .line {
   top: 25.33px;
@@ -509,13 +521,15 @@ html.mouse-hover .base-slider-container.left.active .handle:hover, html.mouse-ho
 }
 
 .base-slider-container.round {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.round .line-background {
-  height: 40.33px;
 }
 .base-slider-container.round .line {
   top: 27.33px;
@@ -557,13 +571,15 @@ html.mouse-hover .base-slider-container.round.active .handle:hover, html.mouse-h
 }
 
 .base-slider-container.fixed {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.fixed .line-background {
-  height: 40.33px;
 }
 .base-slider-container.fixed .line {
   top: 22.33px;
@@ -602,13 +618,15 @@ html.mouse-hover .base-slider-container.round.active .handle:hover, html.mouse-h
 }
 
 .base-slider-container.range {
+  /* REMOVED
+  .line-background {
+      height: $handle-top + $handle-height;
+  }
+  */
   /****************************************************
   Special case for no marker and pin:
   Adjust all top-position by adding top-margin if the pin is heigher than the handle
   ****************************************************/
-}
-.base-slider-container.range .line-background {
-  height: 26.33px;
 }
 .base-slider-container.range .line {
   top: 20.33px;

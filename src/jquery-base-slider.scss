@@ -439,10 +439,11 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
     .base-slider-container.#{$handle-type} {
 
         //width, height and postion
+        /* REMOVED
         .line-background {
             height: $handle-top + $handle-height;
         }
-
+        */
         .line {
             top: $lineTop;
         }
