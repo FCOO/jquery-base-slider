@@ -902,6 +902,8 @@
                                 Math.max(size.majorTickLength, size.fontSize) :
                                 size.majorTickLength + size.labelHeight;
 
+            $newGrid.height(canvasHeight);
+
             $newCanvas
                 .css('left', '-'+canvasMargin+'px')
                 .attr('width', canvasWidth)
