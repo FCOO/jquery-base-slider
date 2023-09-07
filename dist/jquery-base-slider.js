@@ -1155,8 +1155,8 @@
         /*******************************************************************
         _appendStandardGrid
         *******************************************************************/
-        _appendStandardGrid: function ( textOptions, tickOptions ) {
-            this.preAppendGrid();
+        _appendStandardGrid: function ( textOptions, tickOptions, gridContainerOptions ) {
+            this.preAppendGrid( gridContainerOptions );
 
             textOptions = $.extend( {labelClickable: this.options.labelClickable}, textOptions || {}  );
             tickOptions = tickOptions || {};
