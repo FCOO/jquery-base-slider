@@ -104,6 +104,7 @@
 
         //Grid (ticks and label)
         grid            : false,                      // Enables grid of values.
+        noTicks         : false,                      //If true no ticks are added, but the space are (used internally)
         majorTicks      : null,                       // Nummber of  step  between major ticks. Default=null=> Calculated automatic
         majorTicksOffset: 0,                          // Offset for the values where a major ticks is placed. Eq. Min=0, max=100 => major ticks on values=0,10,20,..,90,100. With  majorTicksOffset:4  the major ticks would be placed on values=4,14,24,...,84,94
         showMinorTicks  : true,                       // Show minor ticks.
@@ -946,7 +947,7 @@
         appendTick
         *******************************************************************/
         appendTick: function( leftPercent, options ){
-            if (!this.$currentGrid) return;
+            if (!this.$currentGrid || this.options.noTicks) return;
 
             options = $.extend( {minor: false, color: ''}, options );
 
