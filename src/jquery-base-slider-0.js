@@ -616,12 +616,12 @@
         build: function () {
             var _this = this;
             //**************************************
-            function $span( className, $parent ){
+            function $span( className, $parent, prepend ){
                 var result = $('<span/>');
                 if (className)
                     result.addClass( className );
                 if ($parent)
-                  result.appendTo( $parent );
+                  prepend ? result.prependTo( $parent ) : result.appendTo( $parent );
                 return result;
             }
             //**************************************
@@ -644,6 +644,7 @@
             //this.cache.$leftColorLine, this.cache.$centerColorLine, this.cache.$rightColorLine
             function appendLineColor( left, center, right ){
                 var result;
+
                 if (left)   result = _this.cache.$leftLineColor   = $span('line-color', _this.cache.$line);
                 if (center) result = _this.cache.$centerLineColor = $span('line-color', _this.cache.$line);
                 if (right)  result = _this.cache.$rightLineColor  = $span('line-color', _this.cache.$line);
@@ -682,12 +683,19 @@
                         if (this.options.showLineColor)
                             appendLineColor( this.options.isSingle, this.options.isDouble, false )
                                 .css('background-color', this.options.lineColor);
+
+                //For fixed slider: Add dim line before and after to have line in hole container
+                if (this.options.handleFixed){
+                    $span('line-color pre' , _this.cache.$line, true);
+                    $span('line-color post', _this.cache.$line);
+                }
             }
             else
                 this.cache.$line.css("visibility", "hidden");
 
             //Update the height of the slider
-            this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
+//            this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
+            this.cache.$container.css('height', '20px' );
 
             /****************************************************
             Append grid with ticks and optional labels

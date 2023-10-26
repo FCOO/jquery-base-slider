@@ -41,6 +41,9 @@ COMMON STYLE
   width: 100%;
   top: 0;
 }
+.base-slider-container.fixed .line {
+  overflow: visible;
+}
 .base-slider-container .line {
   position: relative;
   display: block;
@@ -61,6 +64,16 @@ COMMON STYLE
   position: absolute;
   display: block;
   height: 100%;
+}
+.base-slider-container .line .line-color.pre {
+  left: -50%;
+  width: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.base-slider-container .line .line-color.post {
+  left: 100%;
+  width: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .base-slider-container .line .line-color:first-child {
   border-bottom-left-radius: 2px;

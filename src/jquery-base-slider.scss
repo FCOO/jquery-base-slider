@@ -105,6 +105,9 @@ COMMON STYLE
         top     : 0;
     }
 
+
+    &.fixed .line { overflow: visible; }
+
     .line {
         position: relative;
         display : block;
@@ -121,10 +124,23 @@ COMMON STYLE
         @include border-left-radius($line-border-radius);
         @include border-right-radius($line-border-radius);
 
+
         .line-color {
-            position  : absolute;
-            display: block;
-            height : 100%;
+            position: absolute;
+            display : block;
+            height  : 100%;
+
+
+            &.pre {
+                left : -50%;
+                width: 50%;
+                background-color: rgba(0,0,0,0.1);
+            }
+            &.post {
+                left : 100%;
+                width: 50%;
+                background-color: rgba(0,0,0,0.1);
+            }
 
             &:first-child {
                 @include border-left-radius($line-border-radius);
