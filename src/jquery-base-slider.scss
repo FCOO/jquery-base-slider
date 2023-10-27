@@ -91,6 +91,20 @@ $box-shadow: 1px 1px 1px 0px rgba(255,255,255,0.75), -1px 1px 1px 0px rgba(255,2
 /***************************************************************
 COMMON STYLE
 ***************************************************************/
+//.pre and .post are used on grid-colors and line-colors when added to the begining and end for fixed handle to have a light gray line across the container
+.pre-line {
+    left : -50%;
+    width: 50%;
+    background-color: rgba(0,0,0,0.1);
+}
+.post-line {
+    left : 100%;
+    width: 50%;
+    background-color: rgba(0,0,0,0.1);
+}
+
+
+
 .base-slider-container {
     position   : relative;
     display    : block;
@@ -131,15 +145,15 @@ COMMON STYLE
             height  : 100%;
 
 
-            &.pre {
-                left : -50%;
-                width: 50%;
-                background-color: rgba(0,0,0,0.1);
+            &.pre  {
+                @extend .pre-line;
+                top   : -1px;
+                border: $border;
             }
             &.post {
-                left : 100%;
-                width: 50%;
-                background-color: rgba(0,0,0,0.1);
+                @extend .post-line;
+                top   : -1px;
+                border: $border;
             }
 
             &:first-child {
@@ -305,6 +319,10 @@ COMMON STYLE
             border-bottom-width: math.div($tick-height , 2);
             border-right: $tick-height solid black;
         }
+
+        &.pre  { @extend .pre-line;  }
+        &.post { @extend .post-line; }
+
     }
 } //end of .grid
 

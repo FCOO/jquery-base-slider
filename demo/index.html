@@ -186,7 +186,14 @@
         //Fixed slider
         var range = 1000; //400
         createDemoSlider( '01', 'Fixed handler', {
-            handleFixed: true, resizable: true, width: 3*range, min:-range, max:range, value:0, grid:true, showLineColor:false, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+value: -999,            
+            handleFixed: true, resizable: true, width: 3*range, min:-range, max:range, value:0, grid:true, markerFrame:true, labelColors:[{value:0, backgroundColor:'green', color:'white'}], 
+showLine     : true,
+showLineColor: true, 
+_lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+
+_ticksOnLine: true,
+gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {value: 1000, color: "#0000FF"}, {value: 1001, color: "#FF00FF"}],
             _onChange: function( result ){ console.log('onChange', result.value); }
         });
 

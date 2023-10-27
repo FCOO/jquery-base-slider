@@ -82,6 +82,10 @@
         impactLineColors      : {green: "green", yellow: "yellow", red: "red"}, //The line colors used when showImpactLineColor: true
         reverseImpactLineColor: false, // The line on a double slider is colored as red-[handle]-yellow-[handle]-green. Must have showImpactLineColor: true
 
+        //Extention of line-color and/or grid-color when the handle is fixed (handleFixed: true)
+        extendLine          : true,     //If true and showLine: true => show light gray line before and after the line
+        extendGridColors    : true,     //If true and grid-colors are given => show light gray line before and after the grid
+// HER>         extendAllGridColors : false,    //If true all grids get light gray line before and after the grid (if extendGridColors: true)
 
         //Size
         sizeFactor: 1, //Factor to re-size default sizes
@@ -685,7 +689,7 @@
                                 .css('background-color', this.options.lineColor);
 
                 //For fixed slider: Add dim line before and after to have line in hole container
-                if (this.options.handleFixed){
+                if (this.options.handleFixed && this.options.extendLine){
                     $span('line-color pre' , _this.cache.$line, true);
                     $span('line-color post', _this.cache.$line);
                 }
@@ -694,8 +698,7 @@
                 this.cache.$line.css("visibility", "hidden");
 
             //Update the height of the slider
-//            this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
-            this.cache.$container.css('height', '20px' );
+            this.cache.$container.css('height', this.cache.$lineBackground.height()+'px' );
 
             /****************************************************
             Append grid with ticks and optional labels
@@ -1092,8 +1095,20 @@
         },
 
         postAppendGrid: function(){
+            if (this.options.handleFixed && this.options.gridColors && this.options.extendGridColors){
+// HER> extendGridColors    : true,     //If true and grid-colors are given => show light gray line before and after the grid
+// HER>         extendAllGridColors
+                this.appendPreAndPostGridColors();
+
+// HER>                 if (!this.options.extendAllGridColors)
+// HER>                     this.options.extendGridColors = false;
+
+            }
+
             //Update the height of the slider
             this.cache.$container.css('height', (this.nextGridTop + this.$currentGrid.height())+'px' );
+
+
         },
 
 
@@ -1249,6 +1264,20 @@
                 }
             }
         },
+
+        appendPreAndPostGridColors: function(){
+            $('<span/>')
+                .addClass( 'grid-color pre')
+                .prependTo( this.$currentGrid );
+            $('<span/>')
+                .addClass( 'grid-color post')
+                .appendTo( this.$currentGrid );
+        }
+
+
+
+
+
     }; //end of BaseSlider.prototype
 
 
