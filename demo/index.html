@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html id="theHTML" lang="da" style="font-size: 100%">
+<html id="theHTML" lang="da" style="font-size: 100%; width:100%; height:100%">
 <head>
     <title>fcoo.dk - jquery-base-slider - Example</title>
     <meta charset="iso-8859-1" />
@@ -60,7 +60,7 @@
     </style>
 </head>
 
-<body>
+<body style="width:100%; height:100%">
 <!--
     <div style="background-color: red; width: 25rem;">
         <div style="background-color: gray; width: 200px; height:30px; overflow-x:hidden">
@@ -192,6 +192,12 @@ showLine     : true,
 showLineColor: true, 
 _lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
 
+size: {
+    fontSize        : 11,
+    fontFamily: 'Verdana',
+// HER>     fontWeight: 'lighter'
+},
+
 _ticksOnLine: true,
 gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {value: 1000, color: "#0000FF"}, {value: 1001, color: "#FF00FF"}],
             _onChange: function( result ){ console.log('onChange', result.value); }
@@ -206,6 +212,8 @@ gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {v
             markerFrame:true, onChange: function( result ){ console.log('onChange', result.value ); }, _lineColors:[{ to: 40000, color: '#4D72B8'}, {color:'#7ABAE1'}]
         })
 //$('body').on('click', function(){ slider.update({majorTicksOffset: 1000}); });
+
+//return;
 
         //Ex #3
         var vindGridColors = [
@@ -226,6 +234,7 @@ gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {v
         createDemoSlider( '03', 'Double with grid colors left <= 0 right >= 5', {
             showLine: false,
             showImpactLineColor:true, postfix:'&deg;C', type:"double", _handle: 'horizontal', handle: 'vertical', min:-20, max:35, from: +3, to: 14, decorate_label: true, grid:true, showMinMax: true, marker_frame:true,
+size: {fontSize: 16},
             _fromMin: -4, fromMax: 0, toMin: 5, _intervalMax: 4,
 
             gridColors: vindGridColors
@@ -238,6 +247,7 @@ gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {v
 
         });
 
+//return;
 
         createDemoSlider( '05', 'Major ticks-offset=2', {
             min:0, max:100, value:20, majorTicks_offset:2, step:1, stepOffset:0, grid:true, labelClickableFullWidth: false, clickable: false,

@@ -92,7 +92,10 @@
             borderWidth: 1,
         },
         size: {
-            fontSize        : 10,
+            fontSize  : 10,
+            fontFamily: 'Arial',
+            fontWeight: '',
+
             majorTickLength : 9,
             minorTickLength : 6,
 
@@ -100,9 +103,8 @@
 
 
             lineBorderRadius: 2,
-            textPadding     : 2,
+            textPadding     : 2
 
-            labelInnerHeight: 10,
         },
 
         //Grid (ticks and label)
@@ -926,7 +928,7 @@
             ctx.textBaseline = "top";       //"bottom" or "middle" or "alphabetic" or "hanging"
 
             ctx.strokeStyle = this.options.majorColor;
-            ctx.font = size.fontSize + 'px Arial';
+            ctx.font = size.fontWeight + (size.fontWeight ? ' ' : '') + size.fontSize+'px ' + size.fontFamily;
 
             if (this.options.labelClickable && !this.options.disable && !this.options.readOnly){
                 this.canvasId = this.canvasId || 0;
