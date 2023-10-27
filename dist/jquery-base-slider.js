@@ -85,7 +85,6 @@
         //Extention of line-color and/or grid-color when the handle is fixed (handleFixed: true)
         extendLine          : true,     //If true and showLine: true => show light gray line before and after the line
         extendGridColors    : true,     //If true and grid-colors are given => show light gray line before and after the grid
-// HER>         extendAllGridColors : false,    //If true all grids get light gray line before and after the grid (if extendGridColors: true)
 
         //Size
         sizeFactor: 1, //Factor to re-size default sizes
@@ -1095,20 +1094,11 @@
         },
 
         postAppendGrid: function(){
-            if (this.options.handleFixed && this.options.gridColors && this.options.extendGridColors){
-// HER> extendGridColors    : true,     //If true and grid-colors are given => show light gray line before and after the grid
-// HER>         extendAllGridColors
+            if (this.options.handleFixed && this.options.gridColors && this.options.extendGridColors)
                 this.appendPreAndPostGridColors();
-
-// HER>                 if (!this.options.extendAllGridColors)
-// HER>                     this.options.extendGridColors = false;
-
-            }
 
             //Update the height of the slider
             this.cache.$container.css('height', (this.nextGridTop + this.$currentGrid.height())+'px' );
-
-
         },
 
 

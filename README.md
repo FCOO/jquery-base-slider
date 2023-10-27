@@ -111,6 +111,17 @@ The demo shows the different effects of options `step`, `stepOffset`, and `major
 | `valuesSeparator` | `" - "` | `string` | Text between min and max value when labels are combined. `valuesSeparator:" to "` => `"10 to 100"` |
 
 
+### Extended lines and grid for `handleFixed = false`
+
+When the slider have a fixed handle the line and/or the grid can be extended at the beginning and end to always fill the hole container
+
+| Option | Defaults | Type | Description |
+| :--: | :--: | :--: | :-- |
+| `extendLine` | `true` | `boolean` | If `true` and `showLine: true` => show light gray line before and after the line | 
+| `extendGridColors` | `true` | `boolean` | If `true` and `gridColors` are given => show light gray line before and after the grid | 
+
+
+
 ### Callback
 
 | Option | Defaults | Type | Description |
