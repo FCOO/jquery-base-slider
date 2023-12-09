@@ -963,7 +963,7 @@
         appendTick: function( leftPercent, options ){
             if (!this.$currentGrid || this.options.noTicks) return;
 
-            options = $.extend( {minor: false, color: ''}, options );
+            options = $.extend( {minor: false/*, color: ''*/}, options );
 
             var left = this.cache.canvasMargin + (this.dimentions.containerWidth * leftPercent / 100),
                 ctx  = this.cache.ctx,
