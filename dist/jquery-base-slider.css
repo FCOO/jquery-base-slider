@@ -693,6 +693,6 @@ html.mouse-hover .base-slider-container.round.active .handle:hover, html.mouse-h
 
 .base-slider-container {
   width: calc(100% - 24px);
-  margin-left: 12px;
-  margin-right: 12px;
+  margin-left: 12px !important;
+  margin-right: 12px !important;
 }
