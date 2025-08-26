@@ -691,7 +691,7 @@ html.mouse-hover .base-slider-container.round.active .handle:hover, html.mouse-h
   margin-top: 8.2285714286px;
 }
 
-.base-slider-container {
+.base-slider-container:not(.fixed) {
   width: calc(100% - 24px);
   margin-left: 12px !important;
   margin-right: 12px !important;

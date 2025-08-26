@@ -549,14 +549,14 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
         Adjust all top-position by adding top-margin if the pin is heigher than the handle
         ****************************************************/
         &.no-marker.has-pin {
-            margin-top: max(0, - $pin-margin-top - $lineTopNoMarker);
+            margin-top: max(0, -1 * $pin-margin-top - $lineTopNoMarker);
         }
     } //end of .base-slider-container.#{$handle-type}
 } //end of @each $handle-type in $handle-type-list
 
 
-//Adding style depending on $max-handle-width
-.base-slider-container {
+//Adding style depending on $max-handle-width to give margin for the handler
+.base-slider-container:not(.fixed) {
     width       : calc(100% - #{$max-handle-width});
     margin-left : math.div($max-handle-width , 2) !important;
     margin-right: math.div($max-handle-width , 2) !important;
