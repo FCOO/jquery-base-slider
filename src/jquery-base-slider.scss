@@ -556,7 +556,7 @@ $handle-type-list: horizontal, vertical, down, up, right, left, round, fixed, ra
 
 
 //Adding style depending on $max-handle-width to give margin for the handler
-.base-slider-container:not(.fixed) {
+.base-slider-container:not(.handle-is-fixed) {
     width       : calc(100% - #{$max-handle-width});
     margin-left : math.div($max-handle-width , 2) !important;
     margin-right: math.div($max-handle-width , 2) !important;
