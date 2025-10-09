@@ -1229,7 +1229,6 @@
                     //add triangle to the left or right
                     var $span = $('<span/>')
                                     .addClass( 'grid-color')
-                                    .addClass( gridColor.className )
                                     .appendTo( this.$currentGrid );
                     if (gridColor.value > this.options.max)
                         $span
@@ -1246,6 +1245,7 @@
 
                     $('<span/>')
                         .addClass('grid-color' + (index%2?' to':' from'))
+                        .addClass( gridColor.className )
                         .css({
                             'left'            : percentFactor*(fromValue - this.options.min) + '%',
                             'width'           : percentFactor*(toValue-fromValue) + '%',
