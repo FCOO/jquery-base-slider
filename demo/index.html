@@ -201,7 +201,9 @@ size: {
 
 _ticksOnLine: true,
 gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {value: 1000, color: "#0000FF"}, {value: 1001, color: "#FF00FF"}],
-            _onChange: function( result ){ console.log('onChange', result.value); }
+            _onChange: function( result ){ console.log('onChange', result.value); },
+
+            onBuild: function( result ){ console.log('onBuild', result.slider.cache.$grid); }
         });
 
 //return;

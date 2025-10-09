@@ -140,6 +140,7 @@
 
         //Callback
         onCreate : null, // Called when the slider is created the first time.
+        onBuild  : null, // Called when the slider is build
         onUpdate : null, // Is called than slider is modified by external methods update or reset
 
         onChanging        : null, // Is called every time any values are changed. Also on dragging a handle
@@ -245,7 +246,7 @@
         this.callback = record with functions used on different callbacks
         *******************************************************************/
         this.callback = {};
-        $.each( ['Create', 'Update', 'Changing', 'Change'], function( index, id ){
+        $.each( ['Create', 'Build', 'Update', 'Changing', 'Change'], function( index, id ){
             var func = _this.options['on'+id ];
             if ( func )
                 _this.callback[ id.toLowerCase() ] =
@@ -672,6 +673,7 @@
                             fromPercent = sliderValue.setValue( from ).getPercent();
                             toPercent = sliderValue.setValue( to ).getPercent();
                             $span('line-color', _this.cache.$line)
+                                .addClass( fromToColor.className )
                                 .css({
                                     'left'              : fromPercent + '%',
                                     'width'             : (toPercent-fromPercent) + '%',
@@ -734,6 +736,9 @@
                 }
 
             this.isBuild = true;
+
+            this.on('build');
+
         }, //end of build
 
         /*******************************************************************
@@ -1216,17 +1221,15 @@
         appendGridColors: function( gridColors ){
             var fromValue,
                 toValue  = this.options.min,
-                i,
-                gridColor,
                 percentFactor = 100 / (this.options.max - this.options.min);
 
 
-            for (i=0; i<gridColors.length; i++ ){
-                gridColor = gridColors[i];
+            gridColors.forEach( (gridColor, index) => {
                 if ( (gridColor.value === null) || (gridColor.value < this.options.min) || (gridColor.value > this.options.max) ){
                     //add triangle to the left or right
                     var $span = $('<span/>')
                                     .addClass( 'grid-color')
+                                    .addClass( gridColor.className )
                                     .appendTo( this.$currentGrid );
                     if (gridColor.value > this.options.max)
                         $span
@@ -1242,7 +1245,7 @@
                     toValue = gridColor.value;
 
                     $('<span/>')
-                        .addClass('grid-color' + (i%2?' to':' from'))
+                        .addClass('grid-color' + (index%2?' to':' from'))
                         .css({
                             'left'            : percentFactor*(fromValue - this.options.min) + '%',
                             'width'           : percentFactor*(toValue-fromValue) + '%',
@@ -1250,7 +1253,7 @@
                            })
                         .appendTo( this.$currentGrid );
                 }
-            }
+            }, this);
         },
 
         appendPreAndPostGridColors: function(){
