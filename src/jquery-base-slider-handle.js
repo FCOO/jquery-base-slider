@@ -145,9 +145,7 @@
 
                     //Force all handles overlapped by this to update
                     if (!force)
-                        $.each( this.overlapHandleList, function( index, handle ){
-                            handle.update( true );
-                        });
+                        ( this.overlapHandleList || []).forEach( handle => handle.update( true ) );
 
                     //Set marker visibility
                     this.marker.$outer.css('visibility', this.markerIsHidden() ? 'hidden' : 'visible');
@@ -187,9 +185,7 @@
         markerIsHidden: function(){
             var thisMarker$text = this.marker.$text,
                 result = false;
-            $.each( this.overlappingHandleList, function( index, handle ){
-                result = result || elementsOverlapping( thisMarker$text, handle.marker.$text );
-            });
+            ( this.overlappingHandleList || []).forEach( handle => result = result || elementsOverlapping( thisMarker$text, handle.marker.$text ) );
             return result;
         }
 

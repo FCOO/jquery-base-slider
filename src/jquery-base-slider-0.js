@@ -173,8 +173,6 @@
     *******************************************************************/
     var pluginCount = 0;
     window.BaseSlider = function (input, options, pluginCount) {
-        var _this = this;
-
         this.input          = input;
         this.pluginCount   = pluginCount;
 
@@ -202,11 +200,11 @@
 
         /*******************************************************************
         this.events contains event-functions and options
-        this.events.containerOnResize = called when the sizse of the container is changed
+        this.events.containerOnResize = called when the size of the container is changed
         *******************************************************************/
         this.events = {
-            containerOnResize: $.proxy( this.containerOnResize, this ),
-            parentOnResize   : $.proxy( this.parentOnResize, this )
+            containerOnResize: this.containerOnResize.bind( this ),
+            parentOnResize   : this.parentOnResize.bind( this )
         };
 
         //Create event-function to be called on resize of the window and the container (added in init)
@@ -246,14 +244,14 @@
         this.callback = record with functions used on different callbacks
         *******************************************************************/
         this.callback = {};
-        $.each( ['Create', 'Build', 'Update', 'Changing', 'Change'], function( index, id ){
-            var func = _this.options['on'+id ];
+        ['Create', 'Build', 'Update', 'Changing', 'Change'].forEach( id => {
+            var func = this.options['on'+id ];
             if ( func )
-                _this.callback[ id.toLowerCase() ] =
-                    _this.options.context ?
-                    $.proxy( func, _this.options.context ) :
+                this.callback[ id.toLowerCase() ] =
+                    this.options.context ?
+                    func.bind( this.options.context ) :
                     func;
-        });
+        }, this);
 
         /*******************************************************************
         this.cache = record with all DOM-elements or jQuery-objects
@@ -305,9 +303,9 @@
             //Convert labelColors = [] of {value, color, backgroundColor, className} to labelColorRec = { value1: { color, backgroundColor, className }, value2: color, backgroundColor, className },...}
             this.options.labelColorRec = {};
             if (this.options.labelColors)
-                $.each( this.options.labelColors, function( index, rec ){
-                    _this.options.labelColorRec[ rec.value ] = rec;
-                });
+                this.options.labelColors.forEach( rec => {
+                    this.options.labelColorRec[ rec.value ] = rec;
+                }, this);
 
             //Add options.step to gridDistances
             if (this.options.gridDistances.indexOf(this.options.step) == -1)
@@ -360,14 +358,14 @@
             Create this.handles[id] = SliderHandle representing the different
             handles and there relation (See jquery-base-slider-handle.js for more)
             *******************************************************************/
-            function addSliderHandle( options ){
-                options.slider = _this;
+            const addSliderHandle = function addSliderHandle( options ){
+                options.slider = this;
                 if (options.inclDataPercent)
                     options.markerData = {
-                        'data-base-slider-percent': _this.valueToPercent(options.value.value)
+                        'data-base-slider-percent': this.valueToPercent(options.value.value)
                     };
-                _this.handles[options.id] = ns.sliderHandle(options);
-            }
+                this.handles[options.id] = ns.sliderHandle(options);
+            }.bind(this);
 
             //min = Lowest value on the slider
             addSliderHandle({
@@ -518,8 +516,8 @@
             //Sets overlapping-info for the handles
             function addMarkerOverlapping( id, idList ){
                 var handle = _this.handles[id];
-                if (handle)
-                    $.each( idList, function( index, id ){
+                if (handle && idList)
+                    idList.forEach( id => {
                         var overlappingHandle = _this.handles[id];
                         if (overlappingHandle)
                             overlappingHandle.addOverlap( handle );
@@ -667,7 +665,7 @@
                             fromPercent,
                             toPercent,
                             sliderValue = ns.sliderValue({slider: this});
-                        $.each(this.options.lineColors, function( index, fromToColor ){
+                        this.options.lineColors.forEach( fromToColor => {
                             from = fromToColor.from === undefined ? to : fromToColor.from;
                             to = fromToColor.to === undefined ? _this.options.max : fromToColor.to;
                             fromPercent = sliderValue.setValue( from ).getPercent();
@@ -745,6 +743,11 @@
         remove
         *******************************************************************/
         remove: function () {
+            if (this.options.resizable)
+                //Remove resize-event from window
+                $(window).off('resize', this.events.containerOnResize );
+
+
             if (this.cache.$outerContainer){
                 this.cache.$outerContainer.remove();
                 this.cache.$outerContainer = null;
@@ -755,6 +758,7 @@
             }
 
             this.eachHandle('remove');
+
         },
 
         /*******************************************************************

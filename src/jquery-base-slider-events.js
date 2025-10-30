@@ -25,7 +25,8 @@ jquery-base-slider-events
         var result = false,
             props = Object.getOwnPropertyNames(obj1).concat( Object.getOwnPropertyNames(obj2) );
 
-        $.each( props, function( index, id ){
+        if (props)
+            props.forEach( id => {
             var type1 = $.type(obj1[id]),
                 type2 = $.type(obj2[id]);
 
@@ -49,12 +50,13 @@ jquery-base-slider-events
             //*******************************************************************
             function addEvents( $elem, eventNames, func, param ){
                 if (!$elem) return;
-                func = param ? $.proxy( func, _this, param) : $.proxy( func, _this );
+                func = param ? func.bind(_this, param) : func.bind( _this );
 
-                $.each( eventNames.split(' '), function( index, eventName ){
-                    $elem.off( eventName + ".irs_" + _this.pluginCount,  func );
-                    $elem.on ( eventName + ".irs_" + _this.pluginCount,  func );
-                });
+                if (eventNames)
+                    eventNames.split(' ').forEach( eventName => {
+                        $elem.off( eventName + ".irs_" + _this.pluginCount,  func );
+                        $elem.on ( eventName + ".irs_" + _this.pluginCount,  func );
+                    });
                 return $elem;
             }
             //*******************************************************************
@@ -133,7 +135,7 @@ jquery-base-slider-events
             //Clear any previous added timeout
             if (this.resizeTimeoutId)
                 window.clearTimeout(this.resizeTimeoutId);
-            this.resizeTimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+            this.resizeTimeoutId = window.setTimeout(this.checkContainerDimentions.bind(this), 200 );
         },
 
         /*******************************************************************
@@ -203,7 +205,7 @@ jquery-base-slider-events
                         this.cache.$parent.resize( this.events.parentOnResize );
                     }
                     else
-                        this.checkContainerDimentions_TimeoutId = window.setTimeout($.proxy(this.checkContainerDimentions, this), 200 );
+                        this.checkContainerDimentions_TimeoutId = window.setTimeout( this.checkContainerDimentions.bind(this), 200 );
                 }
 
             }
@@ -285,7 +287,8 @@ jquery-base-slider-events
             function minOrMaxInList( findInMaxList, sliderValue, excludeSliderValue ){
                 var result = findInMaxList ? _this.options.max : _this.options.min,
                     list   = findInMaxList ? sliderValue.maxList : sliderValue.minList;
-                $.each( list, function( index, listObj ){
+                if (list)
+                    list.forEach( listObj => {
                     if (listObj.sliderValue !== excludeSliderValue)
                         result = (findInMaxList ? Math.min : Math.max)( result, listObj.sliderValue.value );
                 });
@@ -427,7 +430,7 @@ jquery-base-slider-events
                         canvasX       = originalEvent.offsetX,
                         canvasY       = originalEvent.offsetY;
 
-                    $.each(_this.canvasLabels[canvasId] || [], function(index, rec){
+                    (_this.canvasLabels[canvasId] || []).forEach(rec => {
                         if ( (canvasX >= rec.left) && (canvasX <= rec.right) && (canvasY >= rec.top) && (canvasY <= rec.bottom) ){
                             percent = rec.percent;
                             return false;
@@ -564,7 +567,7 @@ jquery-base-slider-events
             var _this = this,
                 singleHandleId = this.options.singleHandleId;
 
-            $.each( ['min', 'from', singleHandleId, 'to', 'max'], function( index, id ){
+            ['min', 'from', singleHandleId, 'to', 'max'].forEach( id => {
                 var resultId = (id == singleHandleId) ? 'value' : id; //Using result.value for single-slider (incl fixed)
                 if (_this.handles[id]){
                     _this.result[resultId]           = _this.handles[id].value.value;

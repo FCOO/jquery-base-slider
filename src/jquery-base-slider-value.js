@@ -44,9 +44,8 @@
         this.minList = [];
         this.maxList = [];
 
-        var _this = this;
-        $.each( options.minList || [], function( index, sliderValueMin ){ _this.addMin( sliderValueMin ); });
-        $.each( options.maxList || [], function( index, sliderValueMax ){ _this.addMax( sliderValueMax ); });
+        ( options.minList || []).forEach( sliderValueMin => this.addMin( sliderValueMin ), this);
+        ( options.maxList || []).forEach( sliderValueMax => this.addMax( sliderValueMax ), this);
 
         this.setValue( options.value );
     };
@@ -92,16 +91,15 @@
                 this.value = this.fixedValue;
             else {
                 //Adjust this.value with respect to {sliderValue,minDistance} in this.minList
-                var _this = this;
-                $.each( this.minList, function( index, rec ){
+                ( this.minList || []).forEach( rec => {
                     if (rec.sliderValue)
-                        _this.value = Math.max( _this.value, rec.sliderValue.value + rec.minDistance );
-                });
+                        this.value = Math.max( this.value, rec.sliderValue.value + rec.minDistance );
+                }, this);
                 //Adjust this.value with respect to {sliderValue,minDistance} in this.maxList
-                $.each( this.maxList, function( index, rec ){
+                ( this.maxList || []).forEach( rec => {
                     if (rec.sliderValue)
-                        _this.value = Math.min( _this.value, rec.sliderValue.value - rec.minDistance );
-                });
+                        this.value = Math.min( this.value, rec.sliderValue.value - rec.minDistance );
+                }, this);
 
                 //Adjust this.value with respect to step and stepOffset
                 if (this.adjustToStep){

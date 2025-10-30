@@ -91,6 +91,7 @@
             <div class="code-container" id="options_01"></div><hr>
             <input type="text" id="example_01"/>
         </div>
+        <button id="reCreateSlider1">Re-create first slider</button>
 
         <div class="slider-container resizable">
             <div class="code-container" id="options_02"></div><hr>
@@ -120,6 +121,8 @@
         <div class="slider-container">
             <div class="code-container" id="options_08"></div><hr>
             <input type="text" id="example_08"/>
+
+
 <!--
             <br>
             <button id="btnFromFirst">From:First</button>
@@ -179,6 +182,8 @@
 //REMOVED IN V6        $('html').css('font-size', percent+'px');
 //REMOVED IN V6    });
 
+    let slider1, slider1Options;
+
     //Debug:
     test('START');
 
@@ -186,25 +191,40 @@
     $(window).on("load", function() {
         //Fixed slider
         var range = 1000; //400
-        createDemoSlider( '01', 'Fixed handler', {
-value: -999,
+
+        slider1Options  = {
+            value: -999,
             handleFixed: true, handle: 'down', resizable: true, width: 3*range, min:-range, max:range, value:0, grid:true, markerFrame:true, labelColors:[{value:0, backgroundColor:'#00FFFF', color:'white'}],
-showLine     : true,
-showLineColor: true,
-_lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            showLine     : true,
+            showLineColor: true,
+            _lineColors:[{ to: 0, color: '#7ABAE1'}, {color:'#4D72B8'}],
+            size: {
+                fontSize        : 11,
+                fontFamily: 'Verdana',
+                fontWeight: 'lighter'
+            },
 
-size: {
-    fontSize        : 11,
-    fontFamily: 'Verdana',
-    fontWeight: 'lighter'
-},
-
-_ticksOnLine: true,
-gridColors: [{value: -500, color: "#FF0000"}, {value: 500, color: "#00FF00"}, {value: 1000, color: "#0000FF"}, {value: 1001, color: "#FF00FF"}],
+            _ticksOnLine: true,
+            gridColors: [{value: -500, color: "#FF0000"}, {fromValue: -600, value: 500, color: "#00FF00"}, {value: 1000, color: "#0000FF"}, {value: 1001, color: "#FF00FF"}],
             _onChange: function( result ){ console.log('onChange', result.value); },
 
             onBuild: function( result ){ console.log('onBuild', result.slider.cache.$grid); }
+        };
+
+        slider1 = createDemoSlider( '01', 'Fixed handler', slider1Options );
+
+        $('#reCreateSlider1').on('click', function (){
+            console.log('HER', slider1);
+            slider1.destroy();
+            slider1 = $('#example_01').baseSlider( slider1Options ).data('baseSlider')
         });
+
+return;
+
+
+//HER   console.log(slider1);
+//HER   slider1.appendGridContainer();
+//HER   slider1.appendGridColors(slider1.options.gridColors);
 
 //return;
         //Ex #2
