@@ -743,6 +743,12 @@
         remove
         *******************************************************************/
         remove: function () {
+            //Remove pending updates
+            if (this.resizeTimeoutId){
+                window.clearTimeout(this.resizeTimeoutId);
+                this.resizeTimeoutId = null;
+            }
+
             if (this.options.resizable)
                 //Remove resize-event from window
                 $(window).off('resize', this.events.containerOnResize );
